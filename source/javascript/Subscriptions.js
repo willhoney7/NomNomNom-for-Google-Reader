@@ -1,7 +1,10 @@
 enyo.kind({
 	name: "Subscriptions", 
-	kind:"SlidingView", 
+	kind: enyo.SlidingView, 
 	width: "320px", 
+	events: {
+		onFeedClick: ""	
+	},
 	components: [
 		{kind: "Header", content: "Google Reader"},
 		{kind: "Scroller", flex: 1, autoHorizontal: false, horizontal: false, components: [
@@ -14,12 +17,11 @@ enyo.kind({
 				{name: "errorResponse", className: "errorText"}
 			]},
 			{name: "subscriptionList", kind: enyo.VirtualRepeater, onSetupRow: "setupRow", components: [
-				{kind: "Item", layoutKind: "HFlexLayout", components: [
+				{kind: "Item", tapHighlight: true, onclick: "doFeedClick", layoutKind: "HFlexLayout", components: [
 		            {name: "caption", allowHtml: true, flex: 1},
 		        ]}
 			]}
 			
-			//Insert your components here
 		]}
 	],
 	feeds: [],

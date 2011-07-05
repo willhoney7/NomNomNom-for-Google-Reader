@@ -1,7 +1,7 @@
 AppUtils = {
 	processSubscriptions: function(subscriptions){
 		var categories = [
-				{label: "All", id: "_all", feeds: subscriptions}
+				{label: "All", id: reader.FEED_ALL_ID, feeds: subscriptions}
 			],
 			uncategorized = [];
 

@@ -12,6 +12,7 @@ enyo.depends(
 
 	"source/javascript/GoogleReader.js",
 	"source/javascript/Subscriptions.js",
+	"source/javascript/FeedPreviewList.js",
 
 	"source/css/core.css"
 );

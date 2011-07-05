@@ -1,0 +1,10 @@
+{
+	"id": "com.tibfib.app.googlereader",
+	"version": "0.0.1",
+	"vendor": "Will Honey (Tibfib)",
+	"type": "web",
+	"main": "index.html",
+	"title": "Google Reader",
+	"icon": "icon.png",
+	"uiRevision":2
+}

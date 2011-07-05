@@ -14,7 +14,8 @@ enyo.kind({
 		{name: "list", kind: enyo.VirtualList, flex: 1, onSetupRow: "setupRow", components: [
 			{kind: "Item", className:"feedItem", tapHighlight: true, components: [
 				{name: "title", className: "title"},
-				{name: "summary", className: "summary", allowHtml: true}
+				{name: "summary", className: "summary", allowHtml: true},
+				{name: "feedTitle"}
 			]}
 		]},
 		{kind: "Toolbar", components: [
@@ -27,6 +28,8 @@ enyo.kind({
 
 		if(this.getFeed().id === reader.FEED_ALL_ID){
 			reader.getAllItems(enyo.bind(this, this.loadedItems));
+		} else {
+			reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems));
 		}
 	},
 	loadedItems: function(items){
@@ -37,7 +40,8 @@ enyo.kind({
 		if(this.items[inIndex]){
 			this.$.title.setContent(this.items[inIndex].title);
 			var content = (this.items[inIndex].summary) ? this.items[inIndex].summary.content || "": (this.items[inIndex].content) ? this.items[inIndex].content.content || "": "";
-			this.$.summary.setContent(decodeURI(content));
+			this.$.summary.setContent((content));
+			this.$.feedTitle.setContent(this.items[inIndex].origin.title);
 
 			return true;
 		}

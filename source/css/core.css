@@ -1,3 +1,11 @@
+.outerItem {
+	padding: 0px;
+}
+.enyo-drawer {
+	background-color: rgba(0,0,0,0.1);
+}
+
+
 .feedItem .title {
 	font-weight: bold;
 }

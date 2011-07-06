@@ -5,13 +5,22 @@
 	background-color: rgba(0,0,0,0.1);
 }
 
-
 .feedItem .title {
 	font-weight: bold;
+	font-size: 20px;
 }
 .feedItem .summary {
 	/*max-height: 200px;
 	overflow: hidden;*/
+}
+.feedItem {
+	font-size: 14px;
+}
+.feedItem img:first-child{
+	display: block;
+	margin: auto;
+	max-height: 100px !important;
+	width: auto !important;
 }
 
 .errorText {

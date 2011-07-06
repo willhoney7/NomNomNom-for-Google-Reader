@@ -12,20 +12,19 @@ enyo.kind({
 			{kind: enyo.HFlexBox, style: "padding: 10px;", components: [
 				{name: "folderImage", onclick: "toggleDrawer", kind: "Image", src:'images/small_folder.png', style:'margin-right: 10px;', showing: false},
             	{name: "caption", allowHtml: true, flex: 1},
-			]},
-			{
-    	    	kind: enyo.BasicDrawer,
-    	    	open: false,
-    	    	components: [
-    	    		{kind: "VFlexBox", width: "100%", components: [
-    	    			{kind: enyo.VirtualRepeater, onSetupRow: "setupFolderRow", components: [
-	    	    			{kind: "InnerFeedItem", onFeedClick: "doFeedClick"}
-		    	    	]}
-		    	    ]}
-    	    	]
-    	    }
-			
-        ]}
+			]}			
+        ]},
+        {
+	    	kind: enyo.BasicDrawer,
+	    	open: false,
+	    	components: [
+	    		{kind: "VFlexBox", width: "100%", components: [
+	    			{kind: enyo.VirtualRepeater, onSetupRow: "setupFolderRow", components: [
+    	    			{kind: "InnerFeedItem", onFeedClick: "doFeedClick"}
+	    	    	]}
+	    	    ]}
+	    	]
+	    }
 	],
 	create: function(){
 		this.inherited(arguments);	
@@ -79,7 +78,8 @@ enyo.kind({
     	//gets set fine				
 	},
 	feedClick: function(inSender, inEvent){
-		this.doFeedClick(this.getFeed());	
+		this.doFeedClick(this.owner.feed.feeds[inEvent.rowIndex]);
+
 		//Always returns ""
 		
 		return true;	

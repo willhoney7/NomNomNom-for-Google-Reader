@@ -1,8 +1,8 @@
 enyo.kind({
 	name: "FeedPreviewList", 
 	kind: enyo.SlidingView, 
-	//width: "320px", 
-	flex: 1,
+	width: "320px", 
+	//flex: 1,
 	events: {
 		onFeedClick: ""	
 	},
@@ -13,15 +13,20 @@ enyo.kind({
 		{kind: "Header", content: ""},
 		{name: "list", kind: enyo.VirtualList, flex: 1, onSetupRow: "setupRow", components: [
 			{kind: "Item", className:"feedItem", tapHighlight: true, components: [
-				{name: "title", className: "title"},
+				{kind: enyo.HFlexBox, components: [
+					{name: "title", className: "title", flex: 1},
+					{name: "feedTitle"}
+				]},
 				{name: "summary", className: "summary", allowHtml: true},
-				{name: "feedTitle"}
 			]}
 		]},
 		{kind: "Toolbar", components: [
 			{kind: "GrabButton"}
 		]}
 	],
+	create: function(){
+		this.inherited(arguments);	
+	},
 	items: [],
 	feedChanged: function(inOldValue){
 		this.$.header.setContent(this.getFeed().label || this.getFeed().title);

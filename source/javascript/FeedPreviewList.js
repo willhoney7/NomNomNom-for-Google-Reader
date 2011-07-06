@@ -4,7 +4,7 @@ enyo.kind({
 	width: "320px", 
 	//flex: 1,
 	events: {
-		onFeedClick: ""	
+		onItemClick: ""	
 	},
 	published: {
 		feed: ""	
@@ -12,11 +12,10 @@ enyo.kind({
 	components: [
 		{kind: "Header", content: ""},
 		{name: "list", kind: enyo.VirtualList, flex: 1, onSetupRow: "setupRow", components: [
-			{kind: "Item", className:"feedItem", tapHighlight: true, components: [
-				{kind: enyo.HFlexBox, components: [
-					{name: "title", className: "title", flex: 1},
-					{name: "feedTitle"}
-				]},
+			{kind: "Item", className:"feedItem", onclick: "doItemClick", tapHighlight: true, components: [
+				{name: "title", className: "title", flex: 1, allowHtml: true},
+				{name: "feedTitle"},
+
 				{name: "summary", className: "summary", allowHtml: true},
 			]}
 		]},
@@ -45,7 +44,7 @@ enyo.kind({
 		if(this.items[inIndex]){
 			this.$.title.setContent(this.items[inIndex].title);
 			var content = (this.items[inIndex].summary) ? this.items[inIndex].summary.content || "": (this.items[inIndex].content) ? this.items[inIndex].content.content || "": "";
-			this.$.summary.setContent((content));
+			//this.$.summary.setContent((content));
 			this.$.feedTitle.setContent(this.items[inIndex].origin.title);
 
 			return true;

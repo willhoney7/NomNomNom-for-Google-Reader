@@ -6,8 +6,8 @@
 }
 
 .feedItem .title {
-	font-weight: bold;
-	font-size: 20px;
+	/*font-weight: bold;*/
+	font-size: 18px;
 }
 .feedItem .summary {
 	/*max-height: 200px;
@@ -21,6 +21,15 @@
 	margin: auto;
 	max-height: 100px !important;
 	width: auto !important;
+}
+
+.itemContent {
+	font-size: 14px;
+	margin: 15px;	
+}
+.itemContent img:first-child {
+	display: block;
+	text-align: center;
 }
 
 .errorText {

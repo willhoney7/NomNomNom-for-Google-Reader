@@ -7,7 +7,7 @@ enyo.kind({
 			{kind: "FeedPreviewList"}
 		]}
 	],
-	loadFeed: function(inSender, inEvent){
-		this.$.feedPreviewList.setFeed(inSender.feeds[inEvent.rowIndex]);
+	loadFeed: function(inSender, inFeed){
+		this.$.feedPreviewList.setFeed(inFeed);
 	}
 });

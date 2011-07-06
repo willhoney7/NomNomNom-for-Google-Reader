@@ -34,7 +34,7 @@ enyo.kind({
 	},
 	loadedItems: function(items){
 		this.items = items;
-		this.$.list.refresh();
+		this.$.list.punt();
 	},
 	setupRow: function(inSender, inIndex){
 		if(this.items[inIndex]){

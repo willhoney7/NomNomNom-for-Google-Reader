@@ -14,7 +14,7 @@ enyo.kind({
 		{name: "list", kind: enyo.VirtualList, flex: 1, onSetupRow: "setupRow", components: [
 			{kind: "Item", className:"feedItem", onclick: "doItemClick", tapHighlight: true, components: [
 				{name: "title", className: "title", flex: 1, allowHtml: true},
-				{name: "feedTitle"},
+				{name: "feedTitle", className: "feedTitle"},
 
 				{name: "summary", className: "summary", allowHtml: true},
 			]}
@@ -30,11 +30,7 @@ enyo.kind({
 	feedChanged: function(inOldValue){
 		this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 
-		if(this.getFeed().id === reader.FEED_ALL_ID){
-			reader.getAllItems(enyo.bind(this, this.loadedItems));
-		} else {
-			reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems));
-		}
+		reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems));
 	},
 	loadedItems: function(items){
 		this.items = items;

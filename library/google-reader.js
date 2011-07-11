@@ -10,15 +10,13 @@ reader = {
 	LOGIN_URL: "https://www.google.com/accounts/ClientLogin",
 	BASE_URL: "http://www.google.com/reader/api/0/",
 
+	STREAM_PATH: "stream/contents/",
+
 	//url suffixes
 	TOKEN_SUFFIX: "token",
 	SUBSCRIPTIONS_SUFFIX: "subscription/list",
-	ALLITEMS_SUFFIX: "stream/contents/user/-/state/com.google/reading-list",
-	STREAM_SUFFIX: "stream/contents/",
 
-	//other constants
-	FEED_ALL_ID: "_all",
-
+	ALLITEMS_SUFFIX: "user/-/state/com.google/reading-list",
 
 	/*variables*/
 	is_logged_in: false,
@@ -53,10 +51,10 @@ reader = {
 		var queries = [];
 		for (var i in obj.parameters) {
 			queries.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj.parameters[i]))
-        }
-        var queryString = queries.join("&");
+		}
+		var queryString = queries.join("&");
 
-  		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): obj.url;
+		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): obj.url;
 		this.request = new XMLHttpRequest();
 		this.request.open(obj.method, url, true);
 
@@ -66,25 +64,25 @@ reader = {
 		if(reader.getAUTH()){
 			//this one is important. This is how google does authorization.
 			this.request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAUTH());    	
-        }
-        var self = this;
+		}
+		var self = this;
 
-        this.request.onreadystatechange = 
-        	function(){
+		this.request.onreadystatechange = 
+			function(){
 				if ((self.request.readyState === 4) && self.request.status === 200) {
-			   		if(obj.onSuccess){
-			   			obj.onSuccess(self.request);
-			   		}
-			    } else if(self.request.readyState < 2){
-			    	if(obj.onFailure){
-			    		obj.onFailure(self.request);
-			    	}
-			    	console.error(self.request);
-			    }
+					if(obj.onSuccess){
+						obj.onSuccess(self.request);
+					}
+				} else if(self.request.readyState < 2){
+					if(obj.onFailure){
+						obj.onFailure(self.request);
+					}
+					console.error(self.request);
+				}
 		};
 		
 		this.request.send((obj.method === "POST") ? queryString: "");
-       
+	
 	},
 
 	load: function(){
@@ -159,26 +157,10 @@ reader = {
 		})
 	},
 
-	getAllItems: function(successCallback){
-		reader.makeRequest({
-			method: "GET",
-			url: reader.BASE_URL + reader.ALLITEMS_SUFFIX,
-			parameters: {
-				ck: new Date().getTime()			
-			},
-			onSuccess: function(transport){
-				console.log(transport);
-				successCallback(JSON.parse(transport.responseText).items);
-			},
-			onFailure: function(transport){
-				console.error(transport);
-			}
-		});
-	},
 	getItems: function(feedUrl, successCallback){
 		reader.makeRequest({
 			method: "GET",
-			url: reader.BASE_URL + reader.STREAM_SUFFIX + feedUrl,
+			url: reader.BASE_URL + reader.STREAM_PATH + feedUrl,
 			parameters: {
 				//ot: new Date().getTime(), //ot=[unix timestamp] : The time from which you want to retrieve items. Only items that have been crawled by Google Reader after this time will be returned.
 				r: "d",						//r=[d|n|o] : Sort order of item results. d or n gives items in descending date order, o in ascending order.

@@ -1,24 +1,88 @@
-.outerItem {
-	padding: 0px;
-}
-.enyo-drawer {
-	background-color: rgba(0,0,0,0.1);
+.truncating-text {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
-.feedItem .title {
-	/*font-weight: bold;*/
-	font-size: 16px;
+.googleReader {
+	background: url(../images/background_blue.png) top left no-repeat;
+	background-size: 100%;
 }
-.feedItem .feedTitle {
+
+.feedPage {
+	padding: 15px 0px;
+}
+
+.feedIcon {
+	text-align: center;
+	padding: 15px 10px;
+}
+
+.feedIcon .imageContainer {
+	margin: auto;
+	width: 64px;
+	height: 64px;
+	line-height: 64px;
+	-webkit-border-radius: 10px;
+	background-color: white;
+	margin-bottom: 5px;
+    -webkit-box-shadow: 0px 0px 20px rgba(0, 0, 0, .8);
+}
+
+.feedIcon .image {
+	min-width: 20px;
+	min-height: 20px;
+	max-width: 48px;
+	max-height: 48px;
+}
+
+.feedIcon .title {
+	color: white;
+	font-size: 14px;
+}
+
+.feedCard {
+	margin: 10px 5px;
+	padding: 10px;
+	-webkit-border-radius: 10px;
+	background-color: white;
+	overflow: hidden;
+}
+.feedCard .title {
+	font-weight: bold;
+	font-size: 16px;
+	padding-bottom: 5px;
+}
+.feedCard .feedTitle {
 	font-size: 12px;
 }
-.feedItem .summary {
+.feedCard .summary {
+	font-size: 14px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	
 	/*max-height: 200px;
 	overflow: hidden;*/
 }
-.feedItem {
-	font-size: 14px;
+
+.feedCard img {
+	display: none;
 }
+.feedCard img:first-child {
+	display: block;
+	margin: auto;
+	max-width: 300px !important;
+	height: auto !important;
+}
+/*
+.feedCard img {
+	display: block;
+	margin: auto;
+	max-width: 300px !important;
+	height: auto !important;
+	
+}*/
+
 .feedItem img:first-child{
 	display: block;
 	margin: auto;

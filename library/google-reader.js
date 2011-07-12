@@ -21,6 +21,7 @@ reader = {
 	/*variables*/
 	is_logged_in: false,
 	is_authenticated: false,
+	feeds: [],
 
 	AUTH: "",
 	getAUTH: function(){
@@ -99,6 +100,9 @@ reader = {
 	},
 
 	login: function(email, password, successCallback, failCallback){
+		if(email.length === 0 || password.length === 0){
+			failCallback("Blank Info...");
+		}
 		reader.makeRequest({
 			method: "GET",
 			url: reader.LOGIN_URL,
@@ -155,6 +159,9 @@ reader = {
 				console.error(transport);
 			}
 		})
+	},
+	getIconForFeed: function(feedUrl){
+		return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
 	},
 
 	getItems: function(feedUrl, successCallback){

@@ -40,7 +40,7 @@ enyo.kind({
 		var emailAddress = this.$.emailAddress.getValue(),
 			password = this.$.password.getValue();
 		
-			reader.login(emailAddress, password, enyo.bind(this, this.loginSuccess), enyo.bind(this, this.reportError));
+		reader.login(emailAddress, password, enyo.bind(this, this.loginSuccess), enyo.bind(this, this.reportError));
 	},
 	loginSuccess: function(){
 		this.getToken();
@@ -51,7 +51,6 @@ enyo.kind({
 	getToken: function(){
 		reader.getToken(enyo.bind(this, this.getSubscriptions), enyo.bind(this, this.reportError));	
 	},
-
 
 	getSubscriptions: function(){
 		reader.getSubscriptions(enyo.bind(this, function(subscriptions){

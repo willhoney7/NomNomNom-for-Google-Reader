@@ -65,14 +65,22 @@
 	overflow: hidden;*/
 }
 
-.feedCard img {
+/*.feedCard img {
 	display: none;
-}
-.feedCard img:first-child {
+}*/
+.feedCard img {
 	display: block;
 	margin: auto;
 	max-width: 300px !important;
 	height: auto !important;
+}
+
+.feedCard .summmary a[href]{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	display:inline-block;
+	max-width:80%;
 }
 /*
 .feedCard img {

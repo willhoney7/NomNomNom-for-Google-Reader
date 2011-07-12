@@ -4,9 +4,9 @@ enyo.kind({
 	height: "100%",
 	className: "googleReader",
 	components: [
-		{kind: "Pane", flex: 1, onflick: "flick", transitionKind: "enyo.transitions.Fade", components: [
-		    {kind: "FeedList", onViewFeed: "viewFeed"},
-		    {kind: "FeedView"}
+		{kind: "Pane", flex: 1, transitionKind: "enyo.transitions.Fade", components: [
+		    {kind: "FeedList", onViewFeed: "viewFeed", onflick: "flick"},
+		    {kind: "FeedView", onViewIcons: "viewIcons"}
 		]},		
 		{kind: enyo.Spinner, style: "position: fixed; left: 50%; top: 50%;", showing: true},
 		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
@@ -48,18 +48,19 @@ enyo.kind({
 	flick: function(inSender, inEvent){
 		console.error(inEvent);	
 		 if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {
-	         //left to right
 	         if (inEvent.yVel < 0) {
-	            this.$.pane.next();
-	         } else {
-	            this.$.pane.back();
-	         }
+	    		this.$.pane.selectViewByIndex(1);
+	         } //else {
+	          //  this.$.pane.back();
+	        // }
 	      }
 
 	},
-
+	viewIcons: function(inSender){
+		this.$.pane.selectViewByIndex(0);	
+	},
 	viewFeed: function(inSender, inFeed){
-	    this.$.pane.next();
+	    this.$.pane.selectViewByIndex(1);
 	    this.$.feedView.loadFeed(inFeed);	
 	},
 

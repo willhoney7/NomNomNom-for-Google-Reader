@@ -35,7 +35,7 @@ function htmlToText(html) {
  		// e.g.
  		// input - <a class='ahref' href='http://pinetechlabs.com/' title='asdfqwer\"><b>asdf</b></a>
  		// output - asdf (http://pinetechlabs.com/)
- 		.replace(/<\s*a[^>]*href=['"](.*?)['"][^>]*>([\s\S]*?)<\/\s*a\s*>/ig, "$2 ($1)")
+ 		.replace(/<\s*a[^>]*href=['"](.*?)['"][^>]*>([\s\S]*?)<\/\s*a\s*>/ig, "$2")// ($1)")
 		// Remove all remaining tags. 
  		.replace(/(<([^>]+)>)/ig,"") 
 		// Make sure there are never more than two 

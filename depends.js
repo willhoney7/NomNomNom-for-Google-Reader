@@ -10,6 +10,7 @@ enyo.depends(
 
 	//load helpers
 	"source/javascript/helpers/AppUtils.js",
+	"source/javascript/helpers/AppPrefs.js",
 
 	//popups
 	"source/javascript/GoogleReaderPopup.js",

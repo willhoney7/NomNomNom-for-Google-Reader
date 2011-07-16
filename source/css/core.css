@@ -4,10 +4,27 @@
 	white-space: nowrap;
 }
 
-.googleReader {
-	background: url(../images/background_blue.png) top left no-repeat;
+body {
+	background: url(../images/background_blue.png) top left no-repeat #1A4D87;
 	background-size: 100%;
 }
+
+@-webkit-keyframes spinning {
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+	to { 
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+.spinning {
+	-webkit-animation-name: spinning;
+	-webkit-animation-duration: 1.5s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+}
+
 
 .feedPage {
 	padding: 15px 0px;
@@ -79,6 +96,7 @@
 	font-size: 16px;
 	padding-bottom: 5px;
 }
+
 .feedCard .feedTitle {
 	font-size: 12px;
 }

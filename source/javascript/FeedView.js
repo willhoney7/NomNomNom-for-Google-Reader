@@ -31,8 +31,12 @@ enyo.kind({
 
 	loadFeed: function(feed){
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
-
-		reader.getItems(feed.id, enyo.bind(this, this.loadedItems));
+		var numOfItems = (AppPrefs.tapGets === "unread") ? (feed.count > 0) ? feed.count : 50 : (feed.count > 50) ? feed.count : 50;
+			//based on setting, get the num of items.
+				//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
+				//if pref is not set to get only unread, then set numOfItems 50 or the number of unread items if that is bigger.
+		
+		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), {n: numOfItems});
 	},
 	loadedItems: function(items){
 		this.$.snapScroller.destroyControls();

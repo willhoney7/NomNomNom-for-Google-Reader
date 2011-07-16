@@ -25,7 +25,14 @@ enyo.kind({
 					+ "<div class='summary'>" + htmlToText(feedContent) + "</div>";
 		
 		this.setContent(content);
-
+		
+		for(var i = 0; i < this.feed.categories.length; i++){
+			var re = /user\/\d+\/state\/com.google\/fresh/i;
+			if(re.test(this.feed.categories[i])){
+				this.feed.unread = true;
+				break;
+			}
+		};
 		//this.$.title.setContent(this.feed.title);
 		//this.$.summary.setContent(feedContent);
 		//this.$.feedTitle.setContent(this.feed.origin.title);

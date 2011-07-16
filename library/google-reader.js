@@ -261,15 +261,18 @@ reader = {
 	},
 
 
-	getItems: function(feedUrl, successCallback){
+	getItems: function(feedUrl, successCallback, opts){
+		var params = opts || {};
+			params.r = "d"
+			
 		reader.makeRequest({
 			method: "GET",
 			url: reader.BASE_URL + reader.STREAM_PATH + feedUrl,
-			parameters: {
+			parameters: params, /*{
 				//ot: new Date().getTime(), //ot=[unix timestamp] : The time from which you want to retrieve items. Only items that have been crawled by Google Reader after this time will be returned.
 				r: "d",						//r=[d|n|o] : Sort order of item results. d or n gives items in descending date order, o in ascending order.
 				//xt: "",					//xt=[exclude target] : Used to exclude certain items from the feed. For example, using xt=user/-/state/com.google/read will exclude items that the current user has marked as read, or xt=feed/[feedurl] will exclude items from a particular feed (obviously not useful in this request, but xt appears in other listing requests).
-			},
+			},*/
 			onSuccess: function(transport){
 				successCallback(JSON.parse(transport.responseText).items);
 			}, 
@@ -277,7 +280,6 @@ reader = {
 				console.error(transport);
 			}
 		});
-
 	},
 
 	normalizeError: function(inErrorResponse){

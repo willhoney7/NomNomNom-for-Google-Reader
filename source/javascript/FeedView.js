@@ -81,11 +81,14 @@ enyo.kind({
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
+
+		setTimeout(enyo.bind(this, this.markViewableCardsRead), 100);
 	},
 
 	cardSnap: function(inSender, inIndex){
 		//this.$.snapScroller.getControls()[inIndex].markRead();
-	
+		this.markViewableCardsRead();
+
 		//console.log("card snap", inIndex, "this.nextIndex", this.nextIndex);
 		if(this.nextIndex && (this.nextIndex - inIndex) <= 5){
 			this.renderSome();
@@ -93,7 +96,15 @@ enyo.kind({
 	},
 
 	markViewableCardsRead: function(){
-		var index =  this.$.snapScroller.getIndex();
-		this.$.snapScroller.getControls()
+		var cardWidth = parseInt(AppPrefs.get("cardWidth").replace("px", ""), 10) + 10;
+		var numVisible = Math.round(this.$.snapScroller.node.offsetWidth/cardWidth);
+		var offsetIndex = Math.floor(this.$.snapScroller.getScrollLeft()/cardWidth);
+		var controls = this.$.snapScroller.getControls();
+		for(var i = offsetIndex; i <= (offsetIndex + numVisible); i++){
+			if(controls[i]){
+				controls[i].markRead();
+			}
+		}
+
 	}
 });

@@ -54,9 +54,9 @@ enyo.kind({
 	},
 	markRead: function(){
 		if(this.feed.read === false){
-			reader.setItemTag(this.feed.origin.streamId, this.feed.id, "read", true, enyo.bind(this, function(){
+			reader.setItemTag(this.feed.origin.streamId, this.feed.id, "read", true, enyo.bind(this, function(response){
 				this.feed.read = true;
-				this.$.unread.setShowing(!this.feed.read);
+				this.$.unread.setShowing(false);
 
 			}));
 		}

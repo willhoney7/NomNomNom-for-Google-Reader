@@ -53,6 +53,8 @@ reader = {
 
 	token: "",
 
+	requests: [],
+
 	makeRequest: function(obj){
 		//make sure we have a method
 		if(!obj.method){
@@ -87,34 +89,34 @@ reader = {
 		var queryString = queries.join("&");
 
 		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): (obj.url + "?" + encodeURIComponent("client") + "=" + encodeURIComponent(reader.CLIENT));
-		this.request = new XMLHttpRequest();
-		this.request.open(obj.method, url, true);
+		var request = new XMLHttpRequest();
+		request.open(obj.method, url, true);
 
 		//set request header
-		this.request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
 		if(reader.getAuth()){
 			//this one is important. This is how google does authorization.
-			this.request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());    	
+			request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());    	
 		}
-		var self = this;
 
-		this.request.onreadystatechange = 
+		request.onreadystatechange = 
 			function(){
-				if ((self.request.readyState === 4) && self.request.status === 200) {
+				if ((request.readyState === 4) && request.status === 200) {
 					if(obj.onSuccess){
-						obj.onSuccess(self.request);
+						obj.onSuccess(request);
 					}
-				} else if(self.request.readyState === 4){
+				} else if(request.readyState === 4){
 					if(obj.onFailure){
-						obj.onFailure(self.request);
+						obj.onFailure(request);
 					}
-					console.error(self.request);
+					console.error(request);
 				}
 		};
 		
-		this.request.send((obj.method === "POST") ? queryString: "");
-	
+		request.send((obj.method === "POST") ? queryString: "");
+		
+		this.requests.push(request);
 	},
 
 	load: function(){
@@ -322,8 +324,7 @@ reader = {
 			parameters: params,
 			onSuccess: function(transport){
 				if(transport.responseText === "OK"){
-					successCallback();
-					
+					successCallback(transport.responseText);	
 				}
 			}, 
 			onFailure: function(transport){

@@ -114,7 +114,7 @@ body {
 .feedCard .header {
 	padding: 5px 10px 0px 10px;
 	background-color: silver;
-	border-bottom: 1px solid rgba(30, 90, 160, .3);
+	/*border-bottom: 1px solid rgba(30, 90, 160, .3);*/
 }
 
 .feedCard .header .title {

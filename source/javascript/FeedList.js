@@ -10,7 +10,7 @@ enyo.kind({
 			//{kind: "FeedPage"}
 		]},
 		{kind: enyo.Toolbar, components: [
-			{kind: enyo.Control, content: "Google Reader", style: "color: white; margin: 0px 10px; font-size: 18px;"},
+			{kind: enyo.Control, content: "Google Reader", className: "toolbarText"},
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"},
 			{name: "refresh", kind: enyo.ToolButton, icon: "source/images/menu-icon-refresh.png", onclick: "getSubscriptions"},

@@ -65,7 +65,7 @@ reader = {
 		//add the necessary parameters to get our requests to function properly
 
 		if(obj.method === "GET"){
-			obj.parameters["ck"] = new Date().getTime();
+			obj.parameters["ck"] = Date.now() || new Date().getTime();
 			obj.parameters["accountType"] = "GOOGLE";
 			obj.parameters["service"] = "reader";
 			obj.parameters["output"] = "json";	
@@ -278,7 +278,9 @@ reader = {
 
 	getItems: function(feedUrl, successCallback, opts){
 		var params = opts || {};
+		
 			params.r = "d"
+			params.n = params.n || 50;
 			
 		reader.makeRequest({
 			method: "GET",

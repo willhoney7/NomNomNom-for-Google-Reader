@@ -25,6 +25,12 @@ body {
 	-webkit-animation-timing-function: linear;
 }
 
+.toolbarText {
+	color: white; 
+	margin: 0px 10px; 
+	font-size: 18px;
+}
+
 
 .feedPage {
 	padding: 15px 0px;
@@ -79,7 +85,8 @@ body {
 	font-size: 14px;
 	line-height: 17px;
 	color: white;
-	background-color: rgba(255, 0, 0, .6);
+	padding-bottom: 1px;
+	background-color: silver;/*rgba(255, 0, 0, .6);*/
 	-webkit-border-radius: 0px 0px 10px 10px;
 }
 
@@ -94,27 +101,36 @@ body {
 	padding: 10px;
 	overflow: hidden;
 }
+
 .feedCard .bottomToolbar {
-	-webkit-box-shadow: 10px white;
-    box-shadow: 10px white;
-	background-color: white;
+	-webkit-box-shadow: 10px silver;
+    box-shadow: 10px silver;
+	background-color: silver;
 	color: black;
 	text-align: center;
-	font-size: 14px;
-}
-.feedCard .bottomToolbar.unread {
-	background-color: rgb(255, 0, 0);
-	-webkit-box-shadow: 10px red;
-    box-shadow: 10px red;
-}
-.feedCard .title {
-	font-weight: bold;
 	font-size: 16px;
+	padding: 5px 10px;
+}
+.feedCard .header {
+	padding: 5px 10px 0px 10px;
+	background-color: silver;
+	border-bottom: 1px solid rgba(30, 90, 160, .3);
+}
+
+.feedCard .header .title {
+	font-weight: normal;
+	color: black;
+	font-size: 15px;
 	padding-bottom: 5px;
+}
+.feedCard .date {
+	font-size: 13px;
+	font-weight: normal;
+	padding-left: 2px;
 }
 
 .feedCard .feedTitle {
-	font-size: 12px;
+	font-size: 16px;
 }
 .feedCard .summary {
 	font-size: 14px;
@@ -128,11 +144,12 @@ body {
 /*.feedCard img {
 	display: none;
 }*/
-.feedCard img {
+.feedCard img.firstImage {
 	display: block;
 	margin: auto;
 	max-width: 300px !important;
 	height: auto !important;
+	padding-bottom: 5px;
 }
 
 .feedCard .summmary a[href]{

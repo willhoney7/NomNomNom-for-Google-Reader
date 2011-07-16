@@ -8,6 +8,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: enyo.Toolbar, components: [
+			{kind: enyo.Control, name: "title", className: "toolbarText", style: "padding-left: 40px"},
 			{kind: enyo.GrabButton, onflick: "grabButtonFlick", onclick: "doViewIcons"},
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"}
@@ -35,7 +36,7 @@ enyo.kind({
 			n: 50
 		};
 			//based on setting, get the num of items.
-		if(AppPrefs.tapGets === "unread"){
+		if(AppPrefs.get("tapGets") === "unread"){
 			//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
 			if(feed.count > 0){
 				opts.n = feed.count;
@@ -47,24 +48,52 @@ enyo.kind({
 				opts.n = feed.count;
 			}
 		}
+
+		this.$.title.setContent(feed.label || feed.title);
 		
 		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), opts);
 	},
 	loadedItems: function(items){
 		this.$.snapScroller.destroyControls();
+		this.$.snapScroller.render();
 
 		this.items = items;
-		var components = []
-		for(var i = 0; i < this.items.length; i++){
-			components.push({kind: "FeedCard", feed: this.items[i]});	
+		this.nextIndex = 0;
+
+		this.renderSome();
+		this.$.snapScroller.snapTo(0);
+
+	},
+	renderSome: function(){
+		var components = [], cardLength;
+		if(this.nextIndex === this.items.length){
+			return;
+		}
+		if ((this.items.length - this.nextIndex) > 50){
+		 	cardLength = (this.nextIndex + 50);
+		}	else {
+			cardLength = this.items.length;
+		};
+		//console.log("rendering", this.nextIndex, "through", cardLength-1);
+
+		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
+			components.push({kind: "FeedCard", feed: this.items[this.nextIndex]});	
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
-		this.$.snapScroller.snapTo(0);
-		this.$.snapScroller.getControls()[0].markRead();
 	},
 
 	cardSnap: function(inSender, inIndex){
-		this.$.snapScroller.getControls()[inIndex].markRead();
+		//this.$.snapScroller.getControls()[inIndex].markRead();
+	
+		//console.log("card snap", inIndex, "this.nextIndex", this.nextIndex);
+		if(this.nextIndex && (this.nextIndex - inIndex) <= 5){
+			this.renderSome();
+		}
+	},
+
+	markViewableCardsRead: function(){
+		var index =  this.$.snapScroller.getIndex();
+		this.$.snapScroller.getControls()
 	}
 });

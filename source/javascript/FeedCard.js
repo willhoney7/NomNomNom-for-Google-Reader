@@ -43,7 +43,6 @@ enyo.kind({
 	},
 	markRead: function(){
 		reader.setItemTag(this.feed.origin.streamId, this.feed.id, "read", true, enyo.bind(this, function(){
-			console.log("success");
 			this.feed.read = true;
 			this.$.bottomToolbar.removeClass("unread");
 

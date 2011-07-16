@@ -31,12 +31,24 @@ enyo.kind({
 
 	loadFeed: function(feed){
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
-		var numOfItems = (AppPrefs.tapGets === "unread") ? (feed.count > 0) ? feed.count : 50 : (feed.count > 50) ? feed.count : 50;
+		var opts = {
+			n: 50
+		};
 			//based on setting, get the num of items.
-				//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
-				//if pref is not set to get only unread, then set numOfItems 50 or the number of unread items if that is bigger.
+		if(AppPrefs.tapGets === "unread"){
+			//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
+			if(feed.count > 0){
+				opts.n = feed.count;
+				opts.xt = reader.TAGS["read"];
+			}
+		} else {
+			//if pref is not set to get only unread, then set numOfItems 50 or the number of unread items if that is bigger.
+			if(feed.count > 50){
+				opts.n = feed.count;
+			}
+		}
 		
-		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), {n: numOfItems});
+		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), opts);
 	},
 	loadedItems: function(items){
 		this.$.snapScroller.destroyControls();
@@ -54,6 +66,5 @@ enyo.kind({
 
 	cardSnap: function(inSender, inIndex){
 		this.$.snapScroller.getControls()[inIndex].markRead();
-		console.log(arguments);
 	}
 });

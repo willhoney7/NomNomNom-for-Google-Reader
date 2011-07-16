@@ -26,6 +26,7 @@ enyo.kind({
 	},
 	viewIcons: function(inSender){
 		this.$.pane.selectViewByIndex(0);	
+		this.$.feedList.getSubscriptions();
 	},
 	viewFeed: function(inSender, inFeed){
 	    this.$.pane.selectViewByIndex(1);

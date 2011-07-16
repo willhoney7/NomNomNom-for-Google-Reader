@@ -105,7 +105,7 @@ reader = {
 					if(obj.onSuccess){
 						obj.onSuccess(self.request);
 					}
-				} else if(self.request.readyState < 2){
+				} else if(self.request.readyState === 4){
 					if(obj.onFailure){
 						obj.onFailure(self.request);
 					}

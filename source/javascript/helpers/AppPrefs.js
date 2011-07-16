@@ -1,3 +1,3 @@
 AppPrefs = {
-	"tapGets": "all"//"unread" // or "all"
+	"tapGets": "unread"//"unread" // or "all"
 }

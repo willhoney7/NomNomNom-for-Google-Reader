@@ -30,7 +30,6 @@ enyo.kind({
 	},
 
 	loadFeed: function(feed){
-		console.log(feed);
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 
 		reader.getItems(feed.id, enyo.bind(this, this.loadedItems));

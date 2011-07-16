@@ -5,6 +5,7 @@
 
 reader = {
 	/*constants*/
+	CLIENT: "Tibfib",
 
 	//urls
 	LOGIN_URL: "https://www.google.com/accounts/ClientLogin",
@@ -15,18 +16,31 @@ reader = {
 	//url suffixes
 	TOKEN_SUFFIX: "token",
 	SUBSCRIPTIONS_SUFFIX: "subscription/list",
+	UNREAD_SUFFIX: "unread-count",
 
 	ALLITEMS_SUFFIX: "user/-/state/com.google/reading-list",
 
 	/*variables*/
 	is_logged_in: false,
 	is_authenticated: false,
-	feeds: [],
 
-	AUTH: "",
-	getAUTH: function(){
-		return reader.AUTH;	
+
+	_feeds: [],
+	setFeeds: function(feeds){
+		this._feeds = feeds;	
 	},
+	getFeeds: function(){
+		return this._feeds;	
+	},
+
+	_Auth: "",
+	getAuth: function(){
+		return reader._Auth;	
+	},
+	setAuth: function(auth){
+		reader._Auth = auth;	
+	},
+
 	token: "",
 
 	makeRequest: function(obj){
@@ -42,6 +56,8 @@ reader = {
 		obj.parameters["accountType"] = "GOOGLE";
 		obj.parameters["service"] = "reader";
 		obj.parameters["output"] = "json";
+		obj.parameters["ck"] = new Date().getTime();
+		obj.parameters["client"] = reader.CLIENT;
 
 		//if we have a token, add it to the parameters
 		if(reader.token){
@@ -62,9 +78,9 @@ reader = {
 		//set request header
 		this.request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-		if(reader.getAUTH()){
+		if(reader.getAuth()){
 			//this one is important. This is how google does authorization.
-			this.request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAUTH());    	
+			this.request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());    	
 		}
 		var self = this;
 
@@ -90,10 +106,9 @@ reader = {
 		reader.is_logged_in = false;
 		//check storage for the tokens we need.
 
-		if(localStorage.AUTH){
-			reader.AUTH = localStorage.AUTH
+		if(localStorage.Auth){
+			reader.setAuth(localStorage.Auth);
 			reader.is_logged_in = true;
-			console.log("logged in", reader.getAUTH());
 
 		} 
 		return(reader.is_logged_in);
@@ -111,9 +126,8 @@ reader = {
 				Passwd: password,
 			},
 			onSuccess: function(transport){
-				console.log("logged in", transport);
 
-				localStorage.AUTH = _(transport.responseText).lines()[2].replace("Auth=", "");
+				localStorage.Auth = _(transport.responseText).lines()[2].replace("Auth=", "");
 				reader.load();
 				successCallback();
 				
@@ -153,16 +167,99 @@ reader = {
 			method: "GET",
 			url: reader.BASE_URL + reader.SUBSCRIPTIONS_SUFFIX,
 			onSuccess: function(transport){
-				successCallback(JSON.parse(transport.responseText).subscriptions);
+				//save feeds in an organized state.
+				reader.setFeeds(reader.organizeSubscriptions(JSON.parse(transport.responseText).subscriptions));
+				
+				//get unread counts
+				reader.getUnreadCounts(function(unreadcounts){
+
+					//apply unread counts to our saved feeds
+					reader.setFeedUnreadCounts(unreadcounts);
+
+					//callback with our feeds
+					successCallback(reader.getFeeds());
+				});
 			},
 			onFailure: function(transport){
 				console.error(transport);
 			}
 		})
 	},
-	getIconForFeed: function(feedUrl){
-		return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
+	organizeSubscriptions: function(subscriptions){
+		var categories = [
+			{label: "All", id: reader.ALLITEMS_SUFFIX, feeds: subscriptions}
+		],
+		uncategorized = [];
+
+		for(var i = 0; i < subscriptions.length; i++){
+			if(subscriptions[i].categories.length === 0){
+				uncategorized.push(subscriptions[i]);
+			} else {
+				_.each(subscriptions[i].categories, function(category){
+					var new_category = _.clone(category);
+					new_category.feeds = [subscriptions[i]];
+					categories.push(new_category);
+				});
+			}
+		}
+		//create array of categories with an array fo the applicable feeds
+		for(var i = 0; i < categories.length; i++){
+			for(var j = (i + 1); j < categories.length; j++){
+				if(i == j){
+					continue;					
+				}
+				if(j >= categories.length){
+					break;
+				}
+				if(categories[i].id === categories[j].id){
+					categories[i].feeds = categories[i].feeds.concat(categories[j].feeds);
+					categories.splice(j--,1);
+				}
+			}
+		}
+		_.each(categories, function(category){
+			_.sortBy(category.feeds, function(feed){
+				return feed.sortid;
+			});
+		});
+
+		return categories.concat(uncategorized);
 	},
+
+	getIconForFeed: function(feedUrl){
+		if(feedUrl === reader.ALLITEMS_SUFFIX){
+			return "source/images/small_folder.png";
+		} else if(_(feedUrl).includes("/label/")){
+			return "source/images/small_folder.png";
+		} else {
+			return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
+		}
+	},
+
+	getUnreadCounts: function(successCallback){
+		reader.makeRequest({
+			url: reader.BASE_URL + reader.UNREAD_SUFFIX,
+			onSuccess: function(transport){
+				//console.log(transport);
+				successCallback(JSON.parse(transport.responseText).unreadcounts);
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			}		
+		});
+	},
+	setFeedUnreadCounts: function(unreadCounts){
+		//do stuff
+		_.each(reader.getFeeds(), function(subscription){
+			for(var i = 0; i < unreadCounts.length; i++){
+				if(subscription.id === unreadCounts[i].id || (subscription.id === reader.ALLITEMS_SUFFIX && _(unreadCounts[i].id).includes("state/com.google/reading-list"))){
+					subscription.count = unreadCounts[i].count;
+					subscription.newestItemTimestamp = unreadCounts[i].newestItemTimestampUsec;	
+				}
+			}
+		});
+	},
+
 
 	getItems: function(feedUrl, successCallback){
 		reader.makeRequest({
@@ -172,11 +269,8 @@ reader = {
 				//ot: new Date().getTime(), //ot=[unix timestamp] : The time from which you want to retrieve items. Only items that have been crawled by Google Reader after this time will be returned.
 				r: "d",						//r=[d|n|o] : Sort order of item results. d or n gives items in descending date order, o in ascending order.
 				//xt: "",					//xt=[exclude target] : Used to exclude certain items from the feed. For example, using xt=user/-/state/com.google/read will exclude items that the current user has marked as read, or xt=feed/[feedurl] will exclude items from a particular feed (obviously not useful in this request, but xt appears in other listing requests).
-				ck: new Date().getTime(), 	//Use the current Unix time here, helps Google with caching.
-				client: "Tibfib"			//You can use the default Google client (scroll), but it doesn't seem to make a difference. Google probably uses this field to gather data on who is accessing the API, so I'd advise using your own unique string to identify your software.
 			},
 			onSuccess: function(transport){
-				console.log(transport);
 				successCallback(JSON.parse(transport.responseText).items);
 			}, 
 			onFailure: function(transport){

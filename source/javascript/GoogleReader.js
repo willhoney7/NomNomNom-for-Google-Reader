@@ -12,8 +12,6 @@ enyo.kind({
 		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
 	],
 	create: function(){
-		window.gReader = {};
-
 		this.inherited(arguments);
 		
 		reader.load();
@@ -39,7 +37,6 @@ enyo.kind({
 
 	getSubscriptions: function(){
 		reader.getSubscriptions(enyo.bind(this, function(subscriptions){
-			gReader.feeds = AppUtils.processSubscriptions(subscriptions);
 			this.$.spinner.hide();
 			this.$.feedList.load();
 		}));

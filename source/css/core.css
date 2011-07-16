@@ -13,6 +13,17 @@
 	padding: 15px 0px;
 }
 
+.enyo-grid-div {
+	float: left;
+	width: auto;
+	height: auto;
+	margin: 0px;
+	border: 0px;
+	box-shadow: 0px 0px 0px #888;
+	-moz-box-shadow: 0px 0px 0px #888;
+	-webkit-box-shadow: 0px 0px 0px #888;
+}
+
 .feedIcon {
 	text-align: center;
 	padding: 15px 10px;
@@ -30,16 +41,31 @@
 }
 
 .feedIcon .image {
-	min-width: 20px;
-	min-height: 20px;
-	max-width: 48px;
-	max-height: 48px;
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	/*max-width: 48px;
+	max-height: 48px;*/
 }
 
 .feedIcon .title {
 	color: white;
 	font-size: 14px;
 }
+.feedIcon .unreadCount {
+	position: relative;
+	bottom: 17px;
+	z-index: 1000;
+
+	height: 17px;
+	width: 64px;
+	font-size: 14px;
+	line-height: 17px;
+	color: white;
+	background-color: rgba(255, 0, 0, .6);
+	-webkit-border-radius: 0px 0px 10px 10px;
+}
+
 
 .feedCard {
 	margin: 10px 5px;

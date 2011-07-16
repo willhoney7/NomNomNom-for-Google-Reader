@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "FeedPage", 
 	className: "feedPage",
-	kind: enyo.HFlexBox, 
+	kind: enyo.Grid, 
 	height: "100%",
 	width: "100%",
 	published: {
@@ -18,7 +18,6 @@ enyo.kind({
 		this.feedsChanged();
 	},
 	feedsChanged: function(){
-		console.log("feedsChanged", this.feeds);
 		var components = [];
 		for(var i = 0; i < this.feeds.length; i++){
 			components.push({kind: "FeedIcon", feed: this.feeds[i], onclick: "feedView"});

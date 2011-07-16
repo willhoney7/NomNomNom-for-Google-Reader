@@ -12,7 +12,7 @@ enyo.kind({
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"}
 		]},
-		{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, components: [
+		{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: [
 			//{kind: "FeedPage"}
 		]},
 	],
@@ -48,6 +48,12 @@ enyo.kind({
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
-		this.$.snapScroller.setIndex(0);
+		this.$.snapScroller.snapTo(0);
+		this.$.snapScroller.getControls()[0].markRead();
+	},
+
+	cardSnap: function(inSender, inIndex){
+		this.$.snapScroller.getControls()[inIndex].markRead();
+		console.log(arguments);
 	}
 });

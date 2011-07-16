@@ -19,6 +19,16 @@ reader = {
 	UNREAD_SUFFIX: "unread-count",
 
 	ALLITEMS_SUFFIX: "user/-/state/com.google/reading-list",
+	EDITTAG_SUFFIX: "edit-tag",
+	TAGS: {
+		"like": "user/-/state/com.google/like",
+		"label": "user/-/label/",
+		"star": "user/-/state/com.google/starred",
+		"read": "user/-/state/com.google/read",
+		"share": "user/-/state/com.google/broadcast",
+		"keep-unread": "user/-/state/com.google/tracking-kept-unread"	
+	},
+
 
 	/*variables*/
 	is_logged_in: false,
@@ -53,15 +63,20 @@ reader = {
 			obj.parameters = {};
 		}
 		//add the necessary parameters to get our requests to function properly
-		obj.parameters["accountType"] = "GOOGLE";
-		obj.parameters["service"] = "reader";
-		obj.parameters["output"] = "json";
-		obj.parameters["ck"] = new Date().getTime();
-		obj.parameters["client"] = reader.CLIENT;
 
+		if(obj.method === "GET"){
+			obj.parameters["ck"] = new Date().getTime();
+			obj.parameters["accountType"] = "GOOGLE";
+			obj.parameters["service"] = "reader";
+			obj.parameters["output"] = "json";	
+			obj.parameters["client"] = reader.CLIENT;
+		}
 		//if we have a token, add it to the parameters
+		//I'm pretty sure this is worthless
 		if(reader.token){
-			obj.parameters["t"] = reader.token;
+			if(obj.method === "POST"){
+				obj.parameters["T"] = reader.token;			
+			}
 		}
 		
 		//turn our parameters object into a query string
@@ -71,7 +86,7 @@ reader = {
 		}
 		var queryString = queries.join("&");
 
-		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): obj.url;
+		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): (obj.url + "?" + encodeURIComponent("client") + "=" + encodeURIComponent(reader.CLIENT));
 		this.request = new XMLHttpRequest();
 		this.request.open(obj.method, url, true);
 
@@ -280,6 +295,40 @@ reader = {
 				console.error(transport);
 			}
 		});
+	},
+
+	setItemTag: function(feed, item, tag, add, successCallback){
+		//feed id
+		//item id
+		//tag in simple form: "like", "read", "share", "label", "star", "keep-unread"
+		//opt is true to add, false to remove
+
+		var params = {
+			s: feed,
+			i: item,
+			async: "true",
+			ac: "edit-tags"
+		}
+		if(add === true){
+			params.a = reader.TAGS[tag];
+		} else {
+			params.r = reader.TAGS[tag];
+		}
+		reader.makeRequest({
+			method: "POST",
+			url: reader.BASE_URL + reader.EDITTAG_SUFFIX,
+			parameters: params,
+			onSuccess: function(transport){
+				if(transport.responseText === "OK"){
+					successCallback();
+					
+				}
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			} 
+		})
+		
 	},
 
 	normalizeError: function(inErrorResponse){

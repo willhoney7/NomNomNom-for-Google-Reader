@@ -5,9 +5,12 @@ enyo.kind({
 	allowHtml: true,
 	width: "320px",
 	published: {
-		feed: {}
+		feed: {},
+		read: false
 	},
 	components: [
+		{kind: enyo.VFlexBox, flex: 1, allowHtml: true, className: "content"},
+		{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar"}
 		//{name: "title", kind: enyo.Control, className: "title truncating-text", allowHtml: true},
 		//{name: "summary", className: "summary", allowHtml: true, flex: 1},
 	],
@@ -24,18 +27,27 @@ enyo.kind({
 					+ (firstImageURL ? ("<img src = '" + firstImageURL + "' />") : "")
 					+ "<div class='summary'>" + htmlToText(feedContent) + "</div>";
 		
-		this.setContent(content);
-		
+		this.$.vFlexBox.setContent(content);
+
+		this.feed.read = false;
 		for(var i = 0; i < this.feed.categories.length; i++){
-			var re = /user\/\d+\/state\/com.google\/fresh/i;
+			var re = /user\/\d+\/state\/com.google\/read$/i;
 			if(re.test(this.feed.categories[i])){
-				this.feed.unread = true;
+				this.feed.read = true;
 				break;
 			}
 		};
-		//this.$.title.setContent(this.feed.title);
-		//this.$.summary.setContent(feedContent);
-		//this.$.feedTitle.setContent(this.feed.origin.title);
-	}
+		this.$.bottomToolbar.addRemoveClass("unread", !this.feed.read);
+		this.$.bottomToolbar.setContent(this.feed.origin.title);
+		
+	},
+	markRead: function(){
+		reader.setItemTag(this.feed.origin.streamId, this.feed.id, "read", true, enyo.bind(this, function(){
+			console.log("success");
+			this.feed.read = true;
+			this.$.bottomToolbar.removeClass("unread");
+
+		}));
+	},
 
 });

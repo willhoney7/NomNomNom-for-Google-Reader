@@ -13,11 +13,11 @@ enyo.kind({
 			{kind: enyo.Control, content: "Google Reader", className: "toolbarText"},
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"},
-			{name: "refresh", kind: enyo.ToolButton, icon: "source/images/menu-icon-refresh.png", onclick: "getSubscriptions"},
+			{name: "refresh", kind: enyo.ToolButton, icon: "source/images/menu-icon-refresh.png", onclick: "getFeeds"},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-settings.png"}
 		]},
-		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"}
-
+		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
+		{kind: "FeedPopup"}
 	],
 	create: function(){
 		this.inherited(arguments);	
@@ -27,6 +27,8 @@ enyo.kind({
 		if(reader.is_logged_in === true){
 			this.loginSuccess();
 		}
+
+		AppUtils.refreshIcons = enyo.bind(this, this.getFeeds);
 	},
 	rendered: function(){
 		if(reader.is_logged_in === false){
@@ -41,13 +43,13 @@ enyo.kind({
 	getToken: function(){
 		this.$.refresh.addClass("spinning");
 
-		reader.getToken(enyo.bind(this, this.getSubscriptions), enyo.bind(this, this.reportError));	
+		reader.getToken(enyo.bind(this, this.getFeeds), enyo.bind(this, this.reportError));	
 	},
 
-	getSubscriptions: function(inSender){
+	getFeeds: function(inSender){
 		this.$.refresh.addClass("spinning");
 
-		reader.getSubscriptions(enyo.bind(this, this.load));
+		reader.updateFeeds(enyo.bind(this, this.load));
 	},
 
 	reportError: function(error){
@@ -61,7 +63,17 @@ enyo.kind({
 		this.$.snapScroller.destroyControls();
 
 		//eventually support pages
-		this.$.snapScroller.createComponent({kind: "FeedPage", feeds: reader.getFeeds(), onViewFeed: "doViewFeed"}, {owner: this});
+		this.$.snapScroller.createComponent({
+			kind: "FeedPage", 
+			feeds: reader.getFeeds(), 
+			onViewFeed: "doViewFeed", 
+			onViewFeedPopup: "viewFeedPopup",
+			onRenameFeed: "renameFeed",
+		}, {owner: this});
 		this.$.snapScroller.render();
+	},
+
+	viewFeedPopup: function(inSender, inFeed, inEvent){
+		this.$.feedPopup.showAtEvent(inEvent, inFeed);
 	}
 });

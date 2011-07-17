@@ -8,7 +8,8 @@ enyo.kind({
 		feeds: []
 	},
 	events: {
-		onViewFeed: ""
+		onViewFeed: "",
+		onViewFeedPopup: ""
 	},
 	components: [
 		
@@ -20,13 +21,16 @@ enyo.kind({
 	feedsChanged: function(){
 		var components = [];
 		for(var i = 0; i < this.feeds.length; i++){
-			components.push({kind: "FeedIcon", feed: this.feeds[i], onclick: "feedView"});
+			components.push({kind: "FeedIcon", feed: this.feeds[i], onclick: "feedView", onmousehold: "feedPopup"});
 		}
 		this.createComponents(components, {owner: this});
 		this.render();
 	},
 	feedView: function(inSender, inEvent){
 		this.doViewFeed(inSender.getFeed());
+	},
+	feedPopup: function(inSender, inEvent){
+		this.doViewFeedPopup(inSender.getFeed(), inEvent);
 	}
 
 });

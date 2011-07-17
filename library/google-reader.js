@@ -15,10 +15,21 @@ reader = {
 
 	//url suffixes
 	TOKEN_SUFFIX: "token",
-	SUBSCRIPTIONS_SUFFIX: "subscription/list",
+
+	SUBSCRIPTIONS_PATH: "subscription/",
+	SUBSCRIPTIONS_LIST: "list",
+	SUBSCRIPTIONS_EDIT: "edit",
+
+
+	USERINFO_SUFFIX: "user-info",
 	UNREAD_SUFFIX: "unread-count",
 
+	LABEL_RENAME: "rename-tag",
+	LABEL_PATH: "user/-/label/",
+
 	ALLITEMS_SUFFIX: "user/-/state/com.google/reading-list",
+
+	
 	EDITTAG_SUFFIX: "edit-tag",
 	TAGS: {
 		"like": "user/-/state/com.google/like",
@@ -119,14 +130,19 @@ reader = {
 		this.requests.push(request);
 	},
 
+	// *************************************
+	// *
+	// *	Authentication
+	// *
+	// *************************************
+
 	load: function(){
 		reader.is_logged_in = false;
+		
 		//check storage for the tokens we need.
-
 		if(localStorage.Auth){
 			reader.setAuth(localStorage.Auth);
 			reader.is_logged_in = true;
-
 		} 
 		return(reader.is_logged_in);
 	},
@@ -143,22 +159,37 @@ reader = {
 				Passwd: password,
 			},
 			onSuccess: function(transport){
-
 				localStorage.Auth = _(transport.responseText).lines()[2].replace("Auth=", "");
-				reader.load();
-				successCallback();
-				
+
+				reader.getUserInfo(successCallback);
+	
 			},
 			onFailure: function(transport){
 				console.error(transport);
 				failCallback(reader.normalizeError(transport.responseText));
+			}
+		});
+	},
+	getUserInfo: function(successCallback){
+		reader.makeRequest({
+			method: "GET",
+			url: reader.BASE_URL + reader.USERINFO_SUFFIX,
+			parameters: {},
+			onSuccess: function(transport){
+				localStorage.User = JSON.parse(transport.responseText);
+
+				reader.load();
+				successCallback();						
 			},
-			onError: function(transport){
+			onFailure: function(transport){
 				console.error(transport);
 				failCallback(reader.normalizeError(transport.responseText));
 			}
-		})
+		});			
+
 	},
+
+	//Get the token
 	getToken: function(successCallback, failCallback){
 		reader.makeRequest({
 			method: "GET",
@@ -178,14 +209,21 @@ reader = {
 		});
 	},
 
+	// *************************************
+	// *
+	// *	Loading Feeds
+	// *
+	// *************************************
 
-	getSubscriptions: function(successCallback){
+	//Get the user's subscribed feeds
+	updateFeeds: function(successCallback){
 		reader.makeRequest({
 			method: "GET",
-			url: reader.BASE_URL + reader.SUBSCRIPTIONS_SUFFIX,
+			url: reader.BASE_URL + reader.SUBSCRIPTIONS_PATH + reader.SUBSCRIPTIONS_LIST,
 			onSuccess: function(transport){
+
 				//save feeds in an organized state.
-				reader.setFeeds(reader.organizeSubscriptions(JSON.parse(transport.responseText).subscriptions));
+				reader.setFeeds(reader.organizeFeeds(JSON.parse(transport.responseText).subscriptions));
 				
 				//get unread counts
 				reader.getUnreadCounts(function(unreadcounts){
@@ -202,19 +240,26 @@ reader = {
 			}
 		})
 	},
-	organizeSubscriptions: function(subscriptions){
+
+	//organizes feeds based on categories/labels.
+	organizeFeeds: function(subscriptions){
 		var categories = [
-			{label: "All", id: reader.ALLITEMS_SUFFIX, feeds: subscriptions}
+			{title: "All", id: reader.ALLITEMS_SUFFIX, feeds: subscriptions, isLabel: true}
 		],
 		uncategorized = [];
 
 		for(var i = 0; i < subscriptions.length; i++){
+			subscriptions[i].isFeed = true;
+
 			if(subscriptions[i].categories.length === 0){
 				uncategorized.push(subscriptions[i]);
 			} else {
 				_.each(subscriptions[i].categories, function(category){
 					var new_category = _.clone(category);
-					new_category.feeds = [subscriptions[i]];
+						new_category.isLabel = true;
+						new_category.title = new_category.label;
+						new_category.feeds = [subscriptions[i]];
+
 					categories.push(new_category);
 				});
 			}
@@ -243,6 +288,7 @@ reader = {
 		return categories.concat(uncategorized);
 	},
 
+	//returns url for image to use in the icon
 	getIconForFeed: function(feedUrl){
 		if(feedUrl === reader.ALLITEMS_SUFFIX){
 			return "source/images/small_folder.png";
@@ -253,6 +299,7 @@ reader = {
 		}
 	},
 
+	//get unread counts from google reader
 	getUnreadCounts: function(successCallback){
 		reader.makeRequest({
 			url: reader.BASE_URL + reader.UNREAD_SUFFIX,
@@ -265,6 +312,8 @@ reader = {
 			}		
 		});
 	},
+
+	//integrate unread counts to our feeds array
 	setFeedUnreadCounts: function(unreadCounts){
 		//do stuff
 		_.each(reader.getFeeds(), function(subscription){
@@ -277,6 +326,57 @@ reader = {
 		});
 	},
 
+
+	// *************************************
+	// *
+	// *	Editing Feeds
+	// *
+	// *************************************
+
+	editFeedTitle: function(feed, newTitle, successCallback){
+		reader.makeRequest({
+			method: "POST",
+			url: reader.BASE_URL + reader.SUBSCRIPTIONS_PATH + reader.SUBSCRIPTIONS_EDIT,
+			parameters: {
+				ac: "edit",
+				t: newTitle,
+				s: feed	
+			},
+			onSuccess: function(transport){
+				successCallback(transport.responseText);
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			}
+		})
+	},
+
+	editLabelTitle: function(label, newTitle, successCallback){
+		reader.makeRequest({
+			method: "POST",
+			url: reader.BASE_URL + reader.LABEL_RENAME,
+			parameters: {
+				s: reader.LABEL_PATH + label,
+				t: label,
+				dest: reader.LABEL_PATH + newTitle
+			},
+			onSuccess: function(transport){
+				successCallback(transport.responseText);
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			}
+
+		});
+
+	},
+
+
+	// *************************************
+	// *
+	// *	Loading Items
+	// *
+	// *************************************
 
 	getItems: function(feedUrl, successCallback, opts){
 		var params = opts || {};
@@ -300,6 +400,12 @@ reader = {
 			}
 		});
 	},
+
+	// *************************************
+	// *
+	// *	Editing Items
+	// *
+	// *************************************
 
 	setItemTag: function(feed, item, tag, add, successCallback){
 		//feed id
@@ -330,9 +436,14 @@ reader = {
 			onFailure: function(transport){
 				console.error(transport);
 			} 
-		})
-		
+		})	
 	},
+
+	// *************************************
+	// *
+	// *	Utilities
+	// *
+	// *************************************
 
 	normalizeError: function(inErrorResponse){
 		return _(inErrorResponse).lines()[0].replace("Error=", "").replace(/(\w)([A-Z])/g, "$1 $2");

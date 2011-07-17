@@ -18,7 +18,7 @@ enyo.kind({
 		]},
 		{kind: enyo.HFlexBox, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
 			{kind: enyo.Image, name: "unread", src: "source/images/unread.png", style: "position: absolute; margin-top: 5px", showing: false},
-			{kind: enyo.Control, name: "feedTitle", className: "truncating-text", flex: 1, allowHtml: true}
+			{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", flex: 1, allowHtml: true}
 		]}
 		
 	],

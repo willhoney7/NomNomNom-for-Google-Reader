@@ -8,8 +8,8 @@ enyo.kind({
 	},
 	components: [
 		{kind: enyo.Toolbar, components: [
-			{kind: enyo.Control, name: "title", className: "toolbarText", style: "padding-left: 40px"},
-			{kind: enyo.GrabButton, onflick: "grabButtonFlick", onclick: "doViewIcons"},
+			{kind: enyo.ToolButton, icon: "source/images/menu-icon-up-arrow.png", onflick: "grabButtonFlick", onclick: "doViewIcons"},
+			{kind: enyo.Control, name: "title", className: "toolbarText"},
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"}
 		]},
@@ -81,8 +81,9 @@ enyo.kind({
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
+		this.$.snapScroller.snapTo(0);
 
-		setTimeout(enyo.bind(this, this.markViewableCardsRead), 100);
+		this.markViewableCardsRead();
 	},
 
 	cardSnap: function(inSender, inIndex){

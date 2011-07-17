@@ -131,6 +131,7 @@ body {
 
 .feedCard .feedTitle {
 	font-size: 16px;
+	padding: 0px 20px;
 }
 .feedCard .summary {
 	font-size: 14px;

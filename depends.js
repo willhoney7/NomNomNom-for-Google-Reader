@@ -15,6 +15,10 @@ enyo.depends(
 	//popups
 	"source/javascript/GoogleReaderPopup.js",
 	"source/javascript/LoginPopup.js",
+	"source/javascript/FeedPopup.js",
+		"source/javascript/RenamePopup.js",
+		"source/javascript/ConfirmPopup.js",
+
 
 	//views
 	"source/javascript/GoogleReader.js",

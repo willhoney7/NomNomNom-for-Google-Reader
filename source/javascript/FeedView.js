@@ -77,7 +77,7 @@ enyo.kind({
 		//console.log("rendering", this.nextIndex, "through", cardLength-1);
 
 		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
-			components.push({kind: "FeedCard", feed: this.items[this.nextIndex]});	
+			components.push({kind: "ItemCard", feed: this.items[this.nextIndex]});	
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();

@@ -17,7 +17,7 @@ enyo.kind({
 		];
 		if(this.feed.isFeed){
 			items.push(
-				{caption: $L("Add Label"), value: "addLabel"}, 
+				//{caption: $L("Add Label"), value: "addLabel"}, 
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
 		} else {
@@ -43,13 +43,20 @@ enyo.kind({
 				
 				break;
 			case "markAllRead":
-				
+				reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
+					this.$.popupList.close();
+					AppUtils.refreshIcons();
+
+				}));
 				break;
 			case "unsubscribeFeed":
-				this.$.confirmPopup.showAtEvent(this.event, {title: "Unsubscribe from feed?", doIt: function(inSender){
-					inSender.close();
-					AppUtils.refreshIcons();
-				}});
+				this.$.confirmPopup.showAtEvent(this.event, {title: "Unsubscribe from feed?", doIt: enyo.bind(this, function(inSender){
+					reader.unsubscribeFeed(this.feed.id, function(){
+						inSender.close();
+						AppUtils.refreshIcons();	
+					});
+					
+				})});
 				break;
 			case "removeTag":
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove tag?", doIt: function(inSender){

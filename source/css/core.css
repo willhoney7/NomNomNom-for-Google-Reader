@@ -91,18 +91,18 @@ body {
 }
 
 
-.feedCard {
+.itemCard {
 	margin: 10px 5px;
 	-webkit-border-radius: 10px;
 	background-color: white;
 	overflow: hidden;
 }
-.feedCard .content {
+.itemCard .content {
 	padding: 10px;
 	overflow: hidden;
 }
 
-.feedCard .bottomToolbar {
+.itemCard .bottomToolbar {
 	-webkit-box-shadow: 10px silver;
     box-shadow: 10px silver;
 	background-color: silver;
@@ -111,29 +111,29 @@ body {
 	font-size: 16px;
 	padding: 5px 10px;
 }
-.feedCard .header {
+.itemCard .header {
 	padding: 5px 10px 0px 10px;
 	background-color: silver;
 	/*border-bottom: 1px solid rgba(30, 90, 160, .3);*/
 }
 
-.feedCard .header .title {
+.itemCard .header .title {
 	font-weight: normal;
 	color: black;
 	font-size: 15px;
 	padding-bottom: 5px;
 }
-.feedCard .date {
+.itemCard .date {
 	font-size: 13px;
 	font-weight: normal;
 	padding-left: 2px;
 }
 
-.feedCard .feedTitle {
+.itemCard .feedTitle {
 	font-size: 16px;
 	padding: 0px 20px;
 }
-.feedCard .summary {
+.itemCard .summary {
 	font-size: 14px;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -145,7 +145,7 @@ body {
 /*.feedCard img {
 	display: none;
 }*/
-.feedCard img.firstImage {
+.itemCard img.firstImage {
 	display: block;
 	margin: auto;
 	max-width: 300px !important;
@@ -153,7 +153,7 @@ body {
 	padding-bottom: 5px;
 }
 
-.feedCard .summmary a[href]{
+.itemCard .summmary a[href]{
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -169,21 +169,6 @@ body {
 	
 }*/
 
-.feedItem img:first-child{
-	display: block;
-	margin: auto;
-	max-height: 100px !important;
-	width: auto !important;
-}
-
-.itemContent {
-	font-size: 14px;
-	margin: 15px;	
-}
-.itemContent img:first-child {
-	display: block;
-	text-align: center;
-}
 
 .errorText {
 	text-align: center;

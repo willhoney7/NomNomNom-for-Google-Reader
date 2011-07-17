@@ -12,11 +12,12 @@ enyo.kind({
 		{kind: enyo.Toolbar, components: [
 			{kind: enyo.Control, content: "Google Reader", className: "toolbarText"},
 			{kind: enyo.Spacer},
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"},
-			{name: "refresh", kind: enyo.ToolButton, icon: "source/images/menu-icon-refresh.png", onclick: "getFeeds"},
+			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png", onclick: "addFeed"},
+			{name: "refresh", kind: enyo.ToolButton, icon: "source/images/menu-icon-refresh.png", onclick: "loadFeeds"},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-settings.png"}
 		]},
 		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
+		{kind: "AddFeedPopup", name: "addFeedPopup"},
 		{kind: "FeedPopup"}
 	],
 	create: function(){
@@ -28,7 +29,7 @@ enyo.kind({
 			this.loginSuccess();
 		}
 
-		AppUtils.refreshIcons = enyo.bind(this, this.getFeeds);
+		AppUtils.refreshIcons = enyo.bind(this, this.loadFeeds);
 	},
 	rendered: function(){
 		if(reader.is_logged_in === false){
@@ -43,13 +44,13 @@ enyo.kind({
 	getToken: function(){
 		this.$.refresh.addClass("spinning");
 
-		reader.getToken(enyo.bind(this, this.getFeeds), enyo.bind(this, this.reportError));	
+		reader.getToken(enyo.bind(this, this.loadFeeds), enyo.bind(this, this.reportError));	
 	},
 
-	getFeeds: function(inSender){
+	loadFeeds: function(inSender){
 		this.$.refresh.addClass("spinning");
 
-		reader.updateFeeds(enyo.bind(this, this.load));
+		reader.loadFeeds(enyo.bind(this, this.load));
 	},
 
 	reportError: function(error){
@@ -75,5 +76,9 @@ enyo.kind({
 
 	viewFeedPopup: function(inSender, inFeed, inEvent){
 		this.$.feedPopup.showAtEvent(inEvent, inFeed);
+	},
+
+	addFeed: function(){
+		this.$.addFeedPopup.showAtCenter();
 	}
 });

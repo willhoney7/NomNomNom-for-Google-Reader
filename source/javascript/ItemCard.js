@@ -1,6 +1,6 @@
 enyo.kind({
-	name: "FeedCard", 
-	className: "feedCard",
+	name: "ItemCard", 
+	className: "itemCard",
 	kind: enyo.VFlexBox, 
 	allowHtml: true,
 	width: AppPrefs.get("cardWidth"),

@@ -19,6 +19,7 @@ reader = {
 	SUBSCRIPTIONS_PATH: "subscription/",
 	SUBSCRIPTIONS_LIST: "list",
 	SUBSCRIPTIONS_EDIT: "edit",
+	SUBSCRIPTIONS_MARKALLREAD: "mark-all-as-read",
 
 
 	USERINFO_SUFFIX: "user-info",
@@ -66,7 +67,7 @@ reader = {
 
 	requests: [],
 
-	makeRequest: function(obj){
+	makeRequest: function(obj, noAuth){
 		//make sure we have a method
 		if(!obj.method){
 			obj.method = "GET";
@@ -106,7 +107,7 @@ reader = {
 		//set request header
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-		if(reader.getAuth()){
+		if(reader.getAuth() && !noAuth){
 			//this one is important. This is how google does authorization.
 			request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());    	
 		}
@@ -216,7 +217,7 @@ reader = {
 	// *************************************
 
 	//Get the user's subscribed feeds
-	updateFeeds: function(successCallback){
+	loadFeeds: function(successCallback){
 		reader.makeRequest({
 			method: "GET",
 			url: reader.BASE_URL + reader.SUBSCRIPTIONS_PATH + reader.SUBSCRIPTIONS_LIST,
@@ -333,15 +334,16 @@ reader = {
 	// *
 	// *************************************
 
-	editFeedTitle: function(feed, newTitle, successCallback){
+	editFeed: function(params, successCallback){
+		if(!params){
+			console.error("No params for feed edit");
+			return;
+		}
+		
 		reader.makeRequest({
 			method: "POST",
 			url: reader.BASE_URL + reader.SUBSCRIPTIONS_PATH + reader.SUBSCRIPTIONS_EDIT,
-			parameters: {
-				ac: "edit",
-				t: newTitle,
-				s: feed	
-			},
+			parameters: params,
 			onSuccess: function(transport){
 				successCallback(transport.responseText);
 			}, 
@@ -349,7 +351,32 @@ reader = {
 				console.error(transport);
 			}
 		})
+
 	},
+	editFeedTitle: function(feed, newTitle, successCallback){
+		reader.editFeed({
+			ac: "edit",
+			t: newTitle,
+			s: feed
+		}, successCallback);
+	},
+
+	unsubscribeFeed: function(feed, successCallback){
+		reader.editFeed({
+			ac: "unsubscribe",
+			s: feed
+		}, successCallback);
+	},
+
+	subscribeFeed: function(feedUrl, successCallback, title){
+		reader.editFeed({
+			ac: "subscribe",
+			s: "feed/" + feedUrl,
+			t: title || undefined
+		}, successCallback);
+
+	},
+
 
 	editLabelTitle: function(label, newTitle, successCallback){
 		reader.makeRequest({
@@ -371,7 +398,63 @@ reader = {
 
 	},
 
+	markAllAsRead: function(feedOrLabel, successCallback){
+		//feed or label
+		reader.makeRequest({
+			method: "POST",
+			url: reader.BASE_URL + reader.SUBSCRIPTIONS_MARKALLREAD,
+			parameters: {
+				s: feedOrLabel
+			},
+			onSuccess: function(transport){
+				successCallback(transport.responseText);
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			}
 
+		});
+	},
+
+	// *************************************
+	// *
+	// *	Adding a Feed
+	// *
+	// *************************************
+
+	urlRegex: /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
+	processFeedInput: function(input, inputType, successCallback, failCallback){
+		var url = "https://ajax.googleapis.com/ajax/services/feed/";
+		if((reader.urlRegex.test(input) || inputType === "url") && inputType !== "keyword"){
+			url += "load";
+		} else {
+			url += "find";
+		}
+		reader.makeRequest({
+			url: url,
+			parameters: {
+				q: encodeURI(input),
+				v: "1.0"				
+			},
+			onSuccess: function(transport){
+				var response = JSON.parse(transport.responseText);
+				if(response.responseStatus === 200){
+					if(response.responseData.entries){
+						successCallback(response.responseData.entries, "keyword");
+					} else {
+						successCallback(response.responseData.feed, "url");
+					}
+				} else {
+					failCallback(response.responseDetails);
+				}
+
+			}, 
+			onFailure: function(transport){
+				console.error(transport);
+			}			
+		}, true);
+		
+	},
 	// *************************************
 	// *
 	// *	Loading Items

@@ -15,6 +15,7 @@ enyo.depends(
 	//popups
 	"source/javascript/GoogleReaderPopup.js",
 	"source/javascript/LoginPopup.js",
+	"source/javascript/AddFeedPopup.js",
 	"source/javascript/FeedPopup.js",
 		"source/javascript/RenamePopup.js",
 		"source/javascript/ConfirmPopup.js",
@@ -26,13 +27,8 @@ enyo.depends(
 	"source/javascript/FeedPage.js",
 	"source/javascript/FeedIcon.js",
 	"source/javascript/FeedView.js",
-	"source/javascript/FeedCard.js",
+	"source/javascript/ItemCard.js",
 	
-	"source/javascript/Subscriptions.js",
-		"source/javascript/FeedItem.js",
-	"source/javascript/FeedPreviewList.js",
-	"source/javascript/ItemView.js",
-
 	//css
 	"source/css/core.css"
 );

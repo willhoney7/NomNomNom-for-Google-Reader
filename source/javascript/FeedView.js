@@ -10,7 +10,7 @@ enyo.kind({
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
 			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: []},
 		]},
-		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
+		{kind: "ItemView", flex: 1,dismissible: true, dismissDistance: 350, showing: false}
 	],
 	create: function(){
 		this.inherited(arguments);	
@@ -102,8 +102,7 @@ enyo.kind({
 
 	},
 	itemClick: function(inSender, inEvent){
-		this.$.scrollerSlidingView.applyStyle("max-width", "322px");
-		//this.selectViewByName("itemView");
+		this.$.scrollerSlidingView.applyStyle("max-width", "330px");
 		this.$.snapScroller.snapTo(inSender.getIndex());
 		
 		this.$.itemView.setShowing(true);

@@ -33,8 +33,7 @@ body {
 
 
 .iconList {
-	min-height: 115px;
-	padding: 5px 0px;
+	-webkit-transition: height 0.5s ease-in-out;
 }
 
 .enyo-grid-div {

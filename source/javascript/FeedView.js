@@ -1,21 +1,16 @@
 enyo.kind({
 	name: "FeedView", 
 	className: "feedView",
-	kind: enyo.VFlexBox, 
+	kind: enyo.SlidingPane, 
 	flex: 1,
 	events: {
 		onViewIcons: ""
 	},
 	components: [
-		{kind: enyo.Toolbar, components: [
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-up-arrow.png", onflick: "grabButtonFlick", onclick: "doViewIcons"},
-			{kind: enyo.Control, name: "title", className: "toolbarText"},
-			{kind: enyo.Spacer},
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-new.png"}
+		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
+			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: []},
 		]},
-		{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: [
-			//{kind: "FeedPage"}
-		]},
+		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
 	create: function(){
 		this.inherited(arguments);	
@@ -48,8 +43,6 @@ enyo.kind({
 				opts.n = feed.count;
 			}
 		}
-
-		this.$.title.setContent(feed.label || feed.title);
 		
 		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), opts);
 	},
@@ -77,7 +70,7 @@ enyo.kind({
 		//console.log("rendering", this.nextIndex, "through", cardLength-1);
 
 		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
-			components.push({kind: "ItemCard", feed: this.items[this.nextIndex]});	
+			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
@@ -107,5 +100,14 @@ enyo.kind({
 			}
 		}
 
+	},
+	itemClick: function(inSender, inEvent){
+		this.$.scrollerSlidingView.applyStyle("max-width", "322px");
+		//this.selectViewByName("itemView");
+		this.$.snapScroller.snapTo(inSender.getIndex());
+		
+		this.$.itemView.setShowing(true);
+		this.$.itemView.setItem(inSender.getItem());
+		console.log(inSender);
 	}
 });

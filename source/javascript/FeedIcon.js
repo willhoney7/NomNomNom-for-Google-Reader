@@ -3,7 +3,7 @@ enyo.kind({
 	className: "feedIcon",
 	kind: enyo.Control, 
 	height: "100px",
-	width: "110px",
+	width: "100px",
 	published: {
 		feed: []
 	},

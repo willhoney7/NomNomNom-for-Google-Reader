@@ -5,7 +5,8 @@ enyo.kind({
 	allowHtml: true,
 	width: AppPrefs.get("cardWidth"),
 	published: {
-		feed: {},
+		item: {},
+		index: 0,
 		read: false
 	},
 	components: [
@@ -24,38 +25,38 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);	
-		this.feedChanged();
+		this.itemChanged();
 	},
-	feedChanged: function(){
-		//caption: this.feeds[i].label || this.feeds[i].title, icon: });	
-		var feedContent = (this.feed.summary) ? this.feed.summary.content || "": (this.feed.content) ? this.feed.content.content || "": "";
-		var firstImageURL = $("<div>" + feedContent + "</div>").find("img:first").attr("src");
-		this.$.title.setContent(this.feed.title);
-		this.$.date.setContent(AppUtils.formatDate(this.feed.updated));
+	itemChanged: function(){
+		//caption: this.items[i].label || this.items[i].title, icon: });	
+		var itemContent = (this.item.summary) ? this.item.summary.content || "": (this.item.content) ? this.item.content.content || "": "";
+		var firstImageURL = $("<div>" + itemContent + "</div>").find("img:first").attr("src");
+		this.$.title.setContent(this.item.title);
+		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
 
-		var content = //"<div class='title truncating-text'>" + this.feed.title + "</div>"
+		var content = //"<div class='title truncating-text'>" + this.item.title + "</div>"
 					 (firstImageURL ? ("<img src = '" + firstImageURL + "' class = 'firstImage' />") : "")
-					+ "<div class='summary'>" + htmlToText(feedContent) + "</div>";
+					+ "<div class='summary'>" + htmlToText(itemContent) + "</div>";
 		
 		this.$.content.setContent(content);
 
-		this.feed.read = false;
-		for(var i = 0; i < this.feed.categories.length; i++){
+		this.item.read = false;
+		for(var i = 0; i < this.item.categories.length; i++){
 			var re = /user\/\d+\/state\/com.google\/read$/i;
-			if(re.test(this.feed.categories[i])){
-				this.feed.read = true;
+			if(re.test(this.item.categories[i])){
+				this.item.read = true;
 				break;
 			}
 		};
-		this.$.unread.setShowing(!this.feed.read);
-		this.$.feedTitle.setContent(this.feed.origin.title);
+		this.$.unread.setShowing(!this.item.read);
+		this.$.feedTitle.setContent(this.item.origin.title);
 
 		
 	},
 	markRead: function(){
-		if(this.feed.read === false){
-			reader.setItemTag(this.feed.origin.streamId, this.feed.id, "read", true, enyo.bind(this, function(response){
-				this.feed.read = true;
+		if(this.item.read === false){
+			reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
+				this.item.read = true;
 				this.$.unread.setShowing(false);
 
 			}));

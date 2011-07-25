@@ -23,11 +23,12 @@ enyo.depends(
 
 	//views
 	"source/javascript/GoogleReader.js",
-	"source/javascript/FeedList.js",
-	"source/javascript/FeedPage.js",
-	"source/javascript/FeedIcon.js",
+	"source/javascript/IconList.js",
+		"source/javascript/FeedIcon.js",
+	"source/javascript/Toolbar.js",
 	"source/javascript/FeedView.js",
-	"source/javascript/ItemCard.js",
+		"source/javascript/ItemCard.js",
+		"source/javascript/ItemView.js",
 	
 	//css
 	"source/css/core.css"

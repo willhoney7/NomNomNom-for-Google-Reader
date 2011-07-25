@@ -4,10 +4,11 @@ enyo.kind({
 	height: "100%",
 	className: "googleReader",
 	components: [
-		{kind: "Pane", flex: 1, transitionKind: "enyo.transitions.Fade", components: [
-		    {kind: "FeedList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
-		    {kind: "FeedView", onViewIcons: "viewIcons"}
-		]},		
+		{kind: "IconList", onViewFeed: "viewFeed", flex: 1, onflick: "flick", onRefresh: "getSubscriptions"},
+		//{kind: enyo.Spacer},
+		{kind: "gReader.Toolbar"},
+		{kind: "FeedView", showing: false, onViewIcons: "viewIcons"}
+
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -25,18 +26,21 @@ enyo.kind({
 
 	},
 	viewIcons: function(inSender){
-		this.$.pane.selectViewByIndex(0);	
-		this.$.feedList.loadFeeds();
+
+		//this is a poor way to do this, but oh well
+		this.$.iconList.applyStyle("max-height", null);
+		this.$.iconList.$.grid.setClassName("enyo-grid"); //set it to resize as a grid
+
+		this.$.feedView.setShowing(false);
+		this.$.iconList.loadFeeds();
 	},
 	viewFeed: function(inSender, inFeed){
-	    this.$.pane.selectViewByIndex(1);
-	    this.$.feedView.loadFeed(inFeed);	
-	},
 
-	loadFeed: function(inSender, inFeed){
-		this.$.feedPreviewList.setFeed(inFeed);
-	},
-	loadItem: function(inSender, inEvent){
-		this.$.itemView.setItem(inSender.items[inEvent.rowIndex]);
+		this.$.iconList.applyStyle("max-height", "110px");
+		this.$.iconList.$.grid.setClassName("enyo-hflexbox"); //set it to just stack horizontally
+
+		this.$.feedView.setShowing(true);
+	    this.$.feedView.loadFeed(inFeed);	
+	    this.$.toolbar.setTitle(inFeed.title || inFeed.label);
 	}
 });

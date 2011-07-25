@@ -32,8 +32,9 @@ body {
 }
 
 
-.feedPage {
-	padding: 15px 0px;
+.iconList {
+	min-height: 115px;
+	padding: 5px 0px;
 }
 
 .enyo-grid-div {
@@ -47,9 +48,18 @@ body {
 	-webkit-box-shadow: 0px 0px 0px #888;
 }
 
+.enyo-grid {
+	padding: 0px;
+}
+
 .feedIcon {
 	text-align: center;
-	padding: 15px 10px;
+	padding: 10px 5px;
+	float: undefined;
+}
+
+.enyo-grid .feedIcon {
+	float: left;
 }
 
 .feedIcon .imageContainer {
@@ -74,6 +84,7 @@ body {
 .feedIcon .title {
 	color: white;
 	font-size: 14px;
+	padding: 0px 3px;
 }
 .feedIcon .unreadCount {
 	position: relative;
@@ -90,6 +101,13 @@ body {
 	-webkit-border-radius: 0px 0px 10px 10px;
 }
 
+.feedView {
+	background-color: black;
+}
+
+.enyo-bg {
+	background-color: black;
+}
 
 .itemCard {
 	margin: 10px 5px;
@@ -168,6 +186,12 @@ body {
 	height: auto !important;
 	
 }*/
+
+.itemView .content {
+	padding: 10px;
+	background-color: rgb(216, 216, 216);
+	font-size: 14px;
+}
 
 
 .errorText {

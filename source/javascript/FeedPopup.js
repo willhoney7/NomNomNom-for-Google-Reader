@@ -21,9 +21,9 @@ enyo.kind({
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
 		} else {
-			items.push(
-				{caption: $L("Remove Tag"), value: "removeTag"}
-			);
+			//items.push(
+			//	{caption: $L("Remove Tag"), value: "removeTag"}
+			//);
 		}
 		if(this.feed.count > 0){
 			items.unshift({caption: $L("Mark all as Read"), value: "markAllRead"});

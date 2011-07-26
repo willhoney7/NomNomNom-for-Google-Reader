@@ -324,10 +324,16 @@ reader = {
 			}		
 		});
 	},
-	decrementUnreadCount: function(feed, callback){
+	decrementUnreadCount: function(feedId, callback){
 		_.each(reader.getFeeds(), function(subscription){
-			if(subscription.id === feed || (subscription.id === reader.ALLITEMS_SUFFIX)){
+			if(subscription.id === feedId || (subscription.id === reader.ALLITEMS_SUFFIX)){
 				subscription.count--;
+			} else if(subscription.feeds && subscription.feeds.length > 0){
+				_.each(subscription.feeds, function(feed){
+					if(feed.id === feedId){
+						subscription.count--;
+					}
+				});
 			}
 		});
 		callback();

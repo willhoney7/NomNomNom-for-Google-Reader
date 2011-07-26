@@ -119,9 +119,16 @@ reader = {
 						obj.onSuccess(request);
 					}
 				} else if(request.readyState === 4){
-					if(obj.onFailure){
-						obj.onFailure(request);
+					if(obj.method === "POST"){
+						reader.getToken(function(){
+							reader.makeRequest(obj);
+						}, obj.onFailure);
+					} else {
+						if(obj.onFailure){
+							obj.onFailure();
+						}
 					}
+
 					console.error(request);
 				}
 		};
@@ -205,7 +212,9 @@ reader = {
 			}, 
 			onFailure: function(transport){
 				console.error("failed", transport);
-				failCallback(reader.normalizeError(transport.responseText));
+				if(failCallback){
+					failCallback(reader.normalizeError(transport.responseText));
+				}
 			}
 		});
 	},

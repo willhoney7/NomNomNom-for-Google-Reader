@@ -1,6 +1,6 @@
 {
 	"id": "com.tibfib.app.googlereader",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"vendor": "Will Honey (Tibfib)",
 	"type": "web",
 	"main": "index.html",

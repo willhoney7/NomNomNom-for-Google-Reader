@@ -16,15 +16,6 @@ enyo.kind({
 		this.inherited(arguments);	
 	},
 
-	grabButtonFlick: function(inSender, inEvent){
-		console.error(inEvent);	
-		 if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {
-	         if (inEvent.yVel > 0) {
-	    		this.doViewIcons()
-	         }
-	      }
-	},
-
 	loadFeed: function(feed){
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 		var opts = {
@@ -54,7 +45,7 @@ enyo.kind({
 		this.nextIndex = 0;
 
 		this.renderSome();
-		this.$.snapScroller.snapTo(0);
+		this.$.snapScroller.setIndex(0);
 
 	},
 	renderSome: function(){
@@ -74,7 +65,6 @@ enyo.kind({
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
-		this.$.snapScroller.snapTo(0);
 
 		this.markViewableCardsRead();
 	},
@@ -103,7 +93,7 @@ enyo.kind({
 	},
 	itemClick: function(inSender, inEvent){
 		this.$.scrollerSlidingView.applyStyle("max-width", "330px");
-		this.$.snapScroller.snapTo(inSender.getIndex());
+		this.$.snapScroller.setIndex(inSender.getIndex());
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(inSender.getItem());

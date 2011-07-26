@@ -48,6 +48,8 @@ enyo.kind({
 		this.renderSome();
 		this.$.snapScroller.setIndex(0);
 
+		this.markViewableCardsRead();
+
 	},
 	renderSome: function(){
 		var components = [], cardLength;
@@ -67,7 +69,6 @@ enyo.kind({
 		this.$.snapScroller.createComponents(components, {owner: this});
 		this.$.snapScroller.render();
 
-		this.markViewableCardsRead();
 	},
 
 	cardSnap: function(inSender, inIndex){

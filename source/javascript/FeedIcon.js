@@ -28,6 +28,14 @@ enyo.kind({
 		} else {
 			this.$.count.setShowing(false);
 		}
+	},
+	updateUnreadCount: function(){
+		if(this.getFeed().count > 0){
+			this.$.count.setShowing(true);
+			this.$.count.setContent(this.getFeed().count);		
+		} else {
+			this.$.count.setShowing(false);
+		}			
 	}
 
 });

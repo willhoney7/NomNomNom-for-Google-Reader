@@ -76,8 +76,8 @@ reader = {
 		if(!obj.parameters){
 			obj.parameters = {};
 		}
-		//add the necessary parameters to get our requests to function properly
 
+		//add the necessary parameters to get our requests to function properly
 		if(obj.method === "GET"){
 			obj.parameters["ck"] = Date.now() || new Date().getTime();
 			obj.parameters["accountType"] = "GOOGLE";
@@ -85,10 +85,11 @@ reader = {
 			obj.parameters["output"] = "json";	
 			obj.parameters["client"] = reader.CLIENT;
 		}
+
 		//if we have a token, add it to the parameters
-		//I'm pretty sure this is worthless
 		if(reader.token){
 			if(obj.method === "POST"){
+				//it seems that "GET" requests don't care about your token
 				obj.parameters["T"] = reader.token;			
 			}
 		}
@@ -96,11 +97,14 @@ reader = {
 		//turn our parameters object into a query string
 		var queries = [];
 		for (var i in obj.parameters) {
-			queries.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj.parameters[i]))
+			queries.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj.parameters[i]));
 		}
 		var queryString = queries.join("&");
 
 		var url = (obj.method === "GET") ? (obj.url + "?" + queryString): (obj.url + "?" + encodeURIComponent("client") + "=" + encodeURIComponent(reader.CLIENT));
+			//for get requests, attach the queryString
+			//for post requests, attach just the client constant
+
 		var request = new XMLHttpRequest();
 		request.open(obj.method, url, true);
 
@@ -112,25 +116,25 @@ reader = {
 			request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());    	
 		}
 
-		request.onreadystatechange = 
-			function(){
-				if ((request.readyState === 4) && request.status === 200) {
-					if(obj.onSuccess){
-						obj.onSuccess(request);
-					}
-				} else if(request.readyState === 4){
-					if(obj.method === "POST"){
-						reader.getToken(function(){
-							reader.makeRequest(obj);
-						}, obj.onFailure);
-					} else {
-						if(obj.onFailure){
-							obj.onFailure();
-						}
-					}
-
-					console.error(request);
+		request.onreadystatechange = function(){
+			if ((request.readyState === 4) && request.status === 200) {
+				if(obj.onSuccess){
+					obj.onSuccess(request);
 				}
+			} else if(request.readyState === 4){
+				if(obj.method === "POST"){
+					//If it failed and this is a post request, try getting a new token, then do the request again
+					reader.getToken(function(){
+						reader.makeRequest(obj);
+					}, obj.onFailure);
+				} else {
+					if(obj.onFailure){
+						obj.onFailure(request);
+					}
+				}
+
+				console.error(request);
+			}
 		};
 		
 		request.send((obj.method === "POST") ? queryString: "");
@@ -202,9 +206,7 @@ reader = {
 		reader.makeRequest({
 			method: "GET",
 			url: reader.BASE_URL + reader.TOKEN_SUFFIX,
-			parameters: {
-				client: "js-googlereader"
-			},
+			parameters: {},
 			onSuccess: function(transport){
 				reader.token = transport.responseText;
 				successCallback();
@@ -321,6 +323,14 @@ reader = {
 				console.error(transport);
 			}		
 		});
+	},
+	decrementUnreadCount: function(feed, callback){
+		_.each(reader.getFeeds(), function(subscription){
+			if(subscription.id === feed || (subscription.id === reader.ALLITEMS_SUFFIX)){
+				subscription.count--;
+			}
+		});
+		callback();
 	},
 
 	//integrate unread counts to our feeds array

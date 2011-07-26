@@ -58,7 +58,7 @@ enyo.kind({
 			reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
 				this.item.read = true;
 				this.$.unread.setShowing(false);
-
+				reader.decrementUnreadCount(this.item.origin.streamId, AppUtils.refreshUnreadCounts);
 			}));
 		}
 	},

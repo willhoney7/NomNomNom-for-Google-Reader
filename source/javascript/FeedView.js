@@ -36,6 +36,7 @@ enyo.kind({
 		}
 		
 		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), opts);
+		this.$.itemView.setShowing(false);
 	},
 	loadedItems: function(items){
 		this.$.snapScroller.destroyControls();
@@ -97,6 +98,5 @@ enyo.kind({
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(inSender.getItem());
-		console.log(inSender);
 	}
 });

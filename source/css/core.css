@@ -186,6 +186,14 @@ body {
 	
 }*/
 
+.itemView .title {
+	
+}
+
+.itemView .date {
+	font-size: 14px;
+}
+
 .itemView .content {
 	padding: 10px;
 	background-color: rgb(216, 216, 216);

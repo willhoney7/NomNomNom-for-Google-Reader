@@ -14,7 +14,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");
 		AppUtils.iconListShowing = true;
-
+		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
 	},
 
 	flick: function(inSender, inEvent){

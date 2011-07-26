@@ -4,7 +4,7 @@ enyo.kind({
 	components: [
 		{kind: enyo.PopupList, onSelect: "popupSelect"},
 		{kind: "RenamePopup"},
-		{kind: "ConfirmPopup"}
+		{kind: "ConfirmPopup"},
 
 	],
 	showAtEvent: function(event, feed){
@@ -12,9 +12,10 @@ enyo.kind({
 			this.$.popupList.validateComponents();
 		}
 		this.feed = feed;
-		var items = [
-			{caption: $L("Rename"), value: "rename"}
-		];
+		var items = [];
+		if(this.feed.id !== reader.ALLITEMS_SUFFIX){
+			items.push({caption: $L("Rename"), value: "rename"});		
+		}
 		if(this.feed.isFeed){
 			items.push(
 				//{caption: $L("Add Label"), value: "addLabel"}, 
@@ -53,7 +54,7 @@ enyo.kind({
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Unsubscribe from feed?", doIt: enyo.bind(this, function(inSender){
 					reader.unsubscribeFeed(this.feed.id, function(){
 						inSender.close();
-						AppUtils.refreshIcons();	
+						AppUtils.viewIcons();
 					});
 					
 				})});
@@ -62,6 +63,8 @@ enyo.kind({
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove tag?", doIt: function(inSender){
 					inSender.close();
 					AppUtils.refreshIcons();
+					AppUtils.viewIcons();
+
 				}});
 				break;
 		}

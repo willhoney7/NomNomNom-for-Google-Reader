@@ -5,7 +5,7 @@
 		localStorage["preferences"] = "{}";
 	}
 
-	AppPrefs.preferences = enyo.mixin({
+	var preferences = enyo.mixin({
 		"tapGets": "unread", //"unread" or "all",
 		"cardWidth": "322px",
 		"hideRead": false,	//whether to show icons that have no unread icons
@@ -14,12 +14,12 @@
 
 
 	AppPrefs.get = function(preference){
-		return AppPrefs.preferences[preference];	
+		return preferences[preference];	
 	};
 
 	AppPrefs.set = function(preference, value){
-		AppPrefs.preferences[preference] = value;
-		localStorage["preferences"] = JSON.stringify(AppPrefs.preferences);
+		preferences[preference] = value;
+		localStorage["preferences"] = JSON.stringify(preferences);
 	};
 
 

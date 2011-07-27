@@ -10,7 +10,7 @@ enyo.kind({
 		onViewFeedPopup: ""
 	},
 	components: [
-		{kind: enyo.VFlexBox, className: "icon", width: "100px", onclick: "viewFeed", onmousehold: "viewFeedPopup", components: [
+		{kind: enyo.VFlexBox, className: "icon", width: "120px", onclick: "viewFeed", onmousehold: "viewFeedPopup", components: [
 			{name: "imageContainer", kind: enyo.VFlexBox, className: "imageContainer", components: [
 				{kind: enyo.Image, className: "image"},
 				{kind: enyo.Spacer},
@@ -35,7 +35,7 @@ enyo.kind({
 		}
 
 		if(this.getFeed().isLabel === true && !this.getFeed().isAll){
-			this.createComponent({kind: "FeedScroller", feeds: [].concat([this.getFeed()], this.getFeed().feeds), onViewFeed: "viewInsideFeed", onViewFeedPopup: "viewFeedPopup"});
+			this.createComponent({kind: "FeedFolderPopup", feeds: [].concat([this.getFeed()], this.getFeed().feeds), onViewFeed: "viewInsideFeed", onViewFeedPopup: "viewFeedPopup"});
 			this.render();			
 		}
 	},
@@ -51,7 +51,7 @@ enyo.kind({
 		if(this.getFeed().isFeed === true || this.getFeed().id === reader.ALLITEMS_SUFFIX || this.inside){
 			this.doViewFeed(this.feed);
 		} else {
-			this.showFeeds(inEvent);
+			this.$.feedFolderPopup.showAtControl(this.$.imageContainer);
 		}
 	},
 	viewFeedPopup: function(inSender, inEvent, inFeed){
@@ -59,17 +59,6 @@ enyo.kind({
 	},
 	viewInsideFeed: function(inSender, inFeed){
 		this.doViewFeed(inFeed);		
-	},
-	
-
-	feedScrollerOpen: false,
-	showFeeds: function(inEvent){
-		/*this.feedScrollerOpen = !this.feedScrollerOpen;
-		this.$.imageContainer.addRemoveClass("open", this.feedScrollerOpen);
-
-		this.$.feedScroller.setShowing(this.feedScrollerOpen);*/
-		this.$.feedScroller.showAtControl(this.$.imageContainer);
-		
 	}
 
 });

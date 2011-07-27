@@ -12,25 +12,29 @@ enyo.depends(
 	"source/javascript/helpers/AppUtils.js",
 	"source/javascript/helpers/AppPrefs.js",
 
-	//popups
+	//ekls
 	"source/javascript/GoogleReaderPopup.js",
-	"source/javascript/LoginPopup.js",
-	"source/javascript/PreferencesPopup.js",
-	"source/javascript/AddFeedPopup.js",
-	"source/javascript/FeedPopup.js",
-		"source/javascript/RenamePopup.js",
-		"source/javascript/ConfirmPopup.js",
+	
+	"source/javascript/NomNomNom.js",
 
+	//toolbar
+	"source/javascript/toolbar/Toolbar.js",
+		"source/javascript/toolbar/PreferencesPopup.js",
+		"source/javascript/toolbar/AddFeedPopup.js",
 
-	//views
-	"source/javascript/GoogleReader.js",
-	"source/javascript/IconList.js",
-		"source/javascript/FeedIcon.js",
-		"source/javascript/FeedScroller.js",
-	"source/javascript/Toolbar.js",
-	"source/javascript/FeedView.js",
-		"source/javascript/ItemCard.js",
-		"source/javascript/ItemView.js",
+	//feedManagement
+	"source/javascript/feedManagement/FeedIconList.js",
+		"source/javascript/feedManagement/LoginPopup.js",
+		"source/javascript/feedManagement/FeedIcon.js",
+			"source/javascript/feedManagement/FeedFolderPopup.js",
+			"source/javascript/feedManagement/RenamePopup.js",
+			"source/javascript/feedManagement/FeedPopup.js",
+			"source/javascript/feedManagement/ConfirmPopup.js",
+
+	//feedViewing
+	"source/javascript/feedViewing/FeedView.js",
+		"source/javascript/feedViewing/ItemCard.js",
+		"source/javascript/feedViewing/ItemView.js",
 	
 	//css
 	"source/css/core.css"

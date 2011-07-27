@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "FeedView", 
+	name: "NomNomNom.FeedView", 
 	className: "feedView",
 	kind: enyo.SlidingPane, 
 	flex: 1,

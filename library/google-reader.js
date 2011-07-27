@@ -13,14 +13,13 @@ reader = {
 
 	STREAM_PATH: "stream/contents/",
 
-	//url suffixes
-	TOKEN_SUFFIX: "token",
-
 	SUBSCRIPTIONS_PATH: "subscription/",
 	SUBSCRIPTIONS_LIST: "list",
 	SUBSCRIPTIONS_EDIT: "edit",
 	SUBSCRIPTIONS_MARKALLREAD: "mark-all-as-read",
 
+	//url suffixes
+	TOKEN_SUFFIX: "token",
 
 	USERINFO_SUFFIX: "user-info",
 	UNREAD_SUFFIX: "unread-count",
@@ -347,7 +346,6 @@ reader = {
 
 	//integrate unread counts to our feeds array
 	setFeedUnreadCounts: function(unreadCounts){
-		//do stuff
 		_.each(reader.getFeeds(), function(subscription){
 			for(var i = 0; i < unreadCounts.length; i++){
 				if(subscription.id === unreadCounts[i].id || (subscription.id === reader.ALLITEMS_SUFFIX && _(unreadCounts[i].id).includes("state/com.google/reading-list"))){

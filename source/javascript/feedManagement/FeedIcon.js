@@ -16,6 +16,7 @@ enyo.kind({
 				{kind: enyo.Spacer},
 				{kind: enyo.Control, name: "count", className: "unreadCount"},
 			]},
+			{kind: enyo.Spinner, showing: false, className: "spinner"},
 			{name: "title", kind: enyo.Control, className: "title truncating-text", allowHtml: true}	
 		]},
 	],
@@ -59,6 +60,12 @@ enyo.kind({
 	},
 	viewInsideFeed: function(inSender, inFeed){
 		this.doViewFeed(inFeed);		
+	},
+	startSpinning: function(){
+		this.$.spinner.show();
+	},
+	stopSpinning: function(){
+		this.$.spinner.hide();
 	}
 
 });

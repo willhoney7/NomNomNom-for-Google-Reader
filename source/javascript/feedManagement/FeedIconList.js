@@ -40,7 +40,7 @@ enyo.kind({
 	},
 
 	logout: function(){
-		
+
 		localStorage["Auth"] = undefined;
 		localStorage["User"] = undefined;
 			
@@ -92,7 +92,7 @@ enyo.kind({
 			
 	},
 	viewFeed: function(inSender, inFeed){
-		this.doViewFeed(inFeed);		
+		this.doViewFeed(inFeed, inSender);		
 	},
 	viewFeedPopup: function(inSender, inFeed, inEvent){
 		this.$.feedPopup.showAtEvent(inEvent, inFeed);

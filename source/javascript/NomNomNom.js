@@ -58,11 +58,15 @@ enyo.kind({
 		this.$.feedIconList.applyStyle("height", "0px");
 		AppUtils.iconListShowing = false;
 	},
-	viewFeed: function(inSender, inFeed){
+	viewFeed: function(inSender, inFeed, inFeedIcon){
+		this.inFeedIcon = inFeedIcon;
+		this.inFeedIcon.startSpinning();
 	    this.$.feedView.setFeed(inFeed);	
 	},
 	feedLoaded: function(inSender){
 		this.hideIcons();
+		this.inFeedIcon.stopSpinning();
+		
 		this.$.feedView.setShowing(true);		
 	    this.$.toolbar.setTitle(inSender.getFeed().title );
 	}

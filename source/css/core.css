@@ -58,6 +58,7 @@ body {
 
 .feedIcon {
 	float: inherit;
+	position: relative;
 }
 .enyo-grid .feedIcon {
 	float: left;
@@ -130,10 +131,14 @@ body {
 	-webkit-border-radius: 0px 0px 10px 10px;
 
 	-webkit-transition: bottom 0.2s ease-in;
-
 }
 .feedIcon .open .unreadCount{
 	bottom: 0px;
+}
+.feedIcon .spinner {
+	position: absolute;
+	bottom: 75px;
+	left: 70px;
 }
 
 .feedView {

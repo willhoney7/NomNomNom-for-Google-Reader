@@ -350,10 +350,16 @@ reader = {
 		//do stuff
 		_.each(reader.getFeeds(), function(subscription){
 			for(var i = 0; i < unreadCounts.length; i++){
-				if(subscription.id === unreadCounts[i].id || (subscription.id === reader.ALLITEMS_SUFFIX && _(unreadCounts[i].id).includes("state/com.google/reading-list"))){
+				if(subscription.id === unreadCounts[i].id || (subscription.isALL)){
 					subscription.count = unreadCounts[i].count;
 					subscription.newestItemTimestamp = unreadCounts[i].newestItemTimestampUsec;	
 				}
+				_.each(subscription.feeds, function(feed){
+					if(feed.id === unreadCounts[i].id){
+						feed.count = unreadCounts[i].count;
+						feed.newestItemTimestamp = unreadCounts[i].newestItemTimestampUsec;	
+					}
+				});
 			}
 		});
 	},

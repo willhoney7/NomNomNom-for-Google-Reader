@@ -35,7 +35,7 @@ enyo.kind({
 		}
 		
 		this.openAtTopCenter();
-		
+		this.$.emailAddress.forceFocus();
 		enyo.keyboard.forceShow(4);
 
 	},

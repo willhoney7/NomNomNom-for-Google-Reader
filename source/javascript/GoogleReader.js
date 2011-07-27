@@ -12,7 +12,7 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-		this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");
+		this.$.iconList.applyStyle("height", window.innerHeight - 55 + "px");
 		AppUtils.iconListShowing = true;
 		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
 	},
@@ -20,7 +20,7 @@ enyo.kind({
 	resizeHandler: function(){
 		if(this.$.iconList.$.grid.hasClass("enyo-grid")){
 			//@TODO: this'll animate resize. Looks funny
-			this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");		
+			this.$.iconList.applyStyle("height", window.innerHeight - 55 + "px");		
 		}
 	},
 
@@ -36,7 +36,7 @@ enyo.kind({
 
 	},
 	viewIcons: function(inSender){
-		this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");
+		this.$.iconList.applyStyle("height", window.innerHeight - 55 + "px");
 		this.$.iconList.$.grid.setClassName("enyo-grid"); //set it to resize as a grid
 
 		setTimeout(enyo.bind(this, function(){

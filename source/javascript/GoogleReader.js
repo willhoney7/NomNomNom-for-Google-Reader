@@ -32,8 +32,11 @@ enyo.kind({
 		this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");
 		this.$.iconList.$.grid.setClassName("enyo-grid"); //set it to resize as a grid
 
-		this.$.feedView.setShowing(false);
+		setTimeout(enyo.bind(this, function(){
+			this.$.feedView.setShowing(false);
+		}), 500);	
 		this.$.iconList.loadFeeds();
+		this.$.toolbar.setTitle("NomNomNom for Google Reader");
 	},
 	selectIcon: function(inSender){
 		this.$.iconList.$.grid.setClassName("enyo-hflexbox"); //set it to just stack horizontally

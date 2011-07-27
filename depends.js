@@ -26,6 +26,7 @@ enyo.depends(
 	"source/javascript/GoogleReader.js",
 	"source/javascript/IconList.js",
 		"source/javascript/FeedIcon.js",
+		"source/javascript/FeedScroller.js",
 	"source/javascript/Toolbar.js",
 	"source/javascript/FeedView.js",
 		"source/javascript/ItemCard.js",

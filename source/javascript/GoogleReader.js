@@ -17,6 +17,13 @@ enyo.kind({
 		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
 	},
 
+	resizeHandler: function(){
+		if(this.$.iconList.$.grid.hasClass("enyo-grid")){
+			//@TODO: this'll animate resize. Looks funny
+			this.$.iconList.applyStyle("height", window.innerHeight - 50 + "px");		
+		}
+	},
+
 	flick: function(inSender, inEvent){
 		console.error(inEvent);	
 		 if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {

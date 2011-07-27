@@ -13,7 +13,7 @@ enyo.kind({
 		}
 		this.feed = feed;
 		var items = [];
-		if(this.feed.id !== reader.ALLITEMS_SUFFIX){
+		if(!this.feed.isAll){
 			items.push({caption: $L("Rename"), value: "rename"});		
 		}
 		if(this.feed.isFeed){
@@ -31,8 +31,11 @@ enyo.kind({
 		}
 		this.items = items;
 		this.event = event;
-		this.$.popupList.setItems(items);
-		this.$.popupList.openAtEvent(event);
+		if(this.items.length > 0){
+			this.$.popupList.setItems(items);
+			this.$.popupList.openAtEvent(event);	
+		}
+		
 	},
 	popupSelect: function(inSender, inSelection){
 		switch(this.items[inSelection].value){

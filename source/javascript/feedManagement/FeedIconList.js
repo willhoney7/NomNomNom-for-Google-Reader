@@ -75,7 +75,7 @@ enyo.kind({
 		
 		var components = [], feeds = reader.getFeeds();
 		for(var i = 0; i < feeds.length; i++){
-			if((AppPrefs.get("hideRead") === true && feeds[i].count > 0) || AppPrefs.get("hideRead") === false || feeds[i].id === reader.ALLITEMS_SUFFIX){
+			if((AppPrefs.get("hideRead") === true && feeds[i].count > 0) || AppPrefs.get("hideRead") === false || feeds[i].isAll){
 				components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup"});			
 			}
 		}

@@ -14,12 +14,15 @@ enyo.kind({
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
 			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: []},
 		]},
-		{kind: "ItemView", flex: 1,dismissible: true, dismissDistance: 350, showing: false}
+		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
 	create: function(){
 		this.inherited(arguments);	
 	},
-
+	loadFeed: function(inFeed){
+		this.$.itemView.hide();
+		this.setFeed(inFeed);
+	},
 	feedChanged: function(){
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 		var opts = {
@@ -40,21 +43,25 @@ enyo.kind({
 		}
 		
 		reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems), opts);
-		this.$.itemView.setShowing(false);
 	},
 	loadedItems: function(items){
 
-		this.doFeedLoaded();
 		this.$.snapScroller.destroyControls();
-		this.$.snapScroller.render();
+		this.$.itemView.hide();
 
 		this.items = items;
 		this.nextIndex = 0;
 
-		this.renderSome();
-		this.$.snapScroller.setIndex(0);
+		if(this.items.length === 0){
+			humane("No Items");
+			this.doFeedLoaded(false);
+		} else {
+			this.doFeedLoaded(true);
+			this.renderSome();
+			this.$.snapScroller.setIndex(0);
 
-		this.markViewableCardsRead();
+			this.markViewableCardsRead();
+		}
 
 	},
 	renderSome: function(){

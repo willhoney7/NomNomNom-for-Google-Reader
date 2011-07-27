@@ -18,8 +18,8 @@ enyo.kind({
 		{kind: enyo.Toolbar, components: [
 			{kind: enyo.GrabButton},
 			{kind: enyo.Spacer},
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-share.png"},
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-starred-outline.png"},
+			{kind: enyo.ToolButton, name: "share", onclick: "toggleShared", icon: "source/images/menu-icon-shared-outline.png"},
+			{kind: enyo.ToolButton, name: "star", onclick: "toggleStarred", icon: "source/images/menu-icon-starred-outline.png"},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-browser.png", onclick: "openInBrowser"},
 			{kind: enyo.Spacer}
 		]}
@@ -33,14 +33,23 @@ enyo.kind({
 		
 		this.$.content.setContent(itemContent);
 
-		this.item.read = false;
+		this.item.read = true;
+		this.item.star = false;
+		this.item.shared = false;
 		for(var i = 0; i < this.item.categories.length; i++){
-			var re = /user\/\d+\/state\/com.google\/read$/i;
-			if(re.test(this.item.categories[i])){
-				this.item.read = true;
-				break;
+			if(_(this.item.categories[i]).includes(reader.TAGS["fresh"].replace("user/-", ""))){
+				this.item.read = false;				
+			}
+			if(_(this.item.categories[i]).includes(reader.TAGS["star"].replace("user/-", ""))){
+				this.item.star = true;				
+			}
+			if(_(this.item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
+				this.item.shared = true;				
 			}
 		};
+		this.$.share.setIcon((this.item.shared ? "source/images/menu-icon-shared.png" : "source/images/menu-icon-shared-outline.png"));
+		this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
+
 		this.$.webView.setShowing(false);
 		this.$.scroller.setShowing(true);
 
@@ -61,5 +70,18 @@ enyo.kind({
 				//window.open(this.item.alternate[0].href);
 			}
 		}
+	},
+
+	toggleStarred: function(){
+		reader.setItemTag(this.item.origin.streamId, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
+			this.item.star = !this.item.star;
+			this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
+		}));
+	},
+	toggleShared: function(){
+		reader.setItemTag(this.item.origin.streamId, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
+			this.item.shared = !this.item.shared;
+			this.$.share.setIcon((this.item.shared ? "source/images/menu-icon-shared.png" : "source/images/menu-icon-shared-outline.png"));
+		}));
 	}
 });

@@ -27,17 +27,16 @@ reader = {
 	LABEL_RENAME: "rename-tag",
 	LABEL_PATH: "user/-/label/",
 
-	ALLITEMS_SUFFIX: "user/-/state/com.google/reading-list",
-
-	
 	EDITTAG_SUFFIX: "edit-tag",
 	TAGS: {
 		"like": "user/-/state/com.google/like",
 		"label": "user/-/label/",
 		"star": "user/-/state/com.google/starred",
 		"read": "user/-/state/com.google/read",
+		"fresh": "user/-/state/com.google/fresh",
 		"share": "user/-/state/com.google/broadcast",
-		"keep-unread": "user/-/state/com.google/tracking-kept-unread"	
+		"keep-unread": "user/-/state/com.google/tracking-kept-unread",
+		"reading-list": "user/-/state/com.google/reading-list",	
 	},
 
 
@@ -238,7 +237,6 @@ reader = {
 			method: "GET",
 			url: reader.BASE_URL + reader.SUBSCRIPTIONS_PATH + reader.SUBSCRIPTIONS_LIST,
 			onSuccess: function(transport){
-
 				//save feeds in an organized state.
 				reader.setFeeds(reader.organizeFeeds(JSON.parse(transport.responseText).subscriptions));
 				
@@ -261,7 +259,9 @@ reader = {
 	//organizes feeds based on categories/labels.
 	organizeFeeds: function(subscriptions){
 		var categories = [
-			{title: "All", id: reader.ALLITEMS_SUFFIX, feeds: subscriptions, isLabel: true, isAll: true}
+			{title: "All", id: reader.TAGS["reading-list"], feeds: subscriptions, isLabel: true, isAll: true, isSpecial: true},
+			{title: "Starred", id: reader.TAGS["star"], isSpecial: true},
+			{title: "Shared", id: reader.TAGS["share"], isSpecial: true}
 		],
 		uncategorized = [];
 
@@ -307,8 +307,12 @@ reader = {
 
 	//returns url for image to use in the icon
 	getIconForFeed: function(feedUrl){
-		if(feedUrl === reader.ALLITEMS_SUFFIX){
+		if(feedUrl === reader.TAGS["reading-list"]){
 			return "source/images/small_folder.png";
+		} else if(feedUrl === reader.TAGS["star"]){
+			return "source/images/small_star.png";
+		} else if(feedUrl === reader.TAGS["share"]){
+			return "source/images/small_shared.png";
 		} else if(_(feedUrl).includes("/label/")){
 			return "source/images/small_folder.png";
 		} else {
@@ -331,7 +335,7 @@ reader = {
 	},
 	decrementUnreadCount: function(feedId, callback){
 		_.each(reader.getFeeds(), function(subscription){
-			if(subscription.id === feedId || (subscription.id === reader.ALLITEMS_SUFFIX)){
+			if(subscription.id === feedId || (subscription.isAll)){
 				subscription.count--;
 			} else if(subscription.feeds && subscription.feeds.length > 0){
 				_.each(subscription.feeds, function(feed){
@@ -348,7 +352,7 @@ reader = {
 	setFeedUnreadCounts: function(unreadCounts){
 		_.each(reader.getFeeds(), function(subscription){
 			for(var i = 0; i < unreadCounts.length; i++){
-				if(subscription.id === unreadCounts[i].id || (subscription.id === reader.ALLITEMS_SUFFIX && _(unreadCounts[i].id).includes("state/com.google/reading-list"))){
+				if(subscription.id === unreadCounts[i].id || (subscription.isAll && _(unreadCounts[i].id).includes("state/com.google/reading-list"))){
 					subscription.count = unreadCounts[i].count;
 					subscription.newestItemTimestamp = unreadCounts[i].newestItemTimestampUsec;	
 				}
@@ -529,7 +533,7 @@ reader = {
 		//feed id
 		//item id
 		//tag in simple form: "like", "read", "share", "label", "star", "keep-unread"
-		//opt is true to add, false to remove
+		//add === true, or add === false
 
 		var params = {
 			s: feed,

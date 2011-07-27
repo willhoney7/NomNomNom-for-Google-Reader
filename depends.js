@@ -4,6 +4,9 @@ enyo.depends(
 	"vendors/underscore.string.min.js",
 	"vendors/jsHtmlToText.js",
 	"vendors/jquery-1.6.2.min.js",
+	"vendors/humane.js",
+	"vendors/humane-themes/bold-dark.css",
+
 
 	//load the google reader library
 	"library/google-reader.js",

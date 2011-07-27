@@ -49,7 +49,7 @@ enyo.kind({
 		}			
 	},
 	viewFeed: function(inSender, inEvent){
-		if(this.getFeed().isFeed === true || this.getFeed().id === reader.ALLITEMS_SUFFIX || this.inside){
+		if(this.getFeed().isFeed === true || this.getFeed().isSpecial || this.inside){
 			this.doViewFeed(this.feed);
 		} else {
 			this.$.feedFolderPopup.showAtControl(this.$.imageContainer);

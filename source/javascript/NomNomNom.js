@@ -36,6 +36,8 @@ enyo.kind({
 
 	},
 	viewIcons: function(inSender){
+		AppUtils.iconListShowing = true;
+
 		this.$.feedIconList.$.grid.setClassName("enyo-grid"); //set it to resize as a grid
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
@@ -48,11 +50,12 @@ enyo.kind({
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this
 	},
 	viewSmallIcons: function(inSender){
+		AppUtils.iconListShowing = true;
+
 		this.$.feedIconList.$.grid.setClassName("enyo-hflexbox"); //set it to just stack horizontally
 		this.$.feedIconList.applyStyle("height", "120px");
 		this.$.feedIconList.loadFeeds();
 		
-		AppUtils.iconListShowing = true;
 	},
 	hideIcons: function(inSender){
 		this.$.feedIconList.applyStyle("height", "0px");
@@ -61,13 +64,17 @@ enyo.kind({
 	viewFeed: function(inSender, inFeed, inFeedIcon){
 		this.inFeedIcon = inFeedIcon;
 		this.inFeedIcon.startSpinning();
-	    this.$.feedView.setFeed(inFeed);	
+	    this.$.feedView.loadFeed(inFeed);	
 	},
-	feedLoaded: function(inSender){
-		this.hideIcons();
+	feedLoaded: function(inSender, hasItems){
 		this.inFeedIcon.stopSpinning();
 		
-		this.$.feedView.setShowing(true);		
-	    this.$.toolbar.setTitle(inSender.getFeed().title );
+		if(hasItems){
+			this.hideIcons();
+			
+			this.$.feedView.setShowing(true);		
+		    this.$.toolbar.setTitle(inSender.getFeed().title );	
+		}
+		
 	}
 });

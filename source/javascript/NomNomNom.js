@@ -6,7 +6,7 @@ enyo.kind({
 	components: [
 		{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
 		{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-		{name: "feedView", kind: "NomNomNom.FeedView", showing: false, onViewIcons: "viewIcons"}
+		{name: "feedView", kind: "NomNomNom.FeedView", showing: false, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
 
 	],
 	create: function(){
@@ -20,7 +20,7 @@ enyo.kind({
 	},
 
 	resizeHandler: function(){
-		if(this.$.feedIconList.$.grid.hasClass("enyo-grid")){
+		if(AppUtils.iconListShowing){
 			//@TODO: this'll animate resize. Looks funny
 			this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");		
 		}
@@ -59,10 +59,11 @@ enyo.kind({
 		AppUtils.iconListShowing = false;
 	},
 	viewFeed: function(inSender, inFeed){
+	    this.$.feedView.setFeed(inFeed);	
+	},
+	feedLoaded: function(inSender){
 		this.hideIcons();
-
-		this.$.feedView.setShowing(true);
-	    this.$.feedView.loadFeed(inFeed);	
-	    this.$.toolbar.setTitle(inFeed.title || inFeed.label);
+		this.$.feedView.setShowing(true);		
+	    this.$.toolbar.setTitle(inSender.getFeed().title );
 	}
 });

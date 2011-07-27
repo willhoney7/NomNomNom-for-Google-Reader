@@ -4,7 +4,11 @@ enyo.kind({
 	kind: enyo.SlidingPane, 
 	flex: 1,
 	events: {
+		onFeedLoaded: "",
 		onViewIcons: ""
+	},
+	published: {
+		feed: {}	
 	},
 	components: [
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
@@ -16,7 +20,7 @@ enyo.kind({
 		this.inherited(arguments);	
 	},
 
-	loadFeed: function(feed){
+	feedChanged: function(){
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 		var opts = {
 			n: 50
@@ -24,21 +28,23 @@ enyo.kind({
 			//based on setting, get the num of items.
 		if(AppPrefs.get("tapGets") === "unread"){
 			//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
-			if(feed.count > 0){
-				opts.n = feed.count;
+			if(this.getFeed().count > 0){
+				opts.n = this.getFeed().count;
 				opts.xt = reader.TAGS["read"];
 			}
 		} else {
 			//if pref is not set to get only unread, then set numOfItems 50 or the number of unread items if that is bigger.
-			if(feed.count > 50){
-				opts.n = feed.count;
+			if(this.getFeed().count > 50){
+				opts.n = this.getFeed().count;
 			}
 		}
 		
-		reader.getItems(feed.id, enyo.bind(this, this.loadedItems), opts);
+		reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems), opts);
 		this.$.itemView.setShowing(false);
 	},
 	loadedItems: function(items){
+
+		this.doFeedLoaded();
 		this.$.snapScroller.destroyControls();
 		this.$.snapScroller.render();
 

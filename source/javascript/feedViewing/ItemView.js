@@ -26,12 +26,11 @@ enyo.kind({
 	],
 	itemChanged: function(){
 		//caption: this.items[i].label || this.items[i].title, icon: });	
-		var itemContent = (this.item.summary) ? this.item.summary.content || "": (this.item.content) ? this.item.content.content || "": "";
-		var firstImageURL = $("<div>" + itemContent + "</div>").find("img:first").attr("src");
 		this.$.title.setContent(this.item.title);
 		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated))
-		
-		this.$.content.setContent(itemContent);
+
+		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
+		this.$.content.setContent((this.item.author ? "By " + this.item.author : "") + itemContent);
 
 		this.item.read = true;
 		this.item.star = false;

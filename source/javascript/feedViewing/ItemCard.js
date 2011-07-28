@@ -15,7 +15,10 @@ enyo.kind({
 				{kind: enyo.Control, flex: 1, name: "title", className: "title", allowHtml: true},
 				{kind: enyo.Control, name: "date", className: "date"}
 			]},
-			{kind: enyo.HtmlContent, name: "content", className: "content"}
+			{kind: enyo.Control, className: "content", components: [
+				{kind: enyo.Image, className: "firstImage", showing: true},
+				{kind: enyo.HtmlContent, name: "summary", className: "summary"}
+			]}
 		]},
 		{kind: enyo.HFlexBox, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
 			{kind: enyo.Image, name: "unread", src: "source/images/unread.png", style: "position: absolute; margin-top: 5px", showing: false},
@@ -31,14 +34,23 @@ enyo.kind({
 		//caption: this.items[i].label || this.items[i].title, icon: });	
 		var itemContent = (this.item.summary) ? this.item.summary.content || "": (this.item.content) ? this.item.content.content || "": "";
 		var firstImageURL = $("<div>" + itemContent + "</div>").find("img:first").attr("src");
-		this.$.title.setContent(this.item.title);
-		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
+		console.log($("<div>" + itemContent + "</div>").find("img:first"));
+		var img = new Image(), self = this;
+		img.onload = function() {
+			if(this.width < 50 || this.height < 50){
+				self.$.image.setShowing(false);
+			}
+		};
+		img.src = firstImageURL;
 
-		var content = //"<div class='title truncating-text'>" + this.item.title + "</div>"
-					 (firstImageURL ? ("<img src = '" + firstImageURL + "' class = 'firstImage' />") : "")
-					+ "<div class='summary'>" + htmlToText(itemContent) + "</div>";
+		this.$.title.setContent(this.item.title);
+		if(firstImageURL){
+			this.$.image.setSrc(firstImageURL);
+			this.$.image.setShowing(true);
+		}
+		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
 		
-		this.$.content.setContent(content);
+		this.$.summary.setContent(htmlToText(itemContent));
 
 		this.item.read = false;
 		for(var i = 0; i < this.item.categories.length; i++){

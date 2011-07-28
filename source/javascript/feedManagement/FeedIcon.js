@@ -24,9 +24,11 @@ enyo.kind({
 		this.inherited(arguments);	
 		this.feedChanged();
 	},
+
 	feedChanged: function(){
-		//caption: this.feeds[i].label || this.feeds[i].title, icon: });	
-		this.$.image.setSrc(reader.getIconForFeed(this.getFeed().id.replace(/feed\//, "")));
+		//caption: this.feeds[i].label || this.feeds[i].title, icon: });
+			
+		this.$.image.setSrc(this.getIcon());
 		this.$.title.setContent(this.getFeed().label || this.getFeed().title);
 		if(this.getFeed().count > 0){
 			this.$.count.setShowing(true);
@@ -39,6 +41,22 @@ enyo.kind({
 			this.createComponent({kind: "FeedFolderPopup", feeds: [].concat([this.getFeed()], this.getFeed().feeds), onViewFeed: "viewInsideFeed", onViewFeedPopup: "viewFeedPopup"});
 			this.render();			
 		}
+	},
+	getIcon: function(){
+		if(this.getFeed().isAll){
+			return "source/images/icon-folder.png";
+		} else if(this.getFeed().isSpecial){
+			if(this.getFeed().id === reader.TAGS["star"]){
+				return "source/images/icon-starred.png";
+			} else if(this.getFeed().id === reader.TAGS["share"]){
+				return "source/images/icon-shared.png";
+			}
+		} else if(this.getFeed().isLabel){
+			return "source/images/icon-folder.png";
+		} else {
+			return reader.getIconForFeed(this.getFeed().id.replace(/feed\//, ""));
+		}
+
 	},
 	updateUnreadCount: function(){
 		if(this.getFeed().count > 0){

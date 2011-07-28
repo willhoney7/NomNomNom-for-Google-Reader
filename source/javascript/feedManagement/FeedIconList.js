@@ -6,8 +6,8 @@ enyo.kind({
 		onViewFeed: ""
 	},
 	components: [
-		{kind: enyo.Scroller, className: "iconContainer", autoVertical: false, vertical: false, flex: 1, components: [
-			{name: "grid", className: "enyo-grid", flex: 1}
+		{kind: enyo.Scroller, autoVertical: false, vertical: false, flex: 1, components: [
+			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
 
 		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
@@ -42,11 +42,15 @@ enyo.kind({
 	logout: function(){
 
 		localStorage["Auth"] = undefined;
-		localStorage["User"] = undefined;
+		localStorage["User"] = "{}";
 			
 		this.$.grid.destroyControls();
 		this.$.grid.render();
-		this.$.login.showAtCenter();
+		reader.setFeeds([]);
+
+		setTimeout(enyo.bind(this, function(){
+			this.$.login.showAtCenter();		
+		}), 0);
 		
 	},
 

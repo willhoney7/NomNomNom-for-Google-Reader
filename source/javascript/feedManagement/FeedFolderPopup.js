@@ -2,7 +2,6 @@ enyo.kind({
 	name: "FeedFolderPopup",
 	kind: enyo.Popup,
 	className: "feedScroller feedIcon",
-	height: "230px",
 	width: "120px",
 	published: {
 		feeds: []	
@@ -12,7 +11,7 @@ enyo.kind({
 		onViewFeedPopup: ""
 	},
 	components: [
-		{name: "scroller", kind: enyo.BasicScroller, autoHorizontal: false, horizontal: false, autoVertical: true, height: "230px", components: []}
+		{name: "scroller", flex: 1, kind: enyo.BasicScroller, autoHorizontal: false, horizontal: false, autoVertical: true, components: []}
 	],
 	create: function(){
 		this.inherited(arguments);

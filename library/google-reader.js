@@ -53,6 +53,13 @@ reader = {
 		return this._feeds;	
 	},
 
+	setUser: function(user){
+		localStorage["User"] = JSON.stringify(user);
+	},
+	getUser: function(){
+		return JSON.parse(localStorage["User"]);
+	},
+
 	_Auth: "",
 	getAuth: function(){
 		if(reader._Auth !== "undefined"){
@@ -189,7 +196,7 @@ reader = {
 			url: reader.BASE_URL + reader.USERINFO_SUFFIX,
 			parameters: {},
 			onSuccess: function(transport){
-				localStorage.User = transport.responseText;
+				reader.setUser(JSON.parse(transport.responseText));
 
 				reader.load();
 				successCallback();						
@@ -307,17 +314,7 @@ reader = {
 
 	//returns url for image to use in the icon
 	getIconForFeed: function(feedUrl){
-		if(feedUrl === reader.TAGS["reading-list"]){
-			return "source/images/small_folder.png";
-		} else if(feedUrl === reader.TAGS["star"]){
-			return "source/images/small_star.png";
-		} else if(feedUrl === reader.TAGS["share"]){
-			return "source/images/small_shared.png";
-		} else if(_(feedUrl).includes("/label/")){
-			return "source/images/small_folder.png";
-		} else {
-			return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
-		}
+		return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
 	},
 
 	//get unread counts from google reader

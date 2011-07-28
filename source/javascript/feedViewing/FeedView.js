@@ -102,7 +102,10 @@ enyo.kind({
 		for(var i = offsetIndex; i <= (offsetIndex + numVisible); i++){
 			if(controls[i]){
 				controls[i].markRead();
-			}
+				if(i === this.items.length-2){
+					controls[i+1].markRead();
+				}
+			} 
 		}
 
 	},

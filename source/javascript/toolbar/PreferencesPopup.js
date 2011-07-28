@@ -33,7 +33,11 @@ enyo.kind({
 			]},
 		]},
 		{kind: enyo.RowGroup, caption: "Account", components: [
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
+			{kind: "Item", layoutKind: "VFlexLayout", components: [
+				{kind: enyo.HFlexBox, components: [
+					{flex: 1, name: "email"},
+
+				]},
 				{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "logout"}
 			]},
 		]},
@@ -47,6 +51,7 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
+		this.$.email.setContent("Logged in as " + reader.getUser().userEmail);
 		
 		this.openAtCenter();
 

@@ -38,7 +38,7 @@ enyo.kind({
 	viewIcons: function(inSender){
 		AppUtils.iconListShowing = true;
 
-		this.$.feedIconList.$.grid.setClassName("enyo-grid"); //set it to resize as a grid
+		this.$.feedIconList.$.grid.setClassName("iconContainer enyo-grid"); //set it to resize as a grid
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
 		setTimeout(enyo.bind(this, function(){
@@ -52,7 +52,7 @@ enyo.kind({
 	viewSmallIcons: function(inSender){
 		AppUtils.iconListShowing = true;
 
-		this.$.feedIconList.$.grid.setClassName("enyo-hflexbox"); //set it to just stack horizontally
+		this.$.feedIconList.$.grid.setClassName("iconContainer enyo-hflexbox"); //set it to just stack horizontally
 		this.$.feedIconList.applyStyle("height", "120px");
 		this.$.feedIconList.loadFeeds();
 		

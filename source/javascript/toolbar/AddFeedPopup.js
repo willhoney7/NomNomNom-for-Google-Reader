@@ -19,7 +19,7 @@ enyo.kind({
 		]},	
 		{kind: enyo.RowGroup, components: [
 			{kind: enyo.ListSelector, value: "either", items: [
-		        {caption: "URL or Keyword", value: "either"},
+		        {caption: "Auto-Detect", value: "either"},
 		        {caption: "URL", value: "url"},
 		        {caption: "Keyword", value: "keyword"},
 		    ]},

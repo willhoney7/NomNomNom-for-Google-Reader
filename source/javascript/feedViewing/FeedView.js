@@ -20,7 +20,6 @@ enyo.kind({
 		this.inherited(arguments);	
 	},
 	loadFeed: function(inFeed){
-		this.$.itemView.stop();
 		this.$.itemView.hide();
 		this.setFeed(inFeed);
 	},
@@ -47,7 +46,7 @@ enyo.kind({
 	},
 	loadedItems: function(items){
 
-		this.$.itemView.hide(); //@TODO: this fails
+		this.$.itemView.hide(); //@TODO: this fails, bug?
 
 		this.$.snapScroller.destroyControls();
 

@@ -14,8 +14,8 @@ enyo.kind({
 		{kind: enyo.Scroller, flex: 1, showing: true, components: [
 			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: white; -webkit-border-radius: 10px; margin: 10px; padding: 3px", components: [
 				{kind: "ToolButton", name: "playButton", icon: "source/images/menu-icon-play.png", onclick: "playAudio"},
-				{kind: "Slider", flex: 1, snap: 0.5, onChange: "sliderChange", position: 0, style: "padding-right: 10px"},
-				{kind: "Sound", src: ""}
+				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
+				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
 			]},
 			{kind: enyo.HtmlContent, flex: 1, name: "content", className: "content"}
 		]},
@@ -31,16 +31,8 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-		this.$.sound.audio.addEventListener("timeupdate", enyo.bind(this, function(){
-			enyo.job("setPosition", enyo.bind(this, "setPosition"), 500);
-		}), true);	
-	},
-	stop: function(){
-		this.$.sound.audio.pause();
 	},
 	itemChanged: function(){
-		this.stop(); 
-
 		//caption: this.items[i].label || this.items[i].title, icon: });	
 		this.$.title.setContent(this.item.title);
 		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated))
@@ -72,9 +64,7 @@ enyo.kind({
 		if(this.item.enclosure && this.item.enclosure.length > 0){
 			for(var i = 0; i < this.item.enclosure.length; i++){
 				if(_(this.item.enclosure[i].type).includes("audio")){
-					this.$.sound.setSrc(this.item.enclosure[i].href);
-					this.$.playButton.setIcon("source/images/menu-icon-play.png");
-					this.$.slider.setPosition(0);
+					this.sound = this.item.enclosure[i].href;					
 					this.$.soundContainer.show();
 					break;
 				} else {
@@ -91,22 +81,13 @@ enyo.kind({
 		//this.$.pane.selectViewByName("view");
 	},
 	playAudio: function(){
-		if(this.$.sound.audio.paused){
-			this.$.sound.audio.play();
-			this.$.playButton.setIcon("source/images/menu-icon-pause.png");
-		} else {
-			this.$.sound.audio.pause();
-			this.$.playButton.setIcon("source/images/menu-icon-play.png");
+		//OPEN STREAMING media player
+		if(this.sound){
+			this.$.launchMediaStreamer.call({target: this.sound});	
 		}
 	},
-	sliderChange: function(inSender, inPosition){
-		this.$.sound.audio.currentTime = (inPosition/100) * this.$.sound.audio.duration;
-	},
-	setPosition: function(){
-		if(this.$.slider){
-			this.$.slider.setPosition((this.$.sound.audio.currentTime/this.$.sound.audio.duration) * 100);		
-		}
-	},
+	doNothing: function(){},
+	
 	openInBrowser: function(){
 		if(this.item.alternate && this.item.alternate[0] && this.item.alternate[0].href){
 			if(this.$.webView.showing === false){

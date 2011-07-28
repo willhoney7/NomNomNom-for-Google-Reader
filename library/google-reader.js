@@ -468,6 +468,8 @@ reader = {
 			url += "load";
 		} else {
 			url += "find";
+			input = input.replace(/\.\w{1,3}\.*\w{0,2}$/ig, "");
+			console.log("replaced input", input);
 		}
 		reader.makeRequest({
 			url: url,

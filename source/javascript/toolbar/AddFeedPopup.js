@@ -12,10 +12,10 @@ enyo.kind({
 		onLoginSuccess: ""	
 	},
 	components: [
-		{layoutKind: "HFlexLayout", components: [
+		{layoutKind: "HFlexLayout", style: "position: relative", components: [
 			{content: "Add Feed"},
 			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: relative; bottom: 10px; left: 10px", onclick: "close"}
+			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
 		{kind: enyo.RowGroup, components: [
 			{kind: enyo.ListSelector, value: "either", items: [
@@ -24,16 +24,26 @@ enyo.kind({
 		        {caption: "Keyword", value: "keyword"},
 		    ]},
 		    {name: "input", kind: enyo.Input, hint: "", alwaysLooksFocused: true},
-			
 		]},
 		{kind: enyo.ActivityButton, content: "Go", onclick: "go"},
+		{kind: enyo.Group, caption: "Results", showing: false, components: [
+			{kind: enyo.Scroller, height: "250px", horizontal: false, autoHorizontal: false, components: [
+				{kind: enyo.VirtualRepeater, onSetupRow: "setupRow", components: [
+					{kind: enyo.Item, tapHighlight: true, onclick: "itemClick", components: [
+						{name: "title", className: "truncating-text", style: "font-weight: bold", allowHtml: true},
+						{name: "link", className: "truncating-text", style: "font-size: 15px", allowHtml: true},
+						{name: "content", className: "truncating-text", style: "font-size: 13px", allowHtml: true}
+					]}
+				]}
+			]}
+		]},
 		{name: "errorResponse", className: "errorText"}
 		
 	],
 	close: function(){
 		this.inherited(arguments);
 
-		
+		this.$.group.hide();
 		enyo.keyboard.setManualMode(false); // closes the keyboard
 	},
 	showAtCenter: function(){
@@ -57,9 +67,12 @@ enyo.kind({
 
 				if(type === "keyword"){
 					if(response.length === 0){
-						this.$.errorResponse.setContent("No Results");
+						this.$.errorResponse.setContent("No Results.");
 					} else {
-						console.log("@TODO: do stuff with results", response);
+						this.items = response;
+						console.log(this.items);
+						this.$.group.show();
+						this.$.virtualRepeater.render();
 					}
 				} else {
 					reader.subscribeFeed(response.feedUrl, enyo.bind(this, function(arg){
@@ -76,6 +89,22 @@ enyo.kind({
 
 		
 		
+	},
+
+	setupRow: function(inSender, inIndex){
+		if(this.items && this.items[inIndex]){
+			this.$.title.setContent(this.items[inIndex].title);
+			this.$.link.setContent(this.items[inIndex].link);
+			this.$.content.setContent(this.items[inIndex].contentSnippet.replace("<br>", ""));
+			return true;
+		}	
+	},
+
+	itemClick: function(inSender, inEvent){
+		reader.subscribeFeed(this.items[inEvent.rowIndex].url, enyo.bind(this, function(arg){
+			this.close();
+			AppUtils.refreshIcons();
+		}), htmlToText(this.items[inEvent.rowIndex].title));
 	},
 
 	reportError: function(error){

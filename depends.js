@@ -6,6 +6,7 @@ enyo.depends(
 	"vendors/jquery-1.6.2.min.js",
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
+	"vendors/ekl/Layout/",
 
 
 	//load the google reader library

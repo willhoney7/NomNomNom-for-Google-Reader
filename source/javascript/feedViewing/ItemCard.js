@@ -34,7 +34,6 @@ enyo.kind({
 		//caption: this.items[i].label || this.items[i].title, icon: });	
 		var itemContent = (this.item.summary) ? this.item.summary.content || "": (this.item.content) ? this.item.content.content || "": "";
 		var firstImageURL = $("<div>" + itemContent + "</div>").find("img:first").attr("src");
-		console.log($("<div>" + itemContent + "</div>").find("img:first"));
 		var img = new Image(), self = this;
 		img.onload = function() {
 			if(this.width < 50 || this.height < 50){

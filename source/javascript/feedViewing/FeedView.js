@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "NomNomNom.FeedView", 
 	className: "feedView",
-	kind: enyo.SlidingPane, 
+	kind: "ekl.Layout.SlidingPane", 
 	flex: 1,
 	events: {
 		onFeedLoaded: "",
@@ -20,6 +20,7 @@ enyo.kind({
 		this.inherited(arguments);	
 	},
 	loadFeed: function(inFeed){
+		this.$.itemView.stop();
 		this.$.itemView.hide();
 		this.setFeed(inFeed);
 	},
@@ -46,8 +47,9 @@ enyo.kind({
 	},
 	loadedItems: function(items){
 
+		this.$.itemView.hide(); //@TODO: this fails
+
 		this.$.snapScroller.destroyControls();
-		this.$.itemView.hide();
 
 		this.items = items;
 		this.nextIndex = 0;

@@ -9,6 +9,8 @@
 		"tapGets": "unread", //"unread" or "all",
 		"cardWidth": "322px",
 		"hideRead": false,	//whether to show icons that have no unread icons
+		"showStarred": true,
+		"showShared": true,
 		"browserPreview": false //show items in webview
 	}, JSON.parse(localStorage["preferences"]));
 

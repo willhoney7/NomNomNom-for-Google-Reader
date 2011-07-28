@@ -21,6 +21,16 @@ enyo.kind({
 				{kind: enyo.Spacer},
 				{kind: "CheckBox", preferenceProperty: "hideRead", rerender: true, onChange: "setPreference"}
 			]},
+			{kind: "Item", layoutKind: "HFlexLayout", components: [
+				{content: $L("Show Starred Feed"), kind: enyo.Control},
+				{kind: enyo.Spacer},
+				{kind: "CheckBox", preferenceProperty: "showStarred", rerender: true, onChange: "setPreference"}
+			]},
+			{kind: "Item", layoutKind: "HFlexLayout", components: [
+				{content: $L("Show Shared Feed"), kind: enyo.Control},
+				{kind: enyo.Spacer},
+				{kind: "CheckBox", preferenceProperty: "showShared", rerender: true, onChange: "setPreference"}
+			]},
 		]},
 		{kind: enyo.RowGroup, caption: "Account", components: [
 			{kind: "Item", layoutKind: "HFlexLayout", components: [

@@ -22,11 +22,14 @@ enyo.kind({
 			this.validateComponents()
 		}	
 		this.$.scroller.destroyControls();
+		
 		var components = [];
 		_.each(this.feeds, function(feed){
-			components.push(
-				{kind: "FeedIcon", feed: feed, inside: true, onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup"}
-			);
+			if((AppPrefs.get("hideRead") === true && feed.count > 0) ||  AppPrefs.get("hideRead") === false){	
+				components.push(
+					{kind: "FeedIcon", feed: feed, inside: true, onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup"}
+				);
+			}
 		}, this);
 		this.$.scroller.createComponents(components, {owner: this});
 		this.render();

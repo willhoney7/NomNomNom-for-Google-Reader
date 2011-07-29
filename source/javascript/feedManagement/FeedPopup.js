@@ -2,14 +2,15 @@ enyo.kind({
 	name: "FeedPopup",
 	kind: enyo.Control,
 	components: [
-		{kind: enyo.PopupList, onSelect: "popupSelect"},
+		{kind: enyo.PopupSelect, onSelect: "popupSelect"},
 		{kind: "RenamePopup"},
 		{kind: "ConfirmPopup"},
+		//{name: "labelsPopup", kind: enyo.PopupSelect, onSelect: "labelSelect"}
 
 	],
 	showAtEvent: function(event, feed){
-		if(this.$.popupList.lazy) {
-			this.$.popupList.validateComponents();
+		if(this.$.popupSelect.lazy) {
+			this.$.popupSelect.validateComponents();
 		}
 		this.feed = feed;
 		var items = [];
@@ -21,34 +22,26 @@ enyo.kind({
 				//{caption: $L("Add Label"), value: "addLabel"}, 
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
-		} else {
-			//items.push(
-			//	{caption: $L("Remove Tag"), value: "removeTag"}
-			//);
 		}
 		if(this.feed.count > 0){
 			items.unshift({caption: $L("Mark all as Read"), value: "markAllRead"});
 		}
-		this.items = items;
 		this.event = event;
-		if(this.items.length > 0){
-			this.$.popupList.setItems(items);
-			this.$.popupList.openAtEvent(event);	
+		if(items.length > 0){
+			this.$.popupSelect.setItems(items);
+			this.$.popupSelect.openAtEvent(event);	
 		}
 		
 	},
 	popupSelect: function(inSender, inSelection){
-		switch(this.items[inSelection].value){
+		switch(inSelection.value){
 			case "rename":
-				this.$.popupList.close();
+				this.$.popupSelect.close();
 				this.$.renamePopup.showAtCenter(this.feed);
-				break;
-			case "addLabel":
-				
 				break;
 			case "markAllRead":
 				reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
-					this.$.popupList.close();
+					this.$.popupSelect.close();
 					AppUtils.refreshIcons();
 
 				}));
@@ -62,14 +55,51 @@ enyo.kind({
 					
 				})});
 				break;
-			case "removeTag":
-				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove tag?", doIt: function(inSender){
+			case "addLabel":
+				var items = [];
+				_.each(reader.getLabels(), enyo.bind(this, function(item){
+					var exists = false;
+					_.each(this.feed.categories, function(categories){
+						if(item.id === categories.id){
+							exists = true;
+						}
+					});
+					if(!exists){
+						items.push({
+							caption: item.title,
+							labelId: item.id
+						})	
+					}
+					
+				}));
+				items.push({caption: $L("New label..."), labelId: "new"});
+				this.$.labelsPopup.setItems(items);
+				this.$.labelsPopup.openAtEvent(this.event);
+				break;
+			case "removeLabel":
+				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove label?", doIt: function(inSender){
 					inSender.close();
 					AppUtils.refreshIcons();
 					AppUtils.viewIcons();
 
 				}});
 				break;
+			case "removeLabelAll": 
+				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove label from all feeds?", doIt: function(inSender){
+					inSender.close();
+					AppUtils.refreshIcons();
+					AppUtils.viewIcons();
+
+				}});
+				break;
+		}
+	},
+
+	labelSelect: function(inSender, inSelection){
+		if(inSelection.labelId === "new"){
+			console.log("show new popup");
+		} else {
+			reader.editFeedLabel(this.feed.id, inSelection.labelId, true, AppUtils.refreshIcons);
 		}
 	}
 });

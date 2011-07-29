@@ -52,6 +52,9 @@ reader = {
 	getFeeds: function(){
 		return this._feeds;	
 	},
+	getLabels: function(){
+		return _.select(reader.getFeeds(), function(feed){ return feed.isLabel;	});
+	},
 
 	setUser: function(user){
 		localStorage["User"] = JSON.stringify(user);
@@ -266,7 +269,7 @@ reader = {
 	//organizes feeds based on categories/labels.
 	organizeFeeds: function(subscriptions){
 		var categories = [
-			{title: "All", id: reader.TAGS["reading-list"], feeds: subscriptions, isLabel: true, isAll: true, isSpecial: true},
+			{title: "All", id: reader.TAGS["reading-list"], feeds: subscriptions, isAll: true, isSpecial: true},
 			{title: "Starred", id: reader.TAGS["star"], isSpecial: true},
 			{title: "Shared", id: reader.TAGS["share"], isSpecial: true}
 		],
@@ -279,6 +282,8 @@ reader = {
 				uncategorized.push(subscriptions[i]);
 			} else {
 				_.each(subscriptions[i].categories, function(category){
+					subscriptions[i].hasLabel = true;
+					
 					var new_category = _.clone(category);
 						new_category.isLabel = true;
 						new_category.title = new_category.label;
@@ -396,6 +401,20 @@ reader = {
 			s: feed
 		}, successCallback);
 	},
+
+	editFeedLabel: function(feed, label, opt, successCallback){
+		var obj = {
+			ac: "edit",
+			s: feed
+		}
+		if(opt){
+			obj.a = label;
+		} else {
+			obj.r = label;
+		}
+		reader.editFeed(obj, successCallback);
+	},
+
 
 	unsubscribeFeed: function(feed, successCallback){
 		reader.editFeed({

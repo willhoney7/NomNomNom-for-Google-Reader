@@ -37,7 +37,7 @@ enyo.kind({
 			this.$.count.setShowing(false);
 		}
 
-		if(this.getFeed().isLabel === true && !this.getFeed().isAll){
+		if(this.getFeed().isLabel === true){
 			this.createComponent({kind: "FeedFolderPopup", feeds: [].concat([this.getFeed()], this.getFeed().feeds), onViewFeed: "viewInsideFeed", onViewFeedPopup: "viewFeedPopup"});
 			this.render();			
 		}

@@ -33,6 +33,7 @@ enyo.depends(
 		"source/javascript/feedManagement/FeedIcon.js",
 			"source/javascript/feedManagement/FeedFolderPopup.js",
 			"source/javascript/feedManagement/RenamePopup.js",
+			"source/javascript/feedManagement/ManageLabelsPopup.js",
 			"source/javascript/feedManagement/FeedPopup.js",
 			"source/javascript/feedManagement/ConfirmPopup.js",
 

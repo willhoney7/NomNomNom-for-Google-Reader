@@ -23,11 +23,15 @@ enyo.kind({
 		{kind: enyo.Toolbar, components: [
 			{kind: enyo.GrabButton},
 			{kind: enyo.Spacer},
-			{kind: enyo.ToolButton, name: "share", onclick: "toggleShared", icon: "source/images/menu-icon-shared-outline.png"},
+			{kind: enyo.ToolButton, name: "share", onclick: "share", icon: "source/images/menu-icon-share.png"},
 			{kind: enyo.ToolButton, name: "star", onclick: "toggleStarred", icon: "source/images/menu-icon-starred-outline.png"},
 			{kind: enyo.ToolButton, icon: "source/images/menu-icon-browser.png", onclick: "openInBrowser"},
 			{kind: enyo.Spacer}
-		]}
+		]},
+
+		{name: "sharePopup", kind: enyo.PopupSelect, onSelect: "sharePopupSelected"},
+		{name: "launchApp", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "launch"}
+
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -54,7 +58,6 @@ enyo.kind({
 				this.item.shared = true;				
 			}
 		};
-		this.$.share.setIcon((this.item.shared ? "source/images/menu-icon-shared.png" : "source/images/menu-icon-shared-outline.png"));
 		this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
 
 		this.$.webView.setShowing(false);
@@ -86,11 +89,11 @@ enyo.kind({
 			this.$.launchMediaStreamer.call({target: this.sound});	
 		}
 	},
-	doNothing: function(){},
 	
 	openInBrowser: function(){
 		if(this.item.alternate && this.item.alternate[0] && this.item.alternate[0].href){
-			if(this.$.webView.showing === false){
+			window.location = this.item.alternate[0].href;
+			/*if(this.$.webView.showing === false){
 				this.$.webView.setUrl(this.item.alternate[0].href);
 				this.$.webView.setShowing(true);
 				this.$.scroller.setShowing(false);
@@ -98,20 +101,95 @@ enyo.kind({
 				this.$.webView.setShowing(false);
 				this.$.scroller.setShowing(true);
 				//window.open(this.item.alternate[0].href);
-			}
+			}*/
 		}
 	},
-
+	share: function(inSender, inEvent){
+		this.shareItems = [
+			{caption: $L("Share via SMS"), value: "sms"},
+			{caption: $L("Share via Email"), value: "email"},
+			{caption: $L("Share via Spaz HD"), value: "spaz"},
+			//{caption: $L("Add to Instapaper"), value: "instapaper"}
+		];
+		if(this.item.shared){
+			this.shareItems.unshift({caption: $L("Unshare from Google Reader"), value: "googlereader"});
+		} else {
+			this.shareItems.unshift({caption: $L("Share via Google Reader"), value: "googlereader"});			
+		}
+		this.$.sharePopup.setItems(this.shareItems);
+		this.$.sharePopup.openAtEvent(inEvent);
+	},
+	sharePopupSelected: function(inSender, inSelected){
+		if(inSelected.value === "sms" || inSelected.value === "email" || inSelected.value === "spaz"){
+			var shortUrl = new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP);
+			shortUrl.shorten(this.item.alternate[0].href, {
+				onSuccess: enyo.bind(this, function(obj){
+					
+					//get the max character length we can have.
+					var maxCharLength = (inSelected.value === "spaz") ? 140 : inSelected.value === "sms" ? 160 : 500;
+					var identifier = (inSelected.value === "spaz")? " #nomnomnomRSS" : (inSelected.value === "sms") ? " via NomNomNom" : " via NomNomNom for Google Reader";
+					//truncate the title based on the maxCharLength minus the thing we will add.
+					var sharedString = _(this.item.title).truncate(maxCharLength - (" " + obj.shorturl).length - identifier.length - 3);
+						//add the short url and the hashtag
+						sharedString += " " + obj.shorturl + identifier;
+					
+					switch(inSelected.value){
+						case "sms":
+							this.$.launchApp.call({
+								id:"com.palm.app.messaging", 
+								params: {
+									compose: {
+										messageText: sharedString
+									}
+								}	
+							});
+							break;
+						case "email":
+							this.$.launchApp.call({
+								id: 'com.palm.app.email',
+								params: {
+									summary: "Check out this Article",
+									text: sharedString
+								}
+							});
+							break;
+						case "spaz":
+							this.$.launchApp.call({
+								id: "com.funkatron.app.spaz-hd",
+								params: {
+									action: "post",
+									msg: sharedString
+								}
+							});
+							break;
+					}
+				}),
+				onError: function(){
+					console.error(arguments);
+				},
+				apiopts: {
+					login: "nomnomnomrss",
+					apiKey: "R_4e97d35ac9f28c9d0dc6dd6e428552a3"
+				}
+			})
+		}
+		else {
+			switch(inSelected.value){
+				case "instapaper":
+				
+					break; 
+				case "googlereader":
+					reader.setItemTag(this.item.origin.streamId, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
+						this.item.shared = !this.item.shared;
+					}));
+					break;
+			}
+		}	
+	},
 	toggleStarred: function(){
 		reader.setItemTag(this.item.origin.streamId, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
 			this.item.star = !this.item.star;
 			this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
-		}));
-	},
-	toggleShared: function(){
-		reader.setItemTag(this.item.origin.streamId, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
-			this.item.shared = !this.item.shared;
-			this.$.share.setIcon((this.item.shared ? "source/images/menu-icon-shared.png" : "source/images/menu-icon-shared-outline.png"));
 		}));
 	}
 });

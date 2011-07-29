@@ -79,8 +79,8 @@ enyo.kind({
 		if(this.nextIndex === this.items.length){
 			return;
 		}
-		if ((this.items.length - this.nextIndex) > 50){
-		 	cardLength = (this.nextIndex + 50);
+		if ((this.items.length - this.nextIndex) > 10){
+		 	cardLength = (this.nextIndex + 10);
 		}	else {
 			cardLength = this.items.length;
 		};
@@ -90,17 +90,19 @@ enyo.kind({
 			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
 		}
 		this.$.snapScroller.createComponents(components, {owner: this});
-		this.$.snapScroller.render();
+		//setTimeout(enyo.bind(this, function(){ 
+			this.$.snapScroller.render();
+		//}), 0);
 
 	},
 
 	cardSnap: function(inSender, inIndex){
 		//this.$.snapScroller.getControls()[inIndex].markRead();
-		this.markViewableCardsRead();
+			setTimeout(enyo.bind(this, this.markViewableCardsRead), 0);
 
 		//console.log("card snap", inIndex, "this.nextIndex", this.nextIndex);
 		if(this.nextIndex && (this.nextIndex - inIndex) <= 5){
-			this.renderSome();
+			setTimeout(enyo.bind(this, this.renderSome), 0);
 		}
 	},
 

@@ -4,6 +4,7 @@ enyo.depends(
 	"vendors/underscore.string.min.js",
 	"vendors/jsHtmlToText.js",
 	"vendors/jquery-1.6.2.min.js",
+	"vendors/spazcore-shorturls.js",
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/ekl/Layout/",

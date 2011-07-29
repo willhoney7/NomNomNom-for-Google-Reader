@@ -83,7 +83,9 @@ enyo.kind({
 		this.$.spinner.show();
 	},
 	stopSpinning: function(){
-		this.$.spinner.hide();
+		if(this.$.spinner){
+			this.$.spinner.hide();
+		}
 	}
 
 });

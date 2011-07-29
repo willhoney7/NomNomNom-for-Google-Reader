@@ -21,9 +21,9 @@ enyo.kind({
 	},
 	loadFeed: function(inFeed){
 		this.$.itemView.hide();
-		this.setFeed(inFeed);
-	},
-	feedChanged: function(){
+		
+		//this.setFeed(inFeed);
+		
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
 		var opts = {
 			n: 50
@@ -31,38 +31,47 @@ enyo.kind({
 			//based on setting, get the num of items.
 		if(AppPrefs.get("tapGets") === "unread"){
 			//if pref is to get only unread, then if the unread count is > 0, return the feed.count. If there are no unread items, return 50 (read) items.
-			if(this.getFeed().count > 0){
-				opts.n = this.getFeed().count;
+			if(inFeed.count > 0){
+				opts.n = inFeed.count;
 				opts.xt = reader.TAGS["read"];
 			}
 		} else {
 			//if pref is not set to get only unread, then set numOfItems 50 or the number of unread items if that is bigger.
-			if(this.getFeed().count > 50){
-				opts.n = this.getFeed().count;
+			if(inFeed.count > 50){
+				opts.n = inFeed.count;
 			}
 		}
 		
-		reader.getItems(this.getFeed().id, enyo.bind(this, this.loadedItems), opts);
+		reader.getItems(inFeed.id, enyo.bind(this, function(items){
+			if(items.length === 0){
+				humane("No Items");
+				this.doFeedLoaded(false);
+			} else {
+				this.setFeed(inFeed);
+				this.loadedItems(items); 	
+			}
+			
+		}), opts);
+
+	},
+	feedChanged: function(){
+		//do do do do
 	},
 	loadedItems: function(items){
 
 		this.$.itemView.hide(); //@TODO: this fails, bug?
 
-		this.$.snapScroller.destroyControls();
-
 		this.items = items;
 		this.nextIndex = 0;
 
-		if(this.items.length === 0){
-			humane("No Items");
-			this.doFeedLoaded(false);
-		} else {
-			this.doFeedLoaded(true);
-			this.renderSome();
-			this.$.snapScroller.setIndex(0);
+		this.$.snapScroller.destroyControls();
 
-			this.markViewableCardsRead();
-		}
+		this.doFeedLoaded(true);
+		this.renderSome();
+		this.$.snapScroller.setIndex(0);
+
+		this.markViewableCardsRead();
+		
 
 	},
 	renderSome: function(){

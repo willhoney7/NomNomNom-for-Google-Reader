@@ -6,7 +6,7 @@ enyo.kind({
 	components: [
 		{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
 		{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-		{name: "feedView", kind: "NomNomNom.FeedView", showing: false, onDismiss: "stopAudio", onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
+		{name: "feedView", kind: "NomNomNom.FeedView", showing: false, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
 
 	],
 	create: function(){
@@ -43,11 +43,10 @@ enyo.kind({
 
 		setTimeout(enyo.bind(this, function(){
 			this.$.feedView.hide();
-			this.$.feedView.$.itemView.stop();
+			this.$.feedView.$.itemView.hide();
 			//hide the feedView once it off the screen
 		}), 500);	
 
-		this.hideItemView();
 		this.$.feedIconList.loadFeeds();
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this
 	},
@@ -69,9 +68,6 @@ enyo.kind({
 		this.inFeedIcon.startSpinning();
 	    this.$.feedView.loadFeed(inFeed);	
 	},
-	hideItemView: function(){
-		this.$.feedView.$.itemView.stop();
-	},
 	feedLoaded: function(inSender, hasItems){
 		this.inFeedIcon.stopSpinning();
 		
@@ -79,7 +75,9 @@ enyo.kind({
 			this.hideIcons();
 			
 			this.$.feedView.setShowing(true);		
-		    this.$.toolbar.setTitle(inSender.getFeed().title );	
+		    this.$.toolbar.setTitle(inSender.getFeed().title);	
+		} else {
+
 		}
 		
 	}

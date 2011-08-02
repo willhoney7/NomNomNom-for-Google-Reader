@@ -282,12 +282,13 @@ reader = {
 				uncategorized.push(subscriptions[i]);
 			} else {
 				_.each(subscriptions[i].categories, function(category){
-					subscriptions[i].hasLabel = true;
+					var subscription = _.clone(subscriptions[i]);
+						subscription.inside = category.id;
 					
 					var new_category = _.clone(category);
 						new_category.isLabel = true;
 						new_category.title = new_category.label;
-						new_category.feeds = [subscriptions[i]];
+						new_category.feeds = [subscription];
 
 					categories.push(new_category);
 				});

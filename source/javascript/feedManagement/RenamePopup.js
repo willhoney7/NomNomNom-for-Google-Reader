@@ -10,12 +10,12 @@ enyo.kind({
 	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
 	components: [
 		{kind: enyo.HFlexBox, components: [
-			{content: "Rename"},
+			{name: "title", content: "Rename"},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: relative; bottom: 10px;", onclick: "close"}
 		]},	
 		{name: "name", kind: enyo.Input, hint: "Feed Name", selectAllOnFocus: true, alwaysLooksFocused: true},
-		{kind: enyo.ActivityButton, content: "Rename", onclick: "rename"},
+		{name: "button", kind: enyo.ActivityButton, caption: "Rename", onclick: "finish"},
 		{name: "errorResponse", className: "errorText"}
 		
 	],
@@ -24,30 +24,44 @@ enyo.kind({
 		enyo.keyboard.setManualMode(false); // closes the keyboard
 		AppUtils.refreshIcons();
 	},
-	showAtCenter: function(feed){
+	showAtCenter: function(feed, opt){
 		if(this.lazy) {
 			this.validateComponents();
 		}
-		this.feed = feed;
-		this.$.name.setValue(this.feed.title);
+		this.opt = opt;
+		if(opt === "new label"){
+			this.$.title.setContent("New Label");
+			this.$.button.setCaption("Add New Label");
+			this.$.name.setValue("");
+		} else {
+			this.$.title.setContent("Rename");
+			this.$.button.setCaption("Rename");
+			this.$.name.setValue(feed.title);		
+		}
 
+		this.feed = feed;
+		
 		this.openAtTopCenter();
 		
 		enyo.keyboard.forceShow(4);
-
 		this.$.name.forceFocus();
 
 	},
 
-	rename: function(){
+	finish: function(){
 		if(this.$.name.isEmpty() || this.$.name.getValue() === this.feed.title){
 			this.close();
 		} else {
-			if(this.feed.isFeed){
-				reader.editFeedTitle(this.feed.id, this.$.name.getValue(), enyo.bind(this, this.close));			
-			} else if(this.feed.isLabel){
-				reader.editLabelTitle(this.feed.label, this.$.name.getValue(), enyo.bind(this, this.close));
-			}
+			if(this.opt === "new label"){
+				reader.editFeedLabel(this.feed.id, "user/-/label/" + this.$.name.getValue(), true, enyo.bind(this, this.close));				
+			} else {
+				if(this.feed.isFeed){
+					reader.editFeedTitle(this.feed.id, this.$.name.getValue(), enyo.bind(this, this.close));			
+				} else if(this.feed.isLabel){
+					reader.editLabelTitle(this.feed.label, this.$.name.getValue(), enyo.bind(this, this.close));
+				}	
+			} 
+			
 		}
 	},
 

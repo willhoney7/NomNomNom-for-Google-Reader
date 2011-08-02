@@ -268,12 +268,13 @@ reader = {
 
 	//organizes feeds based on categories/labels.
 	organizeFeeds: function(subscriptions){
-		var categories = [
-			{title: "All", id: reader.TAGS["reading-list"], feeds: subscriptions, isAll: true, isSpecial: true},
-			{title: "Starred", id: reader.TAGS["star"], isSpecial: true},
-			{title: "Shared", id: reader.TAGS["share"], isSpecial: true}
-		],
-		uncategorized = [];
+		var categories = [],
+			specialCategories = [
+				{title: "All", id: reader.TAGS["reading-list"], feeds: subscriptions, isAll: true, isSpecial: true},
+				{title: "Starred", id: reader.TAGS["star"], isSpecial: true},
+				{title: "Shared", id: reader.TAGS["share"], isSpecial: true}
+			],
+			uncategorized = [];
 
 		for(var i = 0; i < subscriptions.length; i++){
 			subscriptions[i].isFeed = true;
@@ -309,13 +310,16 @@ reader = {
 				}
 			}
 		}
+		categories = _.sortBy(categories, function(category){
+			return category.title;
+		});
 		_.each(categories, function(category){
-			_.sortBy(category.feeds, function(feed){
-				return feed.sortid;
+			category.feeds = _.sortBy(category.feeds, function(feed){
+				return feed.title;
 			});
 		});
 
-		return categories.concat(uncategorized);
+		return [].concat(specialCategories, categories, uncategorized);
 	},
 
 	//returns url for image to use in the icon

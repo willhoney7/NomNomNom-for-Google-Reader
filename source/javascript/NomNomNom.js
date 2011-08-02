@@ -41,11 +41,13 @@ enyo.kind({
 		this.$.feedIconList.$.grid.setClassName("iconContainer enyo-grid"); //set it to resize as a grid
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
+		this.$.feedView.$.itemView.hide();
+		
 		setTimeout(enyo.bind(this, function(){
 			this.$.feedView.hide();
-			this.$.feedView.$.itemView.hide();
+			this.$.feedView.$.snapScroller.resized();
 			//hide the feedView once it off the screen
-		}), 500);	
+		}), 800);	
 
 		this.$.feedIconList.loadFeeds();
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this

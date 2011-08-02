@@ -19,7 +19,7 @@ enyo.kind({
 			]},
 			{kind: enyo.HtmlContent, flex: 1, name: "content", className: "content"}
 		]},
-		{name: "webView", kind: enyo.BasicWebView, flex: 1, showing: false},
+		//{name: "webView", kind: enyo.BasicWebView, flex: 1, showing: false},
 		{kind: enyo.Toolbar, components: [
 			{kind: enyo.GrabButton},
 			{kind: enyo.Spacer},
@@ -60,9 +60,8 @@ enyo.kind({
 		};
 		this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
 
-		this.$.webView.setShowing(false);
+		//this.$.webView.setShowing(false);
 		this.$.scroller.setShowing(true);
-
 
 		if(this.item.enclosure && this.item.enclosure.length > 0){
 			for(var i = 0; i < this.item.enclosure.length; i++){

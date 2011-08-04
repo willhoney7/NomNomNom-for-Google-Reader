@@ -19,10 +19,13 @@ enyo.kind({
 		{name: "errorResponse", className: "errorText"}
 		
 	],
+	closeAndRefresh: function(){
+		this.close();
+		AppUtils.refreshIcons();
+	},
 	close: function(){
 		this.inherited(arguments);
-		enyo.keyboard.setManualMode(false); // closes the keyboard
-		AppUtils.refreshIcons();
+		enyo.keyboard.setManualMode(false); // closes the keyboard		
 	},
 	showAtCenter: function(feed, opt){
 		if(this.lazy) {
@@ -56,9 +59,9 @@ enyo.kind({
 				reader.editFeedLabel(this.feed.id, "user/-/label/" + this.$.name.getValue(), true, enyo.bind(this, this.close));				
 			} else {
 				if(this.feed.isFeed){
-					reader.editFeedTitle(this.feed.id, this.$.name.getValue(), enyo.bind(this, this.close));			
+					reader.editFeedTitle(this.feed.id, this.$.name.getValue(), enyo.bind(this, this.closeAndRefresh));			
 				} else if(this.feed.isLabel){
-					reader.editLabelTitle(this.feed.label, this.$.name.getValue(), enyo.bind(this, this.close));
+					reader.editLabelTitle(this.feed.label, this.$.name.getValue(), enyo.bind(this, this.closeAndRefresh));
 				}	
 			} 
 			

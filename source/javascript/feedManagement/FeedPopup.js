@@ -19,12 +19,19 @@ enyo.kind({
 		}
 		if(this.feed.inside){
 			items.push(
-				{caption: $L("Remove Label"), value: "removeLabel"} 
+				{caption: $L("Labels"), value: "", components: [
+					{caption: $L("Remove Label"), value: "removeLabel"}, 
+					{caption: $L("Add New Label"), value: "addLabel"}
+
+				]} 
 			);
+		} else {
+			items.push(
+				{caption: $L("Add Label"), value: "addLabel"}
+			)
 		}
 		if(this.feed.isFeed){
 			items.push(
-				{caption: $L("Add Label"), value: "addLabel"}, 
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
 		}
@@ -77,7 +84,7 @@ enyo.kind({
 					}
 					
 				}));
-				items.push({caption: $L("New label..."), labelId: "new"});
+				items.push({caption: $L("New label..."), style: "font-style: italic", labelId: "new"});
 				this.$.labelsPopup.setItems(items);
 				this.$.labelsPopup.openAtEvent(this.event);
 				break;

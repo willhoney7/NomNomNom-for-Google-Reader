@@ -6,7 +6,7 @@ enyo.kind({
 	components: [
 		{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
 		{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-		{name: "feedView", kind: "NomNomNom.FeedView", showing: false, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
+		{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
 
 	],
 	create: function(){
@@ -66,6 +66,7 @@ enyo.kind({
 		AppUtils.iconListShowing = false;
 	},
 	viewFeed: function(inSender, inFeed, inFeedIcon){
+
 		this.inFeedIcon = inFeedIcon;
 		this.inFeedIcon.startSpinning();
 	    this.$.feedView.loadFeed(inFeed);	
@@ -74,9 +75,14 @@ enyo.kind({
 		this.inFeedIcon.stopSpinning();
 		
 		if(hasItems){
+			this.$.feedView.setShowing(true);	
+			this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");	
+
 			this.hideIcons();
+			setTimeout(enyo.bind(this, function(){
+				this.$.feedView.applyStyle("min-height", null);	
+			}), 500);
 			
-			this.$.feedView.setShowing(true);		
 		    this.$.toolbar.setTitle(inSender.getFeed().title);	
 		} else {
 

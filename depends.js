@@ -8,6 +8,7 @@ enyo.depends(
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/ekl/Layout/",
+	"vendors/ekl/Popup/",
 
 
 	//load the google reader library

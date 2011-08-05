@@ -2,7 +2,7 @@ enyo.kind({
 	name: "FeedPopup",
 	kind: enyo.Control,
 	components: [
-		{kind: enyo.PopupSelect, onSelect: "popupSelect"},
+		{kind: "ekl.Popup.PopupSelect", name: "popupSelect", onClose: "popupClosed", onSelect: "popupSelect"},
 		{kind: "RenamePopup"},
 		{kind: "ConfirmPopup"},
 		{name: "labelsPopup", kind: enyo.PopupSelect, onSelect: "labelSelect"}
@@ -13,31 +13,61 @@ enyo.kind({
 			this.$.popupSelect.validateComponents();
 		}
 		this.feed = feed;
+		this.refreshIconsFlag = false;
 		var items = [];
-		if(!this.feed.isAll){
-			items.push({caption: $L("Rename"), value: "rename"});		
-		}
-		if(this.feed.inside){
-			items.push(
-				{caption: $L("Labels"), value: "", components: [
-					{caption: $L("Remove Label"), value: "removeLabel"}, 
-					{caption: $L("Add New Label"), value: "addLabel"}
 
-				]} 
-			);
-		} else {
+		if(this.feed.count > 0){
+			items.push({caption: $L("Mark all as Read"), value: "markAllRead"});
+		}
+		if(!this.feed.isSpecial){
 			items.push(
-				{caption: $L("Add Label"), value: "addLabel"}
-			)
+				{caption: $L("Rename"), value: "rename"}
+			);
+		}
+		if(this.feed.isFeed){			
+			var labels = [];
+			_.each(reader.getLabels(), enyo.bind(this, function(item){
+				var exists = false;
+				_.each(this.feed.categories, function(categories){
+					if(item.id === categories.id){
+						exists = true;
+					}
+				});
+				labels.push({
+					kind: enyo.Item,
+					labelId: item.id,
+					layoutKind: "HFlexLayout",
+					style: "padding: 5px 10px; background-color: rgba(50, 50, 50, .2)",
+					components: [
+						{content:  item.title, flex: 1, style: "font-size: 16px; line-height: 30px; padding-right: 10px;"},
+						{kind: enyo.CheckBox, checked: exists, onChange: "labelCheckboxChanged", labelId: item.id, owner: this},
+					]
+				});				
+			}));
+			
+			labels.push({
+				kind: enyo.Item,
+				tapHighlight: true,
+				labelId: "new",
+				layoutKind: "HFlexLayout",
+				onclick: "newLabel",
+				owner: this,
+				style: "padding: 5px 10px; background-color: rgba(50, 50, 50, .2)",
+				components: [
+					{content:  $L("Add new label..."), flex: 1, style: "font-style: italic; font-size: 16px; line-height: 30px; padding-right: 10px;"},
+				]
+			});
+
+			items.push(
+				{caption: $L("Labels"), components: labels}
+			);
 		}
 		if(this.feed.isFeed){
 			items.push(
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
 		}
-		if(this.feed.count > 0){
-			items.unshift({caption: $L("Mark all as Read"), value: "markAllRead"});
-		}
+		
 		this.event = event;
 		if(items.length > 0){
 			this.$.popupSelect.setItems(items);
@@ -78,8 +108,17 @@ enyo.kind({
 					});
 					if(!exists){
 						items.push({
+							kind: enyo.Item,
 							caption: item.title,
-							labelId: item.id
+							labelId: item.id,
+							layoutKind: "HFlexLayout",
+							style: "padding: 5px 10px",
+							components: [
+								//{kind: enyo.HFlexBox, style: "font-size: 16px",components: [
+									{content:  item.title, flex: 1, style: "font-size: 16px; line-height: 30px; padding-right: 10px;"},
+									{kind: enyo.CheckBox},
+								//]}
+							]
 						})	
 					}
 					
@@ -125,6 +164,20 @@ enyo.kind({
 			} 
 			console.log("Adding label");
 			reader.editFeedLabel(this.feed.id, inSelection.labelId, true, AppUtils.refreshIcons);
+		}
+	},
+
+	labelCheckboxChanged: function(inSender){
+		this.refreshIconsFlag = true;
+		reader.editFeedLabel(this.feed.id, inSender.labelId, inSender.checked, function(){});		
+	},
+	newLabel: function(inSender){
+		this.$.popupSelect.close();
+		this.$.renamePopup.showAtCenter(this.feed, "new label");		
+	},
+	popupClosed: function(){
+		if(this.refreshIconsFlag === true){
+			AppUtils.refreshIcons();		
 		}
 	}
 });

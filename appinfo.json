@@ -1,6 +1,6 @@
 {
 	"id": "com.tibfib.app.nomnomnom",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"vendor": "Will Honey (Tibfib)",
 	"type": "web",
 	"main": "index.html",

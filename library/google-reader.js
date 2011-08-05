@@ -324,7 +324,7 @@ reader = {
 
 	//returns url for image to use in the icon
 	getIconForFeed: function(feedUrl){
-		return "http://www.google.com/s2/favicons?domain_url=" + decodeURI(feedUrl);
+		return "http://www.google.com/s2/favicons?domain_url=" + encodeURIComponent(feedUrl);
 	},
 
 	//get unread counts from google reader
@@ -431,7 +431,7 @@ reader = {
 	subscribeFeed: function(feedUrl, successCallback, title){
 		reader.editFeed({
 			ac: "subscribe",
-			s: "feed/" + feedUrl,
+			s: "feed/" + encodeURIComponent(feedUrl),
 			t: title || undefined
 		}, successCallback);
 
@@ -531,7 +531,7 @@ reader = {
 			
 		reader.makeRequest({
 			method: "GET",
-			url: reader.BASE_URL + reader.STREAM_PATH + feedUrl,
+			url: reader.BASE_URL + reader.STREAM_PATH + encodeURIComponent(feedUrl),
 			parameters: params, /*{
 				//ot: new Date().getTime(), //ot=[unix timestamp] : The time from which you want to retrieve items. Only items that have been crawled by Google Reader after this time will be returned.
 				r: "d",						//r=[d|n|o] : Sort order of item results. d or n gives items in descending date order, o in ascending order.

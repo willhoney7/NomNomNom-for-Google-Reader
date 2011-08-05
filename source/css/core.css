@@ -4,10 +4,11 @@
 	white-space: nowrap;
 }
 
-body {
+/*body {
 	background: url(../images/background_blue.png) top left no-repeat #1A4D87;
 	background-size: 100%;
-}
+}*/
+
 
 @-webkit-keyframes spinning {
 	from {
@@ -34,6 +35,8 @@ body {
 
 .feedIconList {
 	-webkit-transition: height 500ms ease-in-out;
+	background: url(../images/iconList_background.png) top left repeat silver;
+
 }
 
 .iconContainer {
@@ -109,9 +112,12 @@ body {
 }
 
 .feedIcon .title {
+	/*color: white;*/
+	font-size: 16px;
+	padding: 7px 3px 0px 3px;
+}
+.feedScroller .feedIcon .title{
 	color: white;
-	font-size: 14px;
-	padding: 0px 3px;
 }
 
 .feedIcon .unreadCount {
@@ -134,7 +140,7 @@ body {
 }
 .feedIcon .spinner {
 	position: absolute;
-	bottom: 75px;
+	bottom: 85px;
 	left: 70px;
 }
 

@@ -33,7 +33,7 @@ enyo.kind({
 		this.$.scroller.createComponents(components, {owner: this});
 		this.render();
 
-		this.openAtControl(inControl, {top: -15, left: -28});
+		this.openAtControl(inControl, {top: -15, left: -24});
 	},
 	viewFeed: function(inSender, inEvent){
 		this.doViewFeed(inSender.feed);

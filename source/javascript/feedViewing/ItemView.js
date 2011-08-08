@@ -7,7 +7,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: enyo.Header, components: [
-			{name: "title", className: "title"},
+			{name: "title", className: "title truncating-text"},
 			{kind: enyo.Spacer},
 			{name: "date", className: "date"}
 		]},
@@ -17,7 +17,7 @@ enyo.kind({
 				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
 				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
 			]},
-			{kind: enyo.HtmlContent, flex: 1, name: "content", className: "content"}
+			{kind: enyo.HtmlContent, flex: 1, name: "content", onLinkClick: "linkClick", className: "content"}
 		]},
 		//{name: "webView", kind: enyo.BasicWebView, flex: 1, showing: false},
 		{kind: enyo.Toolbar, components: [
@@ -42,7 +42,7 @@ enyo.kind({
 		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated))
 
 		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
-		this.$.content.setContent((this.item.author ? "By " + this.item.author + "<br/>": "<br/>") + itemContent);
+		this.$.content.setContent((this.item.author ? "By " + this.item.author + "<br/>": "") + itemContent);
 
 		this.item.read = true;
 		this.item.star = false;
@@ -87,6 +87,10 @@ enyo.kind({
 		if(this.sound){
 			this.$.launchMediaStreamer.call({target: this.sound});	
 		}
+	},
+
+	linkClick: function(inSender, inUrl){
+    	window.location(inUrl);
 	},
 	
 	openInBrowser: function(){

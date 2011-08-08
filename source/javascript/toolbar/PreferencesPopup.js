@@ -10,10 +10,10 @@ enyo.kind({
 	
 	},
 	components: [
-		{layoutKind: "HFlexLayout", components: [
-			{content: $L("Preferences")},
+		{layoutKind: "HFlexLayout", style: "position: relative", components: [
+			{content: "Preferences"},
 			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: relative; bottom: 7px;", onclick: "close"}
+			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
 		{kind: enyo.RowGroup, caption: "Icons", components: [
 			{kind: "Item", layoutKind: "HFlexLayout", components: [

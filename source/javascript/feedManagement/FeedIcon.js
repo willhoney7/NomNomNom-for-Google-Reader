@@ -27,8 +27,22 @@ enyo.kind({
 
 	feedChanged: function(){
 		//caption: this.feeds[i].label || this.feeds[i].title, icon: });
-			
-		this.$.image.setSrc(this.getIcon());
+		
+		this.$.imageContainer.setClassName("imageContainer");
+		if(this.getFeed().isFeed){
+			this.$.image.setSrc(this.getIcon());
+		} else if(this.getFeed().isAll){
+			this.$.imageContainer.addClass("all");
+		} else if(this.getFeed().isSpecial){
+			if(this.getFeed().id === reader.TAGS["star"]){
+				this.$.imageContainer.addClass("star");
+			} else if(this.getFeed().id === reader.TAGS["share"]){
+				this.$.imageContainer.addClass("share");
+			}
+		} else if(this.getFeed().isLabel){
+			this.$.imageContainer.addClass("folder");
+		}
+
 		this.$.title.setContent(this.getFeed().label || this.getFeed().title);
 		if(this.getFeed().count > 0){
 			this.$.count.setShowing(true);
@@ -43,7 +57,7 @@ enyo.kind({
 		}
 	},
 	getIcon: function(){
-		if(this.getFeed().isAll){
+		/*if(this.getFeed().isAll){
 			return "source/images/icon-folder.png";
 		} else if(this.getFeed().isSpecial){
 			if(this.getFeed().id === reader.TAGS["star"]){
@@ -53,9 +67,9 @@ enyo.kind({
 			}
 		} else if(this.getFeed().isLabel){
 			return "source/images/icon-folder.png";
-		} else {
+		} else {*/
 			return reader.getIconForFeed(this.getFeed().id.replace(/feed\//, ""));
-		}
+		//}
 
 	},
 	updateUnreadCount: function(){

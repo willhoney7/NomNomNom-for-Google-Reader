@@ -18,7 +18,7 @@ enyo.kind({
 			//{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		{kind: enyo.RowGroup, components: [
-			{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", alwaysLooksFocused: false},
+			{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: false},
 			{name: "password", kind: enyo.PasswordInput, hint: "Password", alwaysLooksFocused: false},
 		]},
 		{kind: enyo.ActivityButton, content: "Log in", onclick: "login"},

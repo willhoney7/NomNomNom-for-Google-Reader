@@ -20,7 +20,7 @@ enyo.kind({
 	},
 
 	resizeHandler: function(){
-		if(AppUtils.iconListShowing){
+		if(AppUtils.iconListShowing && this.$.feedIconList.$.grid.getClassName() === "iconContainer enyo-grid"){
 			//@TODO: this'll animate resize. Looks funny
 			this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");		
 		}

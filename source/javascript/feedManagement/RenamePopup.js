@@ -9,12 +9,12 @@ enyo.kind({
 	width: "400px",
 	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
 	components: [
-		{kind: enyo.HFlexBox, components: [
+		{layoutKind: "HFlexLayout", style: "position: relative;", components: [
 			{name: "title", content: "Rename"},
 			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: relative; bottom: 10px;", onclick: "close"}
+			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
-		{name: "name", kind: enyo.Input, hint: "Feed Name", selectAllOnFocus: true, alwaysLooksFocused: true},
+		{name: "name", kind: enyo.Input, hint: "Feed Name", style: "margin-top: 5px;", selectAllOnFocus: true, alwaysLooksFocused: true},
 		{name: "button", kind: enyo.ActivityButton, caption: "Rename", onclick: "finish"},
 		{name: "errorResponse", className: "errorText"}
 		

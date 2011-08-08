@@ -2,14 +2,13 @@ enyo.depends(
 	//load vendors
 	"vendors/underscore-min.js",
 	"vendors/underscore.string.min.js",
+	"vendors/zepto.min.js",
 	"vendors/jsHtmlToText.js",
-	"vendors/jquery-1.6.2.min.js",
 	"vendors/spazcore-shorturls.js",
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/ekl/Layout/",
 	"vendors/ekl/Popup/",
-
 
 	//load the google reader library
 	"library/google-reader.js",

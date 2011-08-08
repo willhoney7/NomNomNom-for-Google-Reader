@@ -81,20 +81,27 @@
 	height: 0px;*/
 }
 
+
 .feedIcon .imageContainer {
 	margin: auto;
-	width: 64px;
-	height: 64px;
-	line-height: 64px;
-	-webkit-border-radius: 10px;
-	background-color: white;
+	width: 71px;
+	height: 62px;
+	line-height: 62px;
 	margin-bottom: 5px;
 	position: relative;
-    -webkit-box-shadow: 0px 0px 20px rgba(0, 0, 0, .8);
-    -webkit-transition-property: height, width;
-  	-webkit-transition-duration: 200ms, 200ms;
-  	-webkit-transition-timing-function: ease-in, ease-in;
-
+	background: url(../images/feedIcon.png) top left no-repeat;  
+}
+.feedIcon .imageContainer.all {
+	background-image: url(../images/feedIcon_all.png);
+}
+.feedIcon .imageContainer.star {
+	background-image: url(../images/feedIcon_star.png);
+}
+.feedIcon .imageContainer.share {
+	background-image: url(../images/feedIcon_share.png);
+}
+.feedIcon .imageContainer.folder {
+	background-image: url(../images/feedIcon_folder.png);	
 }
 
 .feedIcon .image {
@@ -102,19 +109,18 @@
 	left: 0px;
 	right: 0px;
 	top: 0px;
-	bottom: 0px;
+	bottom: 23px;
 	margin: auto;
+	-webkit-border-radius: 3px;
 
-	min-width: 20px;
-	min-height: 20px;
-	max-width: 48px;
-	max-height: 48px;
+	width: 20px;
+	height: 20px;
 }
 
 .feedIcon .title {
 	/*color: white;*/
 	font-size: 16px;
-	padding: 7px 3px 0px 3px;
+	padding: 10px 3px 0px 3px;
 }
 .feedScroller .feedIcon .title{
 	color: white;
@@ -122,18 +128,17 @@
 
 .feedIcon .unreadCount {
 	position: relative;
+	bottom: 5px;
 	z-index: 1000;
 
-	height: 17px;
 	width: 100%;
-	font-size: 14px;
+	font-size: 15px;
+	font-weight: bold;
 	line-height: 17px;
 	color: white;
 	padding-bottom: 1px;
-	background-color: silver;/*rgba(255, 0, 0, .6);*/
-	-webkit-border-radius: 0px 0px 10px 10px;
-
-	-webkit-transition: bottom 0.2s ease-in;
+	/*background-color: silver;
+	-webkit-border-radius: 0px 0px 10px 10px;*/
 }
 .feedIcon .open .unreadCount{
 	bottom: 0px;
@@ -145,62 +150,85 @@
 }
 
 .feedView {
-	background-color: black;
+	background: black;
 }
 
 .enyo-sliding-view .enyo-bg {
-	background-color: black;
+	background: url(../images/feedView_background.png) top left no-repeat black;
 }
 
 .itemCard {
-	margin: 10px 5px;
-	-webkit-border-radius: 10px;
-	background-color: white;
+	margin: 25px 20px 0px 0px;
 	overflow: hidden;
+	/*-webkit-border-radius: 10px;*/
 }
-.itemCard .content {
-	padding: 10px;
-	overflow: hidden;
+.itemCard .top {
+	width: 322px;
+	height: 14px;
+	background: url(../images/itemCard_top.png) top left no-repeat;	
+	position: absolute;
+	top: 11px;
 }
 
-.itemCard .bottomToolbar {
-	-webkit-box-shadow: 10px silver;
-    box-shadow: 10px silver;
-	background-color: silver;
-	color: black;
-	text-align: center;
-	font-size: 16px;
-	padding: 5px 10px;
+.itemCard .mainContent {
+	background-color: #F2EDE9;	
+	position: relative;
 }
+
 .itemCard .header {
 	padding: 5px 10px 0px 10px;
-	background-color: silver;
-	/*border-bottom: 1px solid rgba(30, 90, 160, .3);*/
+	background: url(../images/itemCard_separator.png) bottom center no-repeat;
 }
 
 .itemCard .header .title {
-	font-weight: normal;
-	color: black;
-	font-size: 15px;
+	font-weight: bold;
+	font-size: 18px;
 	padding-bottom: 5px;
 }
-.itemCard .date {
-	font-size: 13px;
-	font-weight: normal;
-	padding-left: 2px;
+
+.itemCard .content {
+	padding: 5px 10px 10px 10px;
+	overflow: hidden;
 }
 
-.itemCard .feedTitle {
-	font-size: 16px;
-	padding: 0px 20px;
-}
-.itemCard .summary {
+.itemCard .content .summary {
 	font-size: 14px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	
 	/*max-height: 200px;
 	overflow: hidden;*/
+}
+
+
+.itemCard .bottomToolbar {
+	height: 90px;
+	position: absolute;
+	bottom: 0px;
+	width: 322px;
+	z-index: 1000px;
+	background: url(../images/itemCard_toolbar.png) top left no-repeat;
+}
+.itemCard .bottomToolbar .content {
+	position: relative;
+	top: 50px;
+}
+
+.itemCard .bottomToolbar .feedTitle {
+	font-size: 18px;
+	color: white;
+	padding: 0px 5px 0px 10px;
+}
+.itemCard .bottomToolbar .date {
+	font-size: 18px;
+	color: white;
+	font-weight: normal;
+	padding: 0px 10px 0px 5px;	
+}
+.itemCard .bottomToolbar .unread {
+	position: absolute; 
+	margin-top: -2px;
+	-webkit-transition: opacity 300ms ease-in-out;
 }
 
 /*.feedCard img {
@@ -221,6 +249,7 @@
 	display:inline-block;
 	max-width:80%;
 }
+
 /*
 .feedCard img {
 	display: block;

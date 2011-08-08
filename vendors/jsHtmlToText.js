@@ -18,7 +18,7 @@ HTML decoding functionality provided by: http://code.google.com/p/google-trekker
 function htmlToText(html) {
 	return html
 		// Remove line breaks
-		.replace(/(?:\n|\r\n|\r)/ig,"")
+		.replace(/(?:\n|\r\n|\r)/ig,"\n")
 		// Turn <br>'s into single line breaks. 
 		.replace(/<\s*br[^>]*>/ig,"\n") 
 		// Turn </li>'s into line breaks.
@@ -48,7 +48,7 @@ function htmlToText(html) {
 		// Replace multiple spaces with a single space.
  		.replace(/ {2,}/g," ")
 		// Decode HTML entities.
- 		.replace(/&([^;]+);/g, decodeHtmlEntity );
+ 		.replace(/&([^;]+);/g, decodeHtmlEntity);
 }
 
 function decodeHtmlEntity(m, n) {

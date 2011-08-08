@@ -12,7 +12,7 @@ enyo.kind({
 	},
 	components: [
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
-			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", flex: 1, onSnap: "cardSnap", components: []},
+			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", components: []},
 		]},
 		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
@@ -97,17 +97,16 @@ enyo.kind({
 	},
 
 	cardSnap: function(inSender, inIndex){
-		//this.$.snapScroller.getControls()[inIndex].markRead();
-			setTimeout(enyo.bind(this, this.markViewableCardsRead), 0);
+		
+		setTimeout(enyo.bind(this, this.markViewableCardsRead), 0);
 
-		//console.log("card snap", inIndex, "this.nextIndex", this.nextIndex);
 		if(this.nextIndex && (this.nextIndex - inIndex) <= 5){
 			setTimeout(enyo.bind(this, this.renderSome), 0);
 		}
 	},
 
 	markViewableCardsRead: function(){
-		var cardWidth = parseInt(AppPrefs.get("cardWidth").replace("px", ""), 10) + 10;
+		var cardWidth = parseInt(AppPrefs.get("cardWidth").replace("px", ""), 10) + 20;
 		var numVisible = Math.round(this.$.snapScroller.node.offsetWidth/cardWidth);
 		var offsetIndex = Math.floor(this.$.snapScroller.getScrollLeft()/cardWidth);
 		var controls = this.$.snapScroller.getControls();
@@ -122,7 +121,7 @@ enyo.kind({
 
 	},
 	itemClick: function(inSender, inEvent){
-		this.$.scrollerSlidingView.applyStyle("max-width", "330px");
+		this.$.scrollerSlidingView.applyStyle("max-width", "345px");
 		this.$.snapScroller.setIndex(inSender.getIndex());
 		
 		this.$.itemView.setShowing(true);

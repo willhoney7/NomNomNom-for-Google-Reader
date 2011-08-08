@@ -18,7 +18,7 @@ HTML decoding functionality provided by: http://code.google.com/p/google-trekker
 function htmlToText(html) {
 	return html
 		// Remove line breaks
-		.replace(/(?:\n|\r\n|\r)/ig,"\n")
+		.replace(/(?:\n|\r\n|\r)/ig,"")
 		// Turn <br>'s into single line breaks. 
 		.replace(/<\s*br[^>]*>/ig,"\n") 
 		// Turn </li>'s into line breaks.
@@ -38,13 +38,15 @@ function htmlToText(html) {
  		.replace(/<\s*a[^>]*href=['"](.*?)['"][^>]*>([\s\S]*?)<\/\s*a\s*>/ig, "$2")// ($1)")
 		// Remove all remaining tags. 
  		.replace(/(<([^>]+)>)/ig,"") 
+    //replace our break indicators with real breaks
+    .replace(/\n/g, "<br/>")
 		// Make sure there are never more than two 
 		// consecutive linebreaks.
- 		.replace(/\n{2,}/g,"\n\n")
+ 		.replace(/(?:<br\s*\/?>\s*){2,}/gi,"<br/><br/>")
 		// Remove tabs. 	
  		.replace(/\t/g,"")
 		// Remove newlines at the beginning of the text. 
- 		.replace(/^\n+/m,"") 	
+ 		.replace(/^(?:<br\s*\/?>\s*)+/m,"") 	
 		// Replace multiple spaces with a single space.
  		.replace(/ {2,}/g," ")
 		// Decode HTML entities.

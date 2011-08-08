@@ -15,9 +15,11 @@ enyo.kind({
 			{kind: enyo.HFlexBox, className: "header", components: [
 				{kind: enyo.Control, flex: 1, name: "title", className: "title", allowHtml: true},
 			]},
-			{kind: enyo.Control, flex: 1, className: "content", components: [
-				{kind: enyo.Image, className: "firstImage", showing: true},
-				{kind: enyo.HtmlContent, name: "summary", className: "summary"}
+			{kind: enyo.Scroller, flex: 1, autoVertical: true, components: [
+				{kind: enyo.Control, flex: 1, className: "content", components: [
+					{kind: enyo.Image, className: "firstImage", showing: true},
+					{kind: enyo.HtmlContent, name: "summary", className: "summary"}
+				]},
 			]},
 			{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
 				{kind: enyo.HFlexBox, className: "content", components: [
@@ -55,7 +57,7 @@ enyo.kind({
 		}
 		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
 		
-		this.$.summary.setContent(htmlToText(itemContent));
+		this.$.summary.setContent(htmlToText(itemContent) + "<br/><br/><br/><br/>");
 
 		//setTimeout(enyo.bind(this, function(){
 		//	Cutter.run(document.getElementById(this.$.summary.id), document.getElementById(this.$.summary.id), 100);

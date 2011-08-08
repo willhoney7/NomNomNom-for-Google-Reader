@@ -273,6 +273,10 @@
 	font-size: 14px;
 }
 
+.itemView img {
+	padding: 5px;
+}
+
 
 .errorText {
 	text-align: center;

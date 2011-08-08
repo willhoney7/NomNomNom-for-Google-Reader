@@ -1,4 +1,9 @@
 /*
+  I have made some light modifications to fit my needs. An awesome script.
+
+*/
+
+/*
 Copyright (C) 2006 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,15 +43,14 @@ function htmlToText(html) {
  		.replace(/<\s*a[^>]*href=['"](.*?)['"][^>]*>([\s\S]*?)<\/\s*a\s*>/ig, "$2")// ($1)")
 		// Remove all remaining tags. 
  		.replace(/(<([^>]+)>)/ig,"") 
-    //replace our break indicators with real breaks
+    //replace our new lines with breaks
     .replace(/\n/g, "<br/>")
-		// Make sure there are never more than two 
-		// consecutive linebreaks.
+		// Make sure there are never more than two consecutive linebreaks.
  		.replace(/(?:<br\s*\/?>\s*){2,}/gi,"<br/><br/>")
 		// Remove tabs. 	
  		.replace(/\t/g,"")
 		// Remove newlines at the beginning of the text. 
- 		.replace(/^(?:<br\s*\/?>\s*)+/m,"") 	
+ 		.replace(/^\s*(?:<br\s*\/?>\s*)+/m,"") 	
 		// Replace multiple spaces with a single space.
  		.replace(/ {2,}/g," ")
 		// Decode HTML entities.

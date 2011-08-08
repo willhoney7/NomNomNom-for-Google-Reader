@@ -13,6 +13,10 @@ enyo.kind({
 	components: [
 		{name: "scroller", flex: 1, kind: enyo.BasicScroller, autoHorizontal: false, horizontal: false, autoVertical: true, components: []}
 	],
+	close: function(){
+		this.owner.folderOpen = false
+		this.inherited(arguments);	
+	},
 	create: function(){
 		this.inherited(arguments);
 	},

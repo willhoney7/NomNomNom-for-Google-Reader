@@ -6,7 +6,7 @@ enyo.kind({
 		onViewFeed: ""
 	},
 	components: [
-		{kind: enyo.Scroller, autoVertical: false, vertical: false, flex: 1, components: [
+		{kind: enyo.Scroller, autoVertical: false, vertical: false, onScrollStart: "scrollStart", flex: 1, components: [
 			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
 
@@ -82,7 +82,7 @@ enyo.kind({
 			if((AppPrefs.get("hideRead") === true && feeds[i].count > 0 ) || (AppPrefs.get("hideRead") === false || feeds[i].isSpecial)){
 				if((feeds[i].id === reader.TAGS["star"] && AppPrefs.get("showStarred")) || feeds[i].id !== reader.TAGS["star"]){
 					if((feeds[i].id === reader.TAGS["share"] && AppPrefs.get("showShared")) || feeds[i].id !== reader.TAGS["share"]){
-						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup"});			
+						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup", onFolderOpen: "folderOpened"});			
 					}
 				}
 			}		
@@ -121,5 +121,15 @@ enyo.kind({
 	feedSelected: function(inSender, inIndex){
 		this.doViewFeed(this.popupFeeds[inIndex]);
 	},
+
+	folderOpened: function(inSender, inFolderPopup){
+		this.openedFolderPopup = inFolderPopup;
+	},
+	scrollStart: function(inSender, inIndex){
+		if(this.openedFolderPopup && this.openedFolderPopup.isOpen){
+			this.openedFolderPopup.close();
+			this.openedFolderPopup = null;
+		}
+	}
 	
 });

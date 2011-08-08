@@ -7,7 +7,8 @@ enyo.kind({
 	},	
 	events: {
 		onViewFeed: "",
-		onViewFeedPopup: ""
+		onViewFeedPopup: "",
+		onFolderOpen: "",
 	},
 	components: [
 		{kind: enyo.VFlexBox, className: "icon", width: "120px", onclick: "viewFeed", onmousehold: "viewFeedPopup", components: [
@@ -57,20 +58,7 @@ enyo.kind({
 		}
 	},
 	getIcon: function(){
-		/*if(this.getFeed().isAll){
-			return "source/images/icon-folder.png";
-		} else if(this.getFeed().isSpecial){
-			if(this.getFeed().id === reader.TAGS["star"]){
-				return "source/images/icon-starred.png";
-			} else if(this.getFeed().id === reader.TAGS["share"]){
-				return "source/images/icon-shared.png";
-			}
-		} else if(this.getFeed().isLabel){
-			return "source/images/icon-folder.png";
-		} else {*/
-			return reader.getIconForFeed(this.getFeed().id.replace(/feed\//, ""));
-		//}
-
+		return reader.getIconForFeed(this.getFeed().id.replace(/feed\//, ""));
 	},
 	updateUnreadCount: function(){
 		if(this.getFeed().count > 0){
@@ -84,6 +72,7 @@ enyo.kind({
 		if(this.getFeed().isFeed === true || this.getFeed().isSpecial || this.inside){
 			this.doViewFeed(this.feed);
 		} else {
+			this.doFolderOpen(this.$.feedFolderPopup);
 			this.$.feedFolderPopup.showAtControl(this.$.imageContainer);
 		}
 	},

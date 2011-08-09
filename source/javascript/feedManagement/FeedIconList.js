@@ -9,6 +9,7 @@ enyo.kind({
 		{kind: enyo.Scroller, autoVertical: false, vertical: false, onScrollStart: "scrollStart", flex: 1, components: [
 			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
+		{kind: enyo.Control, className: "fade"},
 
 		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
 		{kind: "FeedPopup"},

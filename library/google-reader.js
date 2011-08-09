@@ -133,10 +133,13 @@ reader = {
 				}
 			} else if(request.readyState === 4){
 				if(obj.method === "POST"){
-					//If it failed and this is a post request, try getting a new token, then do the request again
-					reader.getToken(function(){
-						reader.makeRequest(obj);
-					}, obj.onFailure);
+					if(!obj.tried){
+						//If it failed and this is a post request, try getting a new token, then do the request again
+						reader.getToken(function(){
+							obj.tried = true;
+							reader.makeRequest(obj);
+						}, obj.onFailure);
+					}
 				} else {
 					if(obj.onFailure){
 						obj.onFailure(request);
@@ -431,7 +434,7 @@ reader = {
 	subscribeFeed: function(feedUrl, successCallback, title){
 		reader.editFeed({
 			ac: "subscribe",
-			s: "feed/" + encodeURIComponent(feedUrl),
+			s: "feed/" + feedUrl,
 			t: title || undefined
 		}, successCallback);
 

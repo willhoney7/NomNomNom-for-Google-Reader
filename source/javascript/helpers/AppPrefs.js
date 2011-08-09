@@ -7,6 +7,8 @@
 
 	var preferences = enyo.mixin({
 		"tapGets": "unread", //"unread" or "all",
+		"itemCardFontSize": "14px",
+		"itemViewFontSize": "14px",
 		"cardWidth": "322px",
 		"hideRead": false,	//whether to show icons that have no unread icons
 		"showStarred": true,

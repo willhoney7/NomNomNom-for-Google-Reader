@@ -17,7 +17,13 @@ enyo.kind({
 		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
 	create: function(){
-		this.inherited(arguments);	
+		this.inherited(arguments);
+		AppUtils.refreshItems = enyo.bind(this, function(){
+			_.each(this.$.snapScroller.getControls(), function(control){
+				control.renderPrefs();
+			});
+			this.$.itemView.renderPrefs();
+		});
 	},
 	loadFeed: function(inFeed){
 		this.$.itemView.hide();

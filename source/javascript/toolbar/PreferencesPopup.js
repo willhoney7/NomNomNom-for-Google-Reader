@@ -19,18 +19,56 @@ enyo.kind({
 			{kind: "Item", layoutKind: "HFlexLayout", components: [
 				{content: $L("Hide Read"), kind: enyo.Control},
 				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "hideRead", rerender: true, onChange: "setPreference"}
+				{kind: "CheckBox", preferenceProperty: "hideRead", rerenderManagement: true, onChange: "setPreference"}
 			]},
 			{kind: "Item", layoutKind: "HFlexLayout", components: [
 				{content: $L("Show Starred Feed"), kind: enyo.Control},
 				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "showStarred", rerender: true, onChange: "setPreference"}
+				{kind: "CheckBox", preferenceProperty: "showStarred", rerenderManagement: true, onChange: "setPreference"}
 			]},
 			{kind: "Item", layoutKind: "HFlexLayout", components: [
 				{content: $L("Show Shared Feed"), kind: enyo.Control},
 				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "showShared", rerender: true, onChange: "setPreference"}
+				{kind: "CheckBox", preferenceProperty: "showShared", rerenderManagement: true, onChange: "setPreference"}
 			]},
+		]},
+		{kind: enyo.RowGroup, caption: "Article Previews", components: [
+			{kind: "Item", layoutKind: "HFlexLayout", components: [
+				{content: $L("Font-Size"), kind: enyo.Control},
+				{kind: enyo.Spacer},
+				{kind: "ListSelector", value: "", preferenceProperty: "itemCardFontSize", rerenderView: true, onChange: "setPreference", items: [
+					"10px",
+					"11px",
+					"12px",
+					"13px",
+					"14px",
+					"15px",
+					"16px",
+					"17px",
+					"18px",
+					"19px",
+					"20px"
+				]}
+			]}
+		]},
+		{kind: enyo.RowGroup, caption: "Article Full View", components: [
+			{kind: "Item", layoutKind: "HFlexLayout", components: [
+				{content: $L("Font-Size"), kind: enyo.Control},
+				{kind: enyo.Spacer},
+				{kind: "ListSelector", value: "", preferenceProperty: "itemViewFontSize", rerenderView: true, onChange: "setPreference", items: [
+					"10px",
+					"11px",
+					"12px",
+					"13px",
+					"14px",
+					"15px",
+					"16px",
+					"17px",
+					"18px",
+					"19px",
+					"20px"
+				]}
+			]}
 		]},
 		{kind: enyo.RowGroup, caption: "Account", components: [
 			{kind: "Item", layoutKind: "VFlexLayout", components: [
@@ -71,8 +109,10 @@ enyo.kind({
 		var value = (inSender.kind === "CheckBox") ? inSender.getChecked() : inValue;
 		AppPrefs.set(inSender.preferenceProperty, value);
 
-		if(inSender.rerender){
+		if(inSender.rerenderManagement){
 			AppUtils.refreshIcons();
+		} else if(inSender.rerenderView){
+			AppUtils.refreshItems();
 		}
 	},
 

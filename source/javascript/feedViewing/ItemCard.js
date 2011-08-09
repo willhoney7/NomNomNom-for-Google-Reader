@@ -63,12 +63,13 @@ enyo.kind({
 		//	Cutter.run(document.getElementById(this.$.summary.id), document.getElementById(this.$.summary.id), 100);
 		//}), 100);
 				
-		this.item.read = true;
+		this.item.read = false;
 		this.item.star = false;
 		this.item.shared = false;
+		var readRegExp = new RegExp(reader.TAGS["read"].replace("user/-", "") + "$", "ig");
 		for(var i = 0; i < this.item.categories.length; i++){
-			if(_(this.item.categories[i]).includes(reader.TAGS["fresh"].replace("user/-", ""))){
-				this.item.read = false;				
+			if(readRegExp.test(this.item.categories[i])){
+				this.item.read = true;				
 			}
 			if(_(this.item.categories[i]).includes(reader.TAGS["star"].replace("user/-", ""))){
 				this.item.star = true;				
@@ -81,13 +82,19 @@ enyo.kind({
 		if(this.item.star){
 			this.$.star.setSrc("source/images/star_yes.png");
 		}
+
 		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
 		this.$.feedTitle.setContent(this.item.origin.title);
+
+		this.renderPrefs();
 		
 	},
 	rendered: function(){
 		this.inherited(arguments);
 		this.$.feedTitle.applyStyle("max-width", this.$.bottomToolbar.getBounds().width - 65 - this.$.date.getBounds().width + "px");
+	},
+	renderPrefs: function(){
+		this.$.summary.applyStyle("font-size", AppPrefs.get("itemCardFontSize"));	
 	},
 	markRead: function(){
 		if(this.item.read === false){

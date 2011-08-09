@@ -77,10 +77,15 @@ enyo.kind({
 			this.$.soundContainer.hide();
 		}
 
+		this.renderPrefs(); 
+
 		//this.$.unread.setShowing(!this.item.read);
 		//this.$.feedTitle.setContent(this.item.origin.title);
 
 		//this.$.pane.selectViewByName("view");
+	},
+	renderPrefs: function(){
+		this.$.content.applyStyle("font-size", AppPrefs.get("itemViewFontSize"));	
 	},
 	playAudio: function(){
 		//OPEN STREAMING media player

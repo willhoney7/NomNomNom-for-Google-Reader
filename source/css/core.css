@@ -26,6 +26,14 @@
 	-webkit-animation-timing-function: linear;
 }
 
+/*.enyo-toolbar {
+	-webkit-border-image: url(this/does/not/exist.png) 2 4 repeat stretch;
+	border-width: 2px 4px;
+	background: url(../images/bar.png) top left repeat-x black;
+}*/
+.enyo-toolbar {
+	background-color: black;	
+}
 .toolbarText {
 	color: white; 
 	margin: 0px 10px; 
@@ -43,6 +51,14 @@
 	padding: 10px;
 }
 
+.feedIconList .fade {
+	width: 100%;
+	height: 360px;
+	position: absolute;
+	bottom: 0px;
+	background: url(../images/iconList_gridfade.png) bottom left repeat-x;
+	pointer-events: none;
+}
 
 .enyo-grid-div {
 	float: left;
@@ -118,9 +134,9 @@
 }
 
 .feedIcon .title {
-	/*color: white;*/
+	color: white;
 	font-size: 16px;
-	padding: 10px 3px 0px 3px;
+	padding: 9px 3px 0px 3px;
 }
 .feedScroller .feedIcon .title{
 	color: white;
@@ -267,9 +283,18 @@
 	font-size: 14px;
 }
 
+.itemView .enyo-header {
+	background-color: rgb(224, 220, 217);
+}
+
+.itemView,
+.itemView .enyo-scroller {
+	background-color: #F2EDE9;
+}
+
 .itemView .content {
 	padding: 10px;
-	background-color: rgb(216, 216, 216);
+	background-color: #F2EDE9;
 	font-size: 14px;
 }
 

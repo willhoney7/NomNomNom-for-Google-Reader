@@ -15,72 +15,73 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
-		{kind: enyo.RowGroup, caption: "Icons", components: [
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
-				{content: $L("Hide Read"), kind: enyo.Control},
-				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "hideRead", rerenderManagement: true, onChange: "setPreference"}
-			]},
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
-				{content: $L("Show Starred Feed"), kind: enyo.Control},
-				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "showStarred", rerenderManagement: true, onChange: "setPreference"}
-			]},
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
-				{content: $L("Show Shared Feed"), kind: enyo.Control},
-				{kind: enyo.Spacer},
-				{kind: "CheckBox", preferenceProperty: "showShared", rerenderManagement: true, onChange: "setPreference"}
-			]},
-		]},
-		{kind: enyo.RowGroup, caption: "Article Previews", components: [
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
-				{content: $L("Font-Size"), kind: enyo.Control},
-				{kind: enyo.Spacer},
-				{kind: "ListSelector", value: "", preferenceProperty: "itemCardFontSize", rerenderView: true, onChange: "setPreference", items: [
-					"10px",
-					"11px",
-					"12px",
-					"13px",
-					"14px",
-					"15px",
-					"16px",
-					"17px",
-					"18px",
-					"19px",
-					"20px"
-				]}
-			]}
-		]},
-		{kind: enyo.RowGroup, caption: "Article Full View", components: [
-			{kind: "Item", layoutKind: "HFlexLayout", components: [
-				{content: $L("Font-Size"), kind: enyo.Control},
-				{kind: enyo.Spacer},
-				{kind: "ListSelector", value: "", preferenceProperty: "itemViewFontSize", rerenderView: true, onChange: "setPreference", items: [
-					"10px",
-					"11px",
-					"12px",
-					"13px",
-					"14px",
-					"15px",
-					"16px",
-					"17px",
-					"18px",
-					"19px",
-					"20px"
-				]}
-			]}
-		]},
-		{kind: enyo.RowGroup, caption: "Account", components: [
-			{kind: "Item", layoutKind: "VFlexLayout", components: [
-				{kind: enyo.HFlexBox, components: [
-					{flex: 1, name: "email"},
-
+		{kind: enyo.Scroller, height: "450px", autoVertical: false, components: [
+			{kind: enyo.RowGroup, caption: "Icons", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Hide Read"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "hideRead", rerenderManagement: true, onChange: "setPreference"}
 				]},
-				{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "logout"}
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Show Starred Feed"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "showStarred", rerenderManagement: true, onChange: "setPreference"}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Show Shared Feed"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "showShared", rerenderManagement: true, onChange: "setPreference"}
+				]},
 			]},
-		]},
-		{name: "errorResponse", className: "errorText"}
-		
+			{kind: enyo.RowGroup, caption: "Article Previews", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Font-Size"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "ListSelector", value: "", preferenceProperty: "itemCardFontSize", rerenderView: true, onChange: "setPreference", items: [
+						"10px",
+						"11px",
+						"12px",
+						"13px",
+						"14px",
+						"15px",
+						"16px",
+						"17px",
+						"18px",
+						"19px",
+						"20px"
+					]}
+				]}
+			]},
+			{kind: enyo.RowGroup, caption: "Article Full View", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Font-Size"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "ListSelector", value: "", preferenceProperty: "itemViewFontSize", rerenderView: true, onChange: "setPreference", items: [
+						"10px",
+						"11px",
+						"12px",
+						"13px",
+						"14px",
+						"15px",
+						"16px",
+						"17px",
+						"18px",
+						"19px",
+						"20px"
+					]}
+				]}
+			]},
+			{kind: enyo.RowGroup, caption: "Account", components: [
+				{kind: "Item", layoutKind: "VFlexLayout", components: [
+					{kind: enyo.HFlexBox, components: [
+						{flex: 1, name: "email"},
+
+					]},
+					{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "logout"}
+				]},
+			]},
+
+		]}		
 	],
 	close: function(){
 		this.inherited(arguments);

@@ -196,6 +196,12 @@ reader = {
 			}
 		});
 	},
+	logout: function(){
+		localStorage["Auth"] = undefined;
+		reader.setUser({});
+		reader.setAuth("");
+		reader.setFeeds([]);
+	},
 	getUserInfo: function(successCallback, failCallback){
 		reader.makeRequest({
 			method: "GET",

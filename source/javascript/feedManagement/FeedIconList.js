@@ -41,13 +41,10 @@ enyo.kind({
 	},
 
 	logout: function(){
-
-		localStorage["Auth"] = undefined;
-		localStorage["User"] = "{}";
-			
+		reader.logout();
+		
 		this.$.grid.destroyControls();
 		this.$.grid.render();
-		reader.setFeeds([]);
 
 		setTimeout(enyo.bind(this, function(){
 			this.$.login.showAtCenter();		

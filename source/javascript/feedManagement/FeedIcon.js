@@ -63,7 +63,8 @@ enyo.kind({
 	updateUnreadCount: function(){
 		if(this.getFeed().count > 0){
 			this.$.count.setShowing(true);
-			this.$.count.setContent(this.getFeed().count);		
+			var count = (this.getFeed().count === 1000) ? "1000+" : this.getFeed().count;
+			this.$.count.setContent(count);		
 		} else {
 			this.$.count.setShowing(false);
 		}			

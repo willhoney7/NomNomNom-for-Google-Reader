@@ -42,7 +42,7 @@ enyo.kind({
 
 	logout: function(){
 		reader.logout();
-		
+
 		this.$.grid.destroyControls();
 		this.$.grid.render();
 

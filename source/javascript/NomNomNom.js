@@ -6,21 +6,23 @@ enyo.kind({
 	components: [
 		{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
 		{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-		{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"}
+		{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"},
+  
+  		{kind: "ApplicationEvents", onWindowRotated: "resizeHandler"}
 
 	],
 	create: function(){
 		this.inherited(arguments);
 
 		//set the height to grid style
+		AppUtils.iconListShowing = true;
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
-		AppUtils.iconListShowing = true;
 		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
 	},
 
 	resizeHandler: function(){
-		if(AppUtils.iconListShowing && this.$.feedIconList.$.grid.getClassName() === "iconContainer enyo-grid"){
+		if(AppUtils.iconListShowing && _(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
 			//@TODO: this'll animate resize. Looks funny
 			this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");		
 		}
@@ -38,7 +40,8 @@ enyo.kind({
 	viewIcons: function(inSender){
 		AppUtils.iconListShowing = true;
 
-		this.$.feedIconList.$.grid.setClassName("iconContainer enyo-grid"); //set it to resize as a grid
+		this.$.feedIconList.$.grid.removeClass("enyo-hflexbox");
+		this.$.feedIconList.$.grid.addClass("enyo-grid");
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
 		this.$.feedView.$.itemView.hide();
@@ -55,7 +58,8 @@ enyo.kind({
 	viewSmallIcons: function(inSender){
 		AppUtils.iconListShowing = true;
 
-		this.$.feedIconList.$.grid.setClassName("iconContainer enyo-hflexbox"); //set it to just stack horizontally
+		this.$.feedIconList.$.grid.removeClass("enyo-grid");
+		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
 		this.$.feedIconList.applyStyle("height", "120px");
 		this.$.feedIconList.loadFeeds();
 		
@@ -90,3 +94,13 @@ enyo.kind({
 		
 	}
 });
+
+/* TODO
+	-app menu
+	-pay attention to "starred" status in item cards when marked in item view
+	-sorting
+
+	//First update
+	-node.js service save to db8
+		-pull all data from db8
+	-notifications*/

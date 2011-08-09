@@ -216,6 +216,11 @@
 	overflow: hidden;*/
 }
 
+/* This is due to a webOS bug where iframes launch a browser card instead of loading. Once this gets fixed, we will remove this. Sorry to any feeds that try and advertise this way. */ 
+iframe {
+	display: none;
+}
+
 
 .itemCard .bottomToolbar {
 	height: 90px;

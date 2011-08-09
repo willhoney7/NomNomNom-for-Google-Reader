@@ -11,7 +11,7 @@ enyo.kind({
 		onFolderOpen: "",
 	},
 	components: [
-		{kind: enyo.VFlexBox, className: "icon", width: "120px", onclick: "viewFeed", onmousehold: "viewFeedPopup", components: [
+		{kind: enyo.VFlexBox, className: "icon", width: "124px", onclick: "viewFeed", onmousehold: "viewFeedPopup", components: [
 			{name: "imageContainer", kind: enyo.VFlexBox, className: "imageContainer", components: [
 				{kind: enyo.Image, className: "image"},
 				{kind: enyo.Spacer},
@@ -45,12 +45,8 @@ enyo.kind({
 		}
 
 		this.$.title.setContent(this.getFeed().label || this.getFeed().title);
-		if(this.getFeed().count > 0){
-			this.$.count.setShowing(true);
-			this.$.count.setContent(this.getFeed().count);		
-		} else {
-			this.$.count.setShowing(false);
-		}
+		
+		this.updateUnreadCount();
 
 		if(this.getFeed().isLabel === true){
 			this.createComponent({kind: "FeedFolderPopup", feeds: [].concat([this.getFeed()], this.getFeed().feeds), onViewFeed: "viewInsideFeed", onViewFeedPopup: "viewFeedPopup"});
@@ -63,7 +59,7 @@ enyo.kind({
 	updateUnreadCount: function(){
 		if(this.getFeed().count > 0){
 			this.$.count.setShowing(true);
-			var count = (this.getFeed().count === 1000) ? "1000+" : this.getFeed().count;
+			var count = (parseInt(this.getFeed().count, 10) >= 1000) ? "1000+" : this.getFeed().count;
 			this.$.count.setContent(count);		
 		} else {
 			this.$.count.setShowing(false);

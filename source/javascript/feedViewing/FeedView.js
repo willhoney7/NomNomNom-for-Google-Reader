@@ -132,5 +132,7 @@ enyo.kind({
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(inSender.getItem());
+
+		inEvent.stopPropagation();
 	}
 });

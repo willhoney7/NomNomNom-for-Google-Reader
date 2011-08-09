@@ -17,7 +17,7 @@ enyo.kind({
 	 	
 	},
 	components: [		
-		{kind: enyo.ToolButton, name: "home", icon: "source/images/menu-icon-home.png", onclick: "viewIcons", showing: false},
+		{kind: enyo.ToolButton, name: "home", icon: "source/images/menu-icon-home_.png", onclick: "viewIcons", showing: false},
 		
 		{kind: enyo.ToolButton, name: "feedTitle", caption: "Feeds", toggling: true, onclick: "titleSelect", showing: false},
 		{kind: enyo.Control, name: "title", className: "toolbarText", content: "NomNomNom for Google Reader"},

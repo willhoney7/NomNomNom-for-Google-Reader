@@ -7,7 +7,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: enyo.Header, components: [
-			{name: "title", allowHtml: true, className: "title truncating-text"},
+			{name: "title", allowHtml: true, className: "title truncating-text", style: "max-width: 80%"},
 			{kind: enyo.Spacer},
 			{name: "date", className: "date"}
 		]},

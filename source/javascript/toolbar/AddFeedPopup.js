@@ -43,8 +43,12 @@ enyo.kind({
 	close: function(){
 		this.inherited(arguments);
 
-		this.$.group.hide();
 		enyo.keyboard.setManualMode(false); // closes the keyboard
+		
+		if(this.$.group) {
+			this.$.group.hide();			
+		}
+
 	},
 	showAtCenter: function(){
 		if(this.lazy) {

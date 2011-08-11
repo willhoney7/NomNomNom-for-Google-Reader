@@ -28,7 +28,15 @@ enyo.kind({
 		{kind: enyo.ToolButton, name: "preferences", icon: "source/images/menu-icon-settings.png", onclick: "preferencesPopup"},
 
 		{kind: "PreferencesPopup"},
-		{kind: "AddFeedPopup"}
+		{kind: "AddFeedPopup"},
+		{kind: "AboutPopup"},
+
+		{kind: "AppMenu", components: [
+		    {caption: "About/Help", onclick: "aboutPopup"},
+		    {caption: "New Feed", onclick: "addFeed"},
+		    {caption: "Refresh", onclick: "loadFeeds"},
+		    {caption: "Preferences", onclick: "preferencesPopup"}
+		]}
 
 	],
 	titleChanged: function(){
@@ -63,6 +71,9 @@ enyo.kind({
 	},
 	preferencesPopup: function(){
 		this.$.preferencesPopup.showAtCenter();	
+	},
+	aboutPopup: function(){
+		this.$.aboutPopup.showAtCenter();
 	},
 
 	loadFeeds: function(){

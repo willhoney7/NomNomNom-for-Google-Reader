@@ -4,11 +4,43 @@ enyo.kind({
 	height: "100%",
 	className: "googleReader",
 	components: [
-		{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
-		{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-		{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"},
-  
-  		{kind: "ApplicationEvents", onWindowRotated: "resizeHandler"}
+		{name: "appComponents", kind: enyo.VFlexBox, flex: 1, components: [
+			{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
+			{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
+			{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"},	
+		]},
+		{kind: "ApplicationEvents", onWindowRotated: "resizeHandler"},
+  		{name: "login", className: "login", showing: false, flex: 1, kind: enyo.HFlexBox, components: [
+  			{kind: enyo.Spacer},
+  			{kind: enyo.VFlexBox, name: "step1", showing: false, width: "322px", components: [
+  				{kind: enyo.Spacer},
+				{kind: "ClassyButton", title: "Get Started", step: 1, color: "orange", style: "position: relative; top: 120px;", onclick: "goNextStep"},  				
+  				{kind: enyo.Spacer},
+  			]},
+  			{kind: enyo.VFlexBox, name: "step2", showing: false, width: "322px", components: [
+  				{kind: enyo.Spacer},
+  				{kind: enyo.RowGroup, components: [
+					{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true},
+					{name: "password", kind: enyo.PasswordInput, hint: "Password", alwaysLooksFocused: true},
+				]},
+				{kind: "ClassyButton", title: "Log in", color: "orange", step: 2, onclick: "goNextStep"},
+				{name: "errorResponse", className: "errorText"},
+	  			{kind: enyo.Spacer},
+	  			
+	  		]},
+	  		{kind: enyo.VFlexBox, name: "step3", showing: false, width: "200px", components: [
+  				{kind: enyo.Spacer},
+  				{kind: enyo.HFlexBox, style: "position: relative; top: 60px; right: 153px;", components: [
+	  				{kind: enyo.Spacer},
+					{kind: "ClassyButton", title: "Give me the tour!", color: "green", step: 3, onclick: "goNextStep"},
+					{kind: "ClassyButton", title: "Give me my feeds!", color: "orange", onclick: "initializeGoogleReader"},
+	  				{kind: enyo.Spacer},
+				]},
+	  			{kind: enyo.Spacer},
+	  			
+	  		]},
+	  		{kind: enyo.Spacer}
+	  	]}
 
 	],
 	create: function(){
@@ -19,6 +51,96 @@ enyo.kind({
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
 		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
+		AppUtils.logout = enyo.bind(this, this.logout);
+		AppUtils.initializeGoogleReader = enyo.bind(this, this.initializeGoogleReader);
+
+		reader.load(); //load the saved data
+		this.initializeGoogleReader();	
+
+	},
+
+	initializeGoogleReader: function(){
+		if(reader.is_logged_in === true){
+			this.setupLogin(0);
+			var deviceInfo = enyo.fetchDeviceInfo();
+			if(deviceInfo === undefined || (deviceInfo && deviceInfo.wifiAvailable === true)){
+				this.$.feedIconList.removeClass("noWifi");
+				this.loadFeeds();
+			} else {
+				this.$.feedIconList.addClass("noWifi");
+			}
+		} else {
+			this.setupLogin(1);
+		}
+	},
+	setupLogin: function(inStep){
+		if(inStep > 0){			
+			this.$.appComponents.hide();
+			this.$.login.show();
+			this.$.login.setClassName("login enyo-hflexbox " + "step" + inStep);
+			this.loginStep = inStep;
+
+			if(this.loginStep === 1){
+				this.$.step1.show();
+				this.$.step2.hide();
+				this.$.step3.hide();
+			} else if(this.loginStep === 2){
+				this.$.step1.hide();
+				this.$.step2.show();
+				this.$.step3.hide();
+			} else if(this.loginStep === 3){
+				this.$.step1.hide();
+				this.$.step2.hide();
+				this.$.step3.show();
+			}
+		} else if (!inStep){ //zero or undefined
+			this.$.appComponents.show();
+			this.$.login.hide();
+		}
+	},
+	goNextStep: function(inSender){
+		if(inSender.step === 1){
+			this.setupLogin(2);
+		} else if(inSender.step === 2){
+			var emailAddress = this.$.emailAddress.getValue(),
+				password = this.$.password.getValue();
+
+			this.$.errorResponse.setContent("");
+			//this.$.activityButton.setActive(true);  @TODO: use a spinner
+			reader.login(emailAddress, password, enyo.bind(this, this.loginSuccess), enyo.bind(this, this.reportError));
+		} else if(inSender.step === 3){
+			alert("Coming soon!");
+		}
+	},
+
+	reportError: function(error){
+		//this.$.activityButton.setActive(false);
+		this.$.errorResponse.setContent("Error: " + error);
+	},
+
+	loginSuccess: function(){
+		this.setupLogin(3);	
+	},
+
+	loadFeeds: function(){
+		this.getToken();
+	},
+
+	logout: function(){
+		reader.logout();
+
+		this.$.feedIconList.$.grid.destroyControls();
+		this.$.feedIconList.$.grid.render();
+
+		setTimeout(enyo.bind(this, function(){
+			this.initializeGoogleReader();
+			//this.$.login.showAtCenter();		
+		}), 0);
+		
+	},
+
+	getToken: function(){
+		reader.getToken(AppUtils.refreshIcons, function(error){ console.error(error)});	
 	},
 
 	resizeHandler: function(){
@@ -96,9 +218,8 @@ enyo.kind({
 });
 
 /* TODO
-	-app menu
-	-pay attention to "starred" status in item cards when marked in item view
-	-sorting
+	//spinner on login
+	//enter submits
 
 	//First update
 	-node.js service save to db8

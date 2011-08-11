@@ -3,7 +3,8 @@ enyo.kind({
 	className: "itemView",
 	kind: enyo.SlidingView,
 	published: {
-		item: {}	
+		item: {},
+		itemCard: {}	
 	},
 	components: [
 		{kind: enyo.Header, components: [
@@ -42,6 +43,8 @@ enyo.kind({
 		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated))
 
 		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
+			itemContent = itemContent.replace(/<iframe.*?\/iframe>/ig, ""); //remove iframes. We have to do this because of a webOS bug. iframes launch a browser card...
+		
 		this.$.content.setContent((this.item.author ? "By " + this.item.author + "<br/>": "") + itemContent);
 
 		this.item.read = true;
@@ -62,6 +65,7 @@ enyo.kind({
 
 		//this.$.webView.setShowing(false);
 		this.$.scroller.setShowing(true);
+		this.$.scroller.setScrollTop(0);
 
 		if(this.item.enclosure && this.item.enclosure.length > 0){
 			for(var i = 0; i < this.item.enclosure.length; i++){
@@ -198,6 +202,13 @@ enyo.kind({
 		reader.setItemTag(this.item.origin.streamId, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
 			this.item.star = !this.item.star;
 			this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
+			if(this.itemCard){
+				this.itemCard.changeStar(this.item.star);
+			}
 		}));
+	},
+	changeStar: function(inValue){
+		this.$.star.setIcon((inValue ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));		
 	}
+
 });

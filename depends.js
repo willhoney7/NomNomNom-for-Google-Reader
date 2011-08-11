@@ -19,13 +19,14 @@ enyo.depends(
 
 	//ekls
 	"source/javascript/GoogleReaderPopup.js",
-	
+
 	"source/javascript/NomNomNom.js",
 
 	//toolbar
 	"source/javascript/toolbar/Toolbar.js",
 		"source/javascript/toolbar/PreferencesPopup.js",
 		"source/javascript/toolbar/AddFeedPopup.js",
+		"source/javascript/toolbar/AboutPopup.js",
 
 	//feedManagement
 	"source/javascript/feedManagement/FeedIconList.js",
@@ -36,6 +37,7 @@ enyo.depends(
 			"source/javascript/feedManagement/ManageLabelsPopup.js",
 			"source/javascript/feedManagement/FeedPopup.js",
 			"source/javascript/feedManagement/ConfirmPopup.js",
+			"source/javascript/feedManagement/ClassyButton.js",
 
 	//feedViewing
 	"source/javascript/feedViewing/FeedView.js",

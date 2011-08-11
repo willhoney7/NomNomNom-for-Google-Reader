@@ -85,8 +85,8 @@ enyo.kind({
 		if(this.nextIndex === this.items.length){
 			return;
 		}
-		if ((this.items.length - this.nextIndex) > 10){
-		 	cardLength = (this.nextIndex + 10);
+		if ((this.items.length - this.nextIndex) > 15){
+		 	cardLength = (this.nextIndex + 15);
 		}	else {
 			cardLength = this.items.length;
 		};
@@ -95,10 +95,12 @@ enyo.kind({
 		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
 			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
 		}
+
 		this.$.snapScroller.createComponents(components, {owner: this});
-		//setTimeout(enyo.bind(this, function(){ 
+		
+		setTimeout(enyo.bind(this, function(){ 
 			this.$.snapScroller.render();
-		//}), 0);
+		}), 10);
 
 	},
 
@@ -132,6 +134,7 @@ enyo.kind({
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(inSender.getItem());
+		this.$.itemView.setItemCard(inSender);
 
 		inEvent.stopPropagation();
 	}

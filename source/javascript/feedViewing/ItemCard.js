@@ -107,7 +107,6 @@ enyo.kind({
 	},
 
 	toggleStarred: function(inSender, inEvent){
-		inEvent.stopPropagation();
 
 		//change the image so the user knows it worked
 		this.$.star.setSrc((!this.item.star ? "source/images/star_yes.png" : "source/images/star_no.png"));
@@ -116,7 +115,21 @@ enyo.kind({
 			this.item.star = !this.item.star;
 			//make sure the the correct image is shown
 			this.$.star.setSrc((this.item.star ? "source/images/star_yes.png" : "source/images/star_no.png"));
+		
+			//this is bad form
+			if(this.owner.$.itemView.getItem().id === this.item.id){
+				this.owner.$.itemView.changeStar(this.item.star);
+			}
 		}));
+
+		if(inEvent){
+			inEvent.stopPropagation();
+		}
+
+		
+	},
+	changeStar: function(inValue){
+		this.$.star.setSrc((inValue ? "source/images/star_yes.png" : "source/images/star_no.png"));		
 	}
 
 });

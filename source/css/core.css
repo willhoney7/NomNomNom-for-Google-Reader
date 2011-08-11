@@ -40,12 +40,53 @@
 	font-size: 18px;
 }
 
+.classyButton {
+	margin: auto;
+	color: white;
+	font-size: 20px;
+	text-shadow: black 0px 0px 5px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 67px;
+	height: 70px;
+	width: 247px;
+}
+.classyButton.green {
+	background-image: url(../images/ButtonG.png);		
+}
+.classyButton.green.depressed {
+	background-image: url(../images/ButtonGpress.png);		
+}
+.classyButton.orange {
+	background-image: url(../images/ButtonO.png);			
+}
+.classyButton.orange.depressed {
+	background-image: url(../images/ButtonOpress.png);			
+}
+
+.login {
+	width: 100%;
+	background: url(../images/intro_welcome.png) center no-repeat;
+}
+.login.step2 {
+	background-image: url(../images/intro_login.png);	
+}
+.login.step3 {
+	background-image: url(../images/intro_tourquestion.png);		
+}
 
 .feedIconList {
 	-webkit-transition: height 500ms ease-in-out;
 	background: url(../images/iconList_background.png) top left repeat silver;
-
 }
+
+.feedIconList.noWifi {
+	background: url(../images/no_wifi.png) center no-repeat;
+}
+.feedIconList.noFeeds {
+	background: url(../images/no_feeds.png) center no-repeat;
+}
+
 
 .iconContainer {
 	padding: 10px;
@@ -58,6 +99,11 @@
 	bottom: 0px;
 	background: url(../images/iconList_gridfade.png) bottom left repeat-x;
 	pointer-events: none;
+}
+.feedIconList.noWifi .fade, 
+.feedIconList.noFeeds .fade {
+	background-image: url(../does/not/exist.png) bottom left repeat-x;
+	
 }
 
 .enyo-grid-div {
@@ -215,12 +261,6 @@
 	/*max-height: 200px;
 	overflow: hidden;*/
 }
-
-/* This is due to a webOS bug where iframes launch a browser card instead of loading. Once this gets fixed, we will remove this. Sorry to any feeds that try and advertise this way. */ 
-iframe {
-	display: none;
-}
-
 
 .itemCard .bottomToolbar {
 	height: 90px;

@@ -11,57 +11,30 @@ enyo.kind({
 		]},
 		{kind: enyo.Control, className: "fade"},
 
-		{kind: "LoginPopup", name: "login", onLoginSuccess: "loginSuccess"},
 		{kind: "FeedPopup"},
 		{name: "FeedSelectionPopup", kind: enyo.PopupList, onSelect: "feedSelected"}
 	],
 	create: function(){
 		this.inherited(arguments);	
-		
-		reader.load(); //load the saved data
-
-		if(reader.is_logged_in === true){
-			this.loginSuccess();
-		}
-
+	
 		//Global Functions
 		AppUtils.refreshIcons = enyo.bind(this, this.loadFeeds);
 		AppUtils.refreshUnreadCounts = enyo.bind(this, this.refreshUnreadCounts);
-		AppUtils.logout = enyo.bind(this, this.logout);
 
-	},
-	rendered: function(){
-		if(reader.is_logged_in === false){
-	   	 	this.$.login.showAtCenter();
-		}	
-	},
-
-	loginSuccess: function(){
-		this.getToken();
-	},
-
-	logout: function(){
-		reader.logout();
-
-		this.$.grid.destroyControls();
-		this.$.grid.render();
-
-		setTimeout(enyo.bind(this, function(){
-			this.$.login.showAtCenter();		
-		}), 0);
-		
-	},
-
-	getToken: function(){
-		enyo.call(AppUtils, "setSpinner", [true]);
-
-		reader.getToken(enyo.bind(this, this.loadFeeds), enyo.bind(this, this.reportError));	
 	},
 
 	loadFeeds: function(inSender){
-		enyo.call(AppUtils, "setSpinner", [true]);
 
-		reader.loadFeeds(enyo.bind(this, this.load));
+		if(reader.is_initialized){
+			enyo.call(AppUtils, "setSpinner", [true]);
+			reader.loadFeeds(enyo.bind(this, this.load));	
+		} else {
+			var deviceInfo = enyo.fetchDeviceInfo();
+			if(!deviceInfo || (deviceInfo && deviceInfo.wifiAvailable === true)){
+				AppUtils.initializeGoogleReader();	
+			}
+		}
+		
 	},
 
 	reportError: function(error){
@@ -75,18 +48,28 @@ enyo.kind({
 
 		this.$.grid.destroyControls();
 		
-		var components = [], feeds = reader.getFeeds();
+		var components = [], feeds = reader.getFeeds(), hasFeeds = false;
 		for(var i = 0; i < feeds.length; i++){
 			if((AppPrefs.get("hideRead") === true && feeds[i].count > 0 ) || (AppPrefs.get("hideRead") === false || feeds[i].isSpecial)){
 				if((feeds[i].id === reader.TAGS["star"] && AppPrefs.get("showStarred")) || feeds[i].id !== reader.TAGS["star"]){
 					if((feeds[i].id === reader.TAGS["share"] && AppPrefs.get("showShared")) || feeds[i].id !== reader.TAGS["share"]){
-						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup", onFolderOpen: "folderOpened"});			
+						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup", onFolderOpen: "folderOpened"});
+						if(!feeds[i].isSpecial)	{
+							hasFeeds = true;
+						}
 					}
 				}
 			}		
 		}
-		this.$.grid.createComponents(components, {owner: this});
-		this.$.grid.render();
+
+		if(hasFeeds > 0){
+			this.$.grid.createComponents(components, {owner: this});
+			this.$.grid.render();	
+			this.removeClass("noFeeds");
+		} else {
+			this.addClass("noFeeds");
+		}
+		
 	},
 
 	refreshUnreadCounts: function(){

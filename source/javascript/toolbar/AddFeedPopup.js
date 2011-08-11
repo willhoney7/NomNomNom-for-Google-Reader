@@ -74,7 +74,7 @@ enyo.kind({
 						this.$.errorResponse.setContent("No Results.");
 					} else {
 						this.items = response;
-						console.log(this.items);
+						//console.log(this.items);
 						this.$.group.show();
 						this.$.virtualRepeater.render();
 					}

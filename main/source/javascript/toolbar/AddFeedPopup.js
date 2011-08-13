@@ -23,7 +23,7 @@ enyo.kind({
 		        {caption: "URL", value: "url"},
 		        {caption: "Keyword", value: "keyword"},
 		    ]},
-		    {name: "input", kind: enyo.Input, hint: "", alwaysLooksFocused: true},
+		    {name: "input", kind: enyo.Input, hint: "", autoCapitalize: "lowercase", alwaysLooksFocused: true},
 		]},
 		{kind: enyo.ActivityButton, content: "Go", onclick: "go"},
 		{kind: enyo.Group, caption: "Results", showing: false, components: [
@@ -61,6 +61,7 @@ enyo.kind({
 		this.openAtTopCenter();
 		
 		enyo.keyboard.forceShow(7);
+		this.$.input.forceFocus();
 
 	},
 

@@ -6,7 +6,7 @@ enyo.kind({
 		onViewFeed: ""
 	},
 	components: [
-		{kind: enyo.Scroller, autoVertical: false, vertical: false, onScrollStart: "scrollStart", flex: 1, components: [
+		{kind: enyo.Scroller, autoVertical: true, vertical: true, onScrollStart: "scrollStart", flex: 1, components: [
 			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
 		{kind: enyo.Control, className: "fade"},
@@ -29,8 +29,7 @@ enyo.kind({
 			enyo.call(AppUtils, "setSpinner", [true]);
 			reader.loadFeeds(enyo.bind(this, this.load));	
 		} else {
-			var deviceInfo = enyo.fetchDeviceInfo();
-			if(!deviceInfo || (deviceInfo && deviceInfo.wifiAvailable === true)){
+			if(reader.hasInternet){
 				AppUtils.initializeGoogleReader();	
 			}
 		}
@@ -50,13 +49,13 @@ enyo.kind({
 		
 		var components = [], feeds = reader.getFeeds(), hasFeeds = false;
 		for(var i = 0; i < feeds.length; i++){
+			if(!feeds[i].isSpecial)	{
+				hasFeeds = true;
+			}
 			if((AppPrefs.get("hideRead") === true && feeds[i].count > 0 ) || (AppPrefs.get("hideRead") === false || feeds[i].isSpecial)){
 				if((feeds[i].id === reader.TAGS["star"] && AppPrefs.get("showStarred")) || feeds[i].id !== reader.TAGS["star"]){
 					if((feeds[i].id === reader.TAGS["share"] && AppPrefs.get("showShared")) || feeds[i].id !== reader.TAGS["share"]){
 						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup", onFolderOpen: "folderOpened"});
-						if(!feeds[i].isSpecial)	{
-							hasFeeds = true;
-						}
 					}
 				}
 			}		
@@ -69,7 +68,20 @@ enyo.kind({
 		} else {
 			this.addClass("noFeeds");
 		}
+
+		//AppPrefs.set("notifyFeeds", {start: true});
 		
+		var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
+		if(feedsToNotifyFor.start){
+			console.log("Setting up feed notifications.");
+			_(reader.getFeeds()).each(function(feed){
+				if(!feed.isSpecial){
+					feedsToNotifyFor[feed.id] = {count: feed.count, title: feed.title};				
+				}
+			});
+			delete feedsToNotifyFor.start;
+			AppPrefs.set("notifyFeeds", feedsToNotifyFor);
+		}
 	},
 
 	refreshUnreadCounts: function(){

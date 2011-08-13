@@ -444,19 +444,22 @@ reader = {
 			
 		});
 
+		console.log("userPrefs" + JSON.stringify(userPrefs));
+
 		//now order ALL feeds and tags
 		var orderingId = _(userPrefs["user/-/state/com.google/root"]).detect(function(setting){
 			return (setting.id === "subscription-ordering");
-		}).value;
+		}) || {value: ""};
+		
 
 		//our feeds are our tagsWithFeeds + our uncategorized subscriptions
 		var feeds = [].concat(tagsWithFeeds, uncategorized);
 			//sort them by sortid
 			feeds = _(feeds).sortBy(function(feed){
-				if(orderingId.indexOf(feed.sortid) === -1 && !feed.isSpecial){
+				if(orderingId.value.indexOf(feed.sortid) === -1 && !feed.isSpecial){
 					return 1000;
 				}
-				return (orderingId.indexOf(feed.sortid))/8;
+				return (orderingId.value.indexOf(feed.sortid))/8;
 			});
 
 		return feeds;
@@ -468,7 +471,7 @@ reader = {
 	},
 
 	//get unread counts from google reader
-	getUnreadCounts: function(successCallback, unreadCountsObj){
+	getUnreadCounts: function(successCallback, returnObject){
 		reader.makeRequest({
 			url: reader.BASE_URL + reader.UNREAD_SUFFIX,
 			onSuccess: function(transport){
@@ -476,7 +479,7 @@ reader = {
 				//console.log(transport);
 				var unreadCountsObj = {};
 				_(unreadCounts).each(function(obj){
-					unreadCountsObj[obj.id] = obj.count;
+					unreadCountsObj[reader.correctId(obj.id)] = obj.count;
 				});
 				reader.unreadCountsObj = unreadCountsObj;
 

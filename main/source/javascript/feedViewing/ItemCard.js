@@ -91,6 +91,7 @@ enyo.kind({
 	},
 	rendered: function(){
 		this.inherited(arguments);
+
 		this.$.feedTitle.applyStyle("max-width", this.$.bottomToolbar.getBounds().width - 65 - this.$.date.getBounds().width + "px");
 	},
 	renderPrefs: function(){

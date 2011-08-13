@@ -6,14 +6,16 @@
 </head>
 <body>
 <script type="text/javascript">
-	new NomNomNom().renderInto(document.body);
+	(function () {
+		var appLauncher = enyo.application.launcher = new Launcher();
+ 
+		enyo.applicationRelaunchHandler = function (params) {
+			enyo.application.launcher.relaunch(params);
+		};
+
+		appLauncher.startup();
+	})();
 </script>
-	
-	<div id="aboutContent" style="display: none">
-		<br/>
-		NomNomNom for Google Reader was created by Will Honey (<a href='http://twitter.com/Tibfib'>@Tibfib</a>). 
-		<br/><br/>NomNomNom is Open Source and contributions are welcome!
-		<br/><br/>If you need help, have questions or feedback, email me at <a href="mailto:nomnomnomRSS@gmail.com">nomnomnomRSS@gmail.com.
-	</div>
+
 </body>
 </html>

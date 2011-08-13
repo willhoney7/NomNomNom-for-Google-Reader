@@ -11,7 +11,7 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "HFlexLayout", style: "position: relative", components: [
-			{content: "About NomNomNom" + ' v' + enyo.fetchAppInfo().version},
+			{name: "title", content: ""},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
@@ -19,7 +19,8 @@ enyo.kind({
 			{kind: enyo.Spacer},
 			{kind: "HtmlContent", name:"aboutContent", style: "font-size: 14px", srcId: "aboutContent"},
 			{kind: enyo.Spacer}
-		]}		
+		]},
+		{kind: "ClassyButton", title: "Take the tour", color: "green", onclick: "startTour"},
 	],
 	close: function(){
 		this.inherited(arguments);
@@ -29,6 +30,12 @@ enyo.kind({
 			this.validateComponents();
 		}		
 		this.openAtCenter();
+
+		this.$.title.setContent("About NomNomNom" + ' v' + enyo.fetchAppInfo().version);
+	},
+	startTour: function(){
+		this.close();
+		AppUtils.startTour();
 	}
 
 });

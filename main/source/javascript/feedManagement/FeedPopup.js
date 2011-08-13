@@ -67,6 +67,18 @@ enyo.kind({
 				{caption: $L("Unsubscribe from Feed"), value: "unsubscribeFeed"}
 			);
 		}
+		if(!this.feed.isSpecial){// || this.feed.isAll){
+			if(AppPrefs.get("notify") === true){
+				var feedsToNotifyFor = AppPrefs.get("notifyFeeds"), obj;
+				if(feedsToNotifyFor[this.feed.id]){
+					obj = {caption: $L("Stop Notifications"), value: "stopNotifications"};
+				} else {
+					obj = {caption: $L("Notify of new articles"), value: "startNotifications"};
+				}
+				items.push(obj);
+			}
+		}
+
 		
 		this.event = event;
 		if(items.length > 0){
@@ -90,10 +102,14 @@ enyo.kind({
 				break;
 			case "unsubscribeFeed":
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Unsubscribe from feed?", doIt: enyo.bind(this, function(inSender){
-					reader.unsubscribeFeed(this.feed.id, function(){
+					reader.unsubscribeFeed(this.feed.id, enyo.bind(this, function(){
+						var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
+						delete feedsToNotifyFor[this.feed.id];
+						AppPrefs.set("notifyFeeds", feedsToNotifyFor);
+						
 						inSender.close();
 						AppUtils.viewIcons();
-					});
+					}));
 					
 				})});
 				break;
@@ -143,6 +159,16 @@ enyo.kind({
 
 				}});
 				break;
+			case "stopNotifications":
+				var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
+				delete feedsToNotifyFor[this.feed.id];
+				AppPrefs.set("notifyFeeds", feedsToNotifyFor);
+				break;
+			case "startNotifications":
+				var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
+				feedsToNotifyFor[this.feed.id] = {count: this.feed.count, title: this.feed.title};
+				AppPrefs.set("notifyFeeds", feedsToNotifyFor);
+				break;
 		}
 	},
 
@@ -162,7 +188,6 @@ enyo.kind({
 					})
 				});
 			} 
-			console.log("Adding label");
 			reader.editFeedLabel(this.feed.id, inSelection.labelId, true, AppUtils.refreshIcons);
 		}
 	},

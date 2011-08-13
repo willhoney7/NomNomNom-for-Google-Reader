@@ -33,6 +33,25 @@ enyo.kind({
 					{kind: "CheckBox", preferenceProperty: "showShared", rerenderManagement: true, onChange: "setPreference"}
 				]},
 			]},
+			{kind: enyo.RowGroup, caption: "Notifications", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Enable Notifications"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "notify", restartRefresh: true, onChange: "setPreference"}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Notification Interval"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "ListSelector", value: "", preferenceProperty: "notifyInterval", restartRefresh: true, onChange: "setPreference", items: [
+						//{caption:"15 seconds", value: .25},
+						{caption:"20 mins", value: 20},
+						{caption:"1 hour", value: 60},
+						{caption:"3 hours", value: 180},
+						{caption:"8 hours", value: 480},
+						{caption:"24 hours", value: 1440},
+					]}				
+				]},
+			]},
 			{kind: enyo.RowGroup, caption: "Article Previews", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: $L("Font-Size"), kind: enyo.Control},
@@ -114,6 +133,8 @@ enyo.kind({
 			AppUtils.refreshIcons();
 		} else if(inSender.rerenderView){
 			AppUtils.refreshItems();
+		} else if(inSender.restartRefresh){
+			enyo.application.setupRefresh();
 		}
 	},
 

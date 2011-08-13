@@ -1,10 +1,13 @@
 {
 	"id": "com.tibfib.app.nomnomnom",
-	"version": "0.0.13",
+	"version": "0.0.16",
 	"vendor": "Will Honey (Tibfib)",
 	"type": "web",
 	"main": "index.html",
 	"title": "NomNomNom",
 	"icon": "icon.png",
-	"uiRevision":2
+	"uiRevision":2,
+	"noWindow": true,
+	"splashBackground": "main/source/images/feedView_background.png",
+	"splashicon": "icon256.png"
 }

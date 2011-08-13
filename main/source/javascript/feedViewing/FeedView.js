@@ -12,7 +12,7 @@ enyo.kind({
 	},
 	components: [
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
-			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", components: []},
+			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", onSnapFinish: "cardSnapFinish", components: []},
 		]},
 		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
@@ -105,10 +105,20 @@ enyo.kind({
 	},
 
 	cardSnap: function(inSender, inIndex){
-		
 		setTimeout(enyo.bind(this, this.markViewableCardsRead), 0);
 
-		if(this.nextIndex && (this.nextIndex - inIndex) <= 5){
+		this.activeIndex = inIndex;
+
+		if(this.$.itemView.showing === true){ //&& AppPrefs.get("viewActiveCardInItemView") === true){
+			setTimeout(enyo.bind(this, function(){
+				this.itemClick(this.$.snapScroller.getControls()[inIndex], null, true);
+			}), 400);
+		}
+
+	},
+
+	cardSnapFinish: function(inSender){
+		if(this.nextIndex && (this.nextIndex - this.activeIndex) <= 5){
 			setTimeout(enyo.bind(this, this.renderSome), 0);
 		}
 	},
@@ -128,14 +138,18 @@ enyo.kind({
 		}
 
 	},
-	itemClick: function(inSender, inEvent){
+	itemClick: function(inSender, inEvent, noSnap){
 		this.$.scrollerSlidingView.applyStyle("max-width", "345px");
-		this.$.snapScroller.setIndex(inSender.getIndex());
+		if(!noSnap){		
+			this.$.snapScroller.setIndex(inSender.getIndex());
+		}
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(inSender.getItem());
 		this.$.itemView.setItemCard(inSender);
 
-		inEvent.stopPropagation();
+		if(inEvent){
+			inEvent.stopPropagation();		
+		}
 	}
 });

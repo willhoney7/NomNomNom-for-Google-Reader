@@ -7,10 +7,9 @@ enyo.kind({
 		{name: "appComponents", kind: enyo.VFlexBox, flex: 1, components: [
 			{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
 			{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-			{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded"},	
+			{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded", onDismiss: "reclaimSpace"},	
 		]},
-		{kind: "ApplicationEvents", onWindowRotated: "resizeHandler"},
-  		{name: "login", className: "login", showing: false, flex: 1, kind: enyo.HFlexBox, components: [
+  		{name: "login", className: "login", showing: false, flex: 1, kind: enyo.HFlexBox, onclick: "loginClick", components: [
   			{kind: enyo.Spacer},
   			{kind: enyo.VFlexBox, name: "step1", showing: false, width: "322px", components: [
   				{kind: enyo.Spacer},
@@ -21,9 +20,9 @@ enyo.kind({
   				{kind: enyo.Spacer},
   				{kind: enyo.RowGroup, components: [
 					{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true},
-					{name: "password", kind: enyo.PasswordInput, hint: "Password", alwaysLooksFocused: true},
+					{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "passwordKeydown", alwaysLooksFocused: true},
 				]},
-				{kind: "ClassyButton", title: "Log in", color: "orange", step: 2, onclick: "goNextStep"},
+				{kind: "ClassyButton", name: "loginButton", title: "Log in", color: "orange", step: 2, onclick: "goNextStep"},
 				{name: "errorResponse", className: "errorText"},
 	  			{kind: enyo.Spacer},
 	  			
@@ -37,14 +36,30 @@ enyo.kind({
 	  				{kind: enyo.Spacer},
 				]},
 	  			{kind: enyo.Spacer},
-	  			
+	  		]},
+	  		{kind: enyo.VFlexBox, name: "step8", showing: false, width: "200px", components: [
+  				{kind: enyo.Spacer},
+  				{kind: enyo.HFlexBox, style: "position: relative; top: 310px;right: 153px;", components: [
+	  				{kind: enyo.Spacer},
+					{kind: "ClassyButton", title: "Twitter", color: "green", onclick: "twitter"},
+					{kind: "ClassyButton", title: "Email", color: "green", onclick: "email"},
+	  				{kind: enyo.Spacer},
+				]},
+				{kind: "ClassyButton", title: "", color: "orange", large: true, style: "position: relative; top: 107px; left: 350px;", onclick: "initializeGoogleReader"},
+	  			{kind: enyo.Spacer},
 	  		]},
 	  		{kind: enyo.Spacer}
-	  	]}
+	  	]},
 
+	  	{kind: "ApplicationEvents", onWindowRotated: "resizeHandler", onWindowActivated: "activate"},
+	  	{ name: "connection", kind: "PalmService", service: "palm://com.palm.connectionmanager/", method: "getstatus",onResponse: "connectionResponseHandler", subscribe: true, resubscribe: true}
 	],
 	create: function(){
 		this.inherited(arguments);
+
+		enyo.keyboard.setResizesWindow(false);
+
+		reader.hasInternet = true;	//hasInternet until proven disconnected.
 
 		//set the height to grid style
 		AppUtils.iconListShowing = true;
@@ -54,16 +69,27 @@ enyo.kind({
 		AppUtils.logout = enyo.bind(this, this.logout);
 		AppUtils.initializeGoogleReader = enyo.bind(this, this.initializeGoogleReader);
 
-		reader.load(); //load the saved data
-		this.initializeGoogleReader();	
+		AppUtils.startTour = enyo.bind(this, function(){
+			this.goNextStep({step: 3});
+		});
 
+		reader.load(); //load the saved data
+		this.initializeGoogleReader();
+
+		//enyo.application.viewFeed = enyo.bind(this,); @TODO
+		
+	},
+	activate: function(){
+		enyo.application.clearDashboard();
+		AppUtils.refreshIcons();
 	},
 
 	initializeGoogleReader: function(){
+		enyo.setAllowedOrientation("free");
+
 		if(reader.is_logged_in === true){
 			this.setupLogin(0);
-			var deviceInfo = enyo.fetchDeviceInfo();
-			if(deviceInfo === undefined || (deviceInfo && deviceInfo.wifiAvailable === true)){
+			if(reader.hasInternet){
 				this.$.feedIconList.removeClass("noWifi");
 				this.loadFeeds();
 			} else {
@@ -74,31 +100,61 @@ enyo.kind({
 		}
 	},
 	setupLogin: function(inStep){
-		if(inStep > 0){			
+		if(inStep > 0){		
+			enyo.keyboard.forceHide();	
 			this.$.appComponents.hide();
 			this.$.login.show();
 			this.$.login.setClassName("login enyo-hflexbox " + "step" + inStep);
 			this.loginStep = inStep;
 
 			if(this.loginStep === 1){
+				enyo.setAllowedOrientation("free");
+				enyo.keyboard.setResizesWindow(false);
+
 				this.$.step1.show();
 				this.$.step2.hide();
 				this.$.step3.hide();
+				this.$.step8.hide();
 			} else if(this.loginStep === 2){
+				enyo.keyboard.setResizesWindow(true);
+				enyo.keyboard.forceShow(4);
+				this.$.emailAddress.forceFocus();
 				this.$.step1.hide();
 				this.$.step2.show();
 				this.$.step3.hide();
+				this.$.step8.hide();
 			} else if(this.loginStep === 3){
+				enyo.keyboard.setResizesWindow(false);
 				this.$.step1.hide();
 				this.$.step2.hide();
 				this.$.step3.show();
+				this.$.step8.hide();
+			} else if(this.loginStep > 3 && this.loginStep < 8){
+				enyo.setAllowedOrientation("landscape");
+				this.$.step1.hide();
+				this.$.step2.hide();
+				this.$.step3.hide();
+				this.$.step8.hide();
+			} else if(this.loginStep === 8){
+				enyo.setAllowedOrientation("landscape");
+				this.$.step8.show();
 			}
 		} else if (!inStep){ //zero or undefined
+			enyo.setAllowedOrientation("free");
+			enyo.keyboard.setResizesWindow(false);
+
 			this.$.appComponents.show();
 			this.$.login.hide();
 		}
 	},
-	goNextStep: function(inSender){
+	passwordKeydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			this.goNextStep({step: 2});
+			inEvent.preventDefault();
+
+		}
+	},
+	goNextStep: function(inSender, inEvent){
 		if(inSender.step === 1){
 			this.setupLogin(2);
 		} else if(inSender.step === 2){
@@ -106,19 +162,33 @@ enyo.kind({
 				password = this.$.password.getValue();
 
 			this.$.errorResponse.setContent("");
-			//this.$.activityButton.setActive(true);  @TODO: use a spinner
+			this.$.loginButton.setActive(true); 
 			reader.login(emailAddress, password, enyo.bind(this, this.loginSuccess), enyo.bind(this, this.reportError));
 		} else if(inSender.step === 3){
-			alert("Coming soon!");
+			//tour
+			this.setupLogin(4);
+		} else if(inSender.step > 3 && inSender.step < 8){
+			this.setupLogin(inSender.step + 1);
+		}
+
+		if(inEvent){
+			inEvent.stopPropagation();
+		}
+	},
+	loginClick: function(){
+		//for clicking when we are on the tour.
+		if(this.loginStep > 3 && this.loginStep < 8){
+			this.goNextStep({step: this.loginStep});
 		}
 	},
 
 	reportError: function(error){
-		//this.$.activityButton.setActive(false);
+		this.$.loginButton.setActive(false);
 		this.$.errorResponse.setContent("Error: " + error);
 	},
 
 	loginSuccess: function(){
+		this.$.loginButton.setActive(false);
 		this.setupLogin(3);	
 	},
 
@@ -129,6 +199,8 @@ enyo.kind({
 	logout: function(){
 		reader.logout();
 
+		AppPrefs.set("notifyFeeds", {start: true});
+
 		this.$.feedIconList.$.grid.destroyControls();
 		this.$.feedIconList.$.grid.render();
 
@@ -137,6 +209,13 @@ enyo.kind({
 			//this.$.login.showAtCenter();		
 		}), 0);
 		
+	},
+
+	twitter: function(){
+		window.location = "http://twitter.com/Tibfib";	
+	},
+	email: function(){
+		window.location = "mailto:nomnomnomRSS@gmail.com";	
 	},
 
 	getToken: function(){
@@ -165,7 +244,7 @@ enyo.kind({
 		this.$.feedIconList.$.grid.removeClass("enyo-hflexbox");
 		this.$.feedIconList.$.grid.addClass("enyo-grid");
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
-
+		this.$.feedIconList.$.scroller.setVertical(true);
 		this.$.feedView.$.itemView.hide();
 		
 		setTimeout(enyo.bind(this, function(){
@@ -182,6 +261,7 @@ enyo.kind({
 
 		this.$.feedIconList.$.grid.removeClass("enyo-grid");
 		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
+		this.$.feedIconList.$.scroller.setVertical(false);
 		this.$.feedIconList.applyStyle("height", "120px");
 		this.$.feedIconList.loadFeeds();
 		
@@ -192,9 +272,11 @@ enyo.kind({
 		AppUtils.iconListShowing = false;
 	},
 	viewFeed: function(inSender, inFeed, inFeedIcon){
-
-		this.inFeedIcon = inFeedIcon;
-		this.inFeedIcon.startSpinning();
+		if(inFeedIcon){
+			this.inFeedIcon = inFeedIcon;
+			this.inFeedIcon.startSpinning();	
+		}
+		
 	    this.$.feedView.loadFeed(inFeed);	
 	},
 	feedLoaded: function(inSender, hasItems){
@@ -212,16 +294,17 @@ enyo.kind({
 		    this.$.toolbar.setTitle(inSender.getFeed().title);	
 		} else {
 
-		}
-		
+		}	
+	},
+	reclaimSpace: function(){
+		this.$.feedView.$.snapScroller.snapTo(this.$.feedView.$.snapScroller.getIndex());
+	
+	},
+	connectionResponseHandler: function(inSender, inResponse){
+		 if (inResponse.isInternetConnectionAvailable === true || !window.PalmSystem) {
+		 	reader.hasInternet = true;
+		 } else {
+		 	reader.hasInternet = false;
+		 }
 	}
 });
-
-/* TODO
-	//spinner on login
-	//enter submits
-
-	//First update
-	-node.js service save to db8
-		-pull all data from db8
-	-notifications*/

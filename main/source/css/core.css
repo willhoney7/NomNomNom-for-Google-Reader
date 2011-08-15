@@ -88,18 +88,21 @@
 	background-image: url(../images/intro_tourquestion.png);		
 }
 .login.step4 {
-	background-image: url(../images/tour/Tour1.png);		
+	background-image: url(../images/tour/TourIntro.png);		
 }
 .login.step5 {
-	background-image: url(../images/tour/Tour2.png);		
+	background-image: url(../images/tour/Tour1.png);		
 }
 .login.step6 {
-	background-image: url(../images/tour/Tour3.png);		
+	background-image: url(../images/tour/Tour2.png);		
 }
 .login.step7 {
-	background-image: url(../images/tour/Tour4.png);		
+	background-image: url(../images/tour/Tour3.png);		
 }
 .login.step8 {
+	background-image: url(../images/tour/Tour4.png);		
+}
+.login.step9 {
 	background-image: url(../images/tour/Tour5.png);		
 }
 

@@ -37,7 +37,7 @@ enyo.kind({
 				]},
 	  			{kind: enyo.Spacer},
 	  		]},
-	  		{kind: enyo.VFlexBox, name: "step8", showing: false, width: "200px", components: [
+	  		{kind: enyo.VFlexBox, name: "step9", showing: false, width: "200px", components: [
   				{kind: enyo.Spacer},
   				{kind: enyo.HFlexBox, style: "position: relative; top: 310px;right: 153px;", components: [
 	  				{kind: enyo.Spacer},
@@ -114,7 +114,7 @@ enyo.kind({
 				this.$.step1.show();
 				this.$.step2.hide();
 				this.$.step3.hide();
-				this.$.step8.hide();
+				this.$.step9.hide();
 			} else if(this.loginStep === 2){
 				enyo.keyboard.setResizesWindow(true);
 				enyo.keyboard.forceShow(4);
@@ -122,22 +122,22 @@ enyo.kind({
 				this.$.step1.hide();
 				this.$.step2.show();
 				this.$.step3.hide();
-				this.$.step8.hide();
+				this.$.step9.hide();
 			} else if(this.loginStep === 3){
 				enyo.keyboard.setResizesWindow(false);
 				this.$.step1.hide();
 				this.$.step2.hide();
 				this.$.step3.show();
-				this.$.step8.hide();
-			} else if(this.loginStep > 3 && this.loginStep < 8){
+				this.$.step9.hide();
+			} else if(this.loginStep > 3 && this.loginStep < 9){
 				enyo.setAllowedOrientation("landscape");
 				this.$.step1.hide();
 				this.$.step2.hide();
 				this.$.step3.hide();
-				this.$.step8.hide();
-			} else if(this.loginStep === 8){
+				this.$.step9.hide();
+			} else if(this.loginStep === 9){
 				enyo.setAllowedOrientation("landscape");
-				this.$.step8.show();
+				this.$.step9.show();
 			}
 		} else if (!inStep){ //zero or undefined
 			enyo.setAllowedOrientation("free");
@@ -167,7 +167,7 @@ enyo.kind({
 		} else if(inSender.step === 3){
 			//tour
 			this.setupLogin(4);
-		} else if(inSender.step > 3 && inSender.step < 8){
+		} else if(inSender.step > 3 && inSender.step < 9){
 			this.setupLogin(inSender.step + 1);
 		}
 
@@ -177,7 +177,7 @@ enyo.kind({
 	},
 	loginClick: function(){
 		//for clicking when we are on the tour.
-		if(this.loginStep > 3 && this.loginStep < 8){
+		if(this.loginStep > 3 && this.loginStep < 9){
 			this.goNextStep({step: this.loginStep});
 		}
 	},
@@ -251,7 +251,7 @@ enyo.kind({
 			this.$.feedView.hide();
 			this.$.feedView.$.snapScroller.resized();
 			//hide the feedView once it off the screen
-		}), 800);	
+		}), 1000);	
 
 		this.$.feedIconList.loadFeeds();
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this

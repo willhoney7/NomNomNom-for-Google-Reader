@@ -17,7 +17,7 @@ enyo.kind({
 		]},	
 		{kind: enyo.VFlexBox, autoVertical: false, components: [
 			{kind: enyo.Spacer},
-			{kind: "HtmlContent", name:"aboutContent", style: "font-size: 14px", srcId: "aboutContent"},
+			{kind: "HtmlContent", name:"aboutContent", style: "font-size: 14px", srcId: "aboutContent", onLinkClick: "linkClick"},
 			{kind: enyo.Spacer}
 		]},
 		{kind: "ClassyButton", title: "Take the tour", color: "green", onclick: "startTour"},
@@ -36,6 +36,9 @@ enyo.kind({
 	startTour: function(){
 		this.close();
 		AppUtils.startTour();
+	},
+	linkClick: function(inSender, inUrl){
+    	window.location(inUrl);
 	}
 
 });

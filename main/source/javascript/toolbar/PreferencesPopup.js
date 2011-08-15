@@ -110,7 +110,7 @@ enyo.kind({
 			this.validateComponents();
 		}
 		this.$.email.setContent("Logged in as " + reader.getUser().userEmail);
-		
+		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 
 		_.each(this.getComponents(), function(component){

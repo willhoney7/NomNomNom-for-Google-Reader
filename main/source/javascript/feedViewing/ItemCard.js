@@ -58,10 +58,6 @@ enyo.kind({
 		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
 		
 		this.$.summary.setContent(htmlToText(itemContent) + "<br/><br/><br/><br/>");
-
-		//setTimeout(enyo.bind(this, function(){
-		//	Cutter.run(document.getElementById(this.$.summary.id), document.getElementById(this.$.summary.id), 100);
-		//}), 100);
 				
 		this.item.read = false;
 		this.item.star = false;

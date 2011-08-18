@@ -12,14 +12,34 @@ enyo.kind({
 	},
 	components: [
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
-			{kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", onSnapFinish: "cardSnapFinish", components: []},
+			{name: "cardContainer", kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", onSnapFinish: "cardSnapFinish", components: []},
+			/*{name: "listContainer", kind: enyo.VFlexBox, flex: 1, className: "listContainer itemCard", width: "322px", components: [
+				{className: "top"},
+				{kind: enyo.VFlexBox, className: "mainContent", flex: 1, style: "overflow: hidden", allowHtml: true, components: [
+					{kind: enyo.VirtualList, width: "322px", flex: 1, onSetupRow: "setupRow", className: "virtualList", components: [
+						{kind: "ArticleItem", onclick: "articleItemClick"}
+					]},
+					{kind: enyo.Control, height: "50px"},
+					{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
+						{kind: enyo.HFlexBox, className: "content", components: [
+							{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", allowHtml: true},
+							{kind: enyo.Spacer},
+							{kind: enyo.Control, name: "date", className: "date"},
+							{name: "star", kind: enyo.Image, onclick: "toggleStarred", src: "source/images/star_no.png"}
+						]}
+					]}
+				]},
+			]}	*/
+			
+			
 		]},
+			
 		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
 	],
 	create: function(){
 		this.inherited(arguments);
 		AppUtils.refreshItems = enyo.bind(this, function(){
-			_.each(this.$.snapScroller.getControls(), function(control){
+			_.each(this.$.cardContainer.getControls(), function(control){
 				control.renderPrefs();
 			});
 			this.$.itemView.renderPrefs();
@@ -65,20 +85,37 @@ enyo.kind({
 	},
 	loadedItems: function(items){
 
-		this.$.itemView.hide(); //@TODO: this fails, bug?
-
 		this.items = items;
 		this.nextIndex = 0;
 
-		this.$.snapScroller.destroyControls();
+		if(AppPrefs.get("articleView") === "cards"){
+			this.$.itemView.hide();
+			this.$.itemView.setDismissible(true);
+			//this.$.listContainer.hide();
+			this.$.cardContainer.show();
+			this.$.cardContainer.destroyControls();
+			this.$.scrollerSlidingView.applyStyle("max-width", null);
 
-		this.doFeedLoaded(true);
-		this.renderSome();
-		this.$.snapScroller.setIndex(0);
 
-		this.markViewableCardsRead();
+			this.doFeedLoaded(true);
+			this.renderSome();
+			this.$.cardContainer.setIndex(0);
+
+			this.markViewableCardsRead();
+		} else if(AppPrefs.get("articleView") === "list"){
+			this.$.itemView.setDismissible(false);
+			this.$.scrollerSlidingView.applyStyle("max-width", "345px");
+
+			this.$.cardContainer.hide();
+			//this.$.listContainer.show();
+
+			this.doFeedLoaded(true);
+			this.$.virtualList.refresh();
+
+			this.$.itemView.show();
+			this.$.itemView.setItem({});
+		}
 		
-
 	},
 	renderSome: function(){
 		var components = [], cardLength;
@@ -96,10 +133,10 @@ enyo.kind({
 			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
 		}
 
-		this.$.snapScroller.createComponents(components, {owner: this});
+		this.$.cardContainer.createComponents(components, {owner: this});
 		
 		setTimeout(enyo.bind(this, function(){ 
-			this.$.snapScroller.render();
+			this.$.cardContainer.render();
 		}), 10);
 
 	},
@@ -111,7 +148,7 @@ enyo.kind({
 
 		if(this.$.itemView.showing === true){ //&& AppPrefs.get("viewActiveCardInItemView") === true){
 			setTimeout(enyo.bind(this, function(){
-				this.itemClick(this.$.snapScroller.getControls()[inIndex], null, true);
+				this.itemClick(this.$.cardContainer.getControls()[inIndex], null, true);
 			}), 400);
 		}
 
@@ -124,10 +161,13 @@ enyo.kind({
 	},
 
 	markViewableCardsRead: function(){
+		if(AppPrefs.get("autoMarkAsRead") === false){
+			return;
+		}
 		var cardWidth = parseInt(AppPrefs.get("cardWidth").replace("px", ""), 10) + 20;
-		var numVisible = Math.round(this.$.snapScroller.node.offsetWidth/cardWidth);
-		var offsetIndex = Math.floor(this.$.snapScroller.getScrollLeft()/cardWidth);
-		var controls = this.$.snapScroller.getControls();
+		var numVisible = Math.round(this.$.cardContainer.node.offsetWidth/cardWidth);
+		var offsetIndex = Math.floor(this.$.cardContainer.getScrollLeft()/cardWidth);
+		var controls = this.$.cardContainer.getControls();
 		for(var i = offsetIndex; i <= (offsetIndex + numVisible); i++){
 			if(controls[i]){
 				controls[i].markRead();
@@ -138,10 +178,15 @@ enyo.kind({
 		}
 
 	},
+	articleItemClick: function(inSender, inEvent){
+		
+		this.itemClick(inSender, inEvent, true);
+	},
 	itemClick: function(inSender, inEvent, noSnap){
 		this.$.scrollerSlidingView.applyStyle("max-width", "345px");
+		
 		if(!noSnap){		
-			this.$.snapScroller.setIndex(inSender.getIndex());
+			this.$.cardContainer.setIndex(inSender.getIndex());
 		}
 		
 		this.$.itemView.setShowing(true);
@@ -151,5 +196,12 @@ enyo.kind({
 		if(inEvent){
 			inEvent.stopPropagation();		
 		}
-	}
+	},
+
+	setupRow: function(inSender, inIndex){
+		if(this.items[inIndex]){
+			this.$.articleItem.setItem(this.items[inIndex]);
+			return true;
+		}	
+	},
 });

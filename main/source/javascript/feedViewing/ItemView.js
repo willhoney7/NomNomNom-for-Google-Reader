@@ -13,7 +13,7 @@ enyo.kind({
 			{name: "date", className: "date"}
 		]},
 		{kind: enyo.Scroller, flex: 1, showing: true, components: [
-			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: white; -webkit-border-radius: 10px; margin: 10px; padding: 3px", components: [
+			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: rgba(0, 0, 0, .6); -webkit-border-radius: 10px; margin: 10px; padding: 3px", showing: false, components: [
 				{kind: "ToolButton", name: "playButton", icon: "source/images/menu-icon-play.png", onclick: "playAudio"},
 				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
 				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
@@ -26,7 +26,7 @@ enyo.kind({
 			{kind: enyo.Spacer},
 			{kind: enyo.ToolButton, name: "share", onclick: "share", icon: "source/images/menu-icon-share.png"},
 			{kind: enyo.ToolButton, name: "star", onclick: "toggleStarred", icon: "source/images/menu-icon-starred-outline.png"},
-			{kind: enyo.ToolButton, icon: "source/images/menu-icon-browser.png", onclick: "openInBrowser"},
+			{kind: enyo.ToolButton, name: "browser", icon: "source/images/menu-icon-browser.png", onclick: "openInBrowser"},
 			{kind: enyo.Spacer}
 		]},
 
@@ -38,9 +38,28 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	itemChanged: function(){
+
+		if(_(this.item).isEmpty()){
+			this.disabled = true;
+			this.$.title.setContent("");
+			this.$.date.setContent("");
+			this.$.content.setContent("");
+		} else {
+			this.disabled = false;
+		}
+
+		this.$.share.setDisabled(this.disabled);
+		this.$.star.setDisabled(this.disabled);
+		this.$.browser.setDisabled(this.disabled);
+
+		if(this.disabled){
+			return;
+		}
+
+
 		//caption: this.items[i].label || this.items[i].title, icon: });	
-		this.$.title.setContent(this.item.title);
-		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated))
+		this.$.title.setContent(this.item.title || "");
+		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated) || "");
 
 		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
 			itemContent = itemContent.replace(/<iframe.*?\/iframe>/ig, ""); //remove iframes. We have to do this because of a webOS bug. iframes launch a browser card...
@@ -88,6 +107,11 @@ enyo.kind({
 
 		//this.$.pane.selectViewByName("view");
 	},
+	itemCardChanged: function(){
+		if(this.itemCard && this.itemCard.markRead){
+			this.itemCard.markRead();
+		}	
+	},
 	renderPrefs: function(){
 		this.$.content.applyStyle("font-size", AppPrefs.get("itemViewFontSize"));	
 	},
@@ -121,7 +145,8 @@ enyo.kind({
 			{caption: $L("Share via SMS"), value: "sms"},
 			{caption: $L("Share via Email"), value: "email"},
 			{caption: $L("Share via Spaz HD"), value: "spaz"},
-			//{caption: $L("Add to Instapaper"), value: "instapaper"}
+			{caption: $L("Add to Instapaper"), value: "instapaper"},
+			{caption: $L("Add to Read it Later"), value: "readitlater"}
 		];
 		if(this.item.shared){
 			this.shareItems.unshift({caption: $L("Unshare from Google Reader"), value: "googlereader"});
@@ -174,6 +199,7 @@ enyo.kind({
 								}
 							});
 							break;
+
 					}
 				}),
 				onError: function(){
@@ -188,8 +214,41 @@ enyo.kind({
 		else {
 			switch(inSelected.value){
 				case "instapaper":
-				
+					if(AppPrefs.get("instapaperUsername") !== ""){
+						instapaper.add({url: this.item.alternate[0].href, title: this.item.title}, AppPrefs.get("instapaperAuth"), function(response){
+							if(response.status === 201){
+								humane("Added to Instapaper!");
+							} else if(response.status === 400){
+								humane("Bad request or exceeded the rate limit");			
+							} else if(response.status === 403){
+								humane("Wrong username/password");
+							} else if(response.status === 500){
+								humane("Service encountered an error. Please try again later");
+							}
+						});
+					} else {
+						humane("You must first log in to Instapaper!");
+					}
 					break; 
+				case "readitlater":
+					if(AppPrefs.get("readitlaterUsername") !== ""){
+						readitlater.add({url: this.item.alternate[0].href, title: this.item.title}, AppPrefs.get("readitlaterUsername"), AppPrefs.get("readitlaterPassword"), function(response){
+							if(response.status === 200){
+								humane("Added to Read it Later!");
+							} else if(response.status === 400){
+								humane("Invalid Request");
+							} else if(response.status === 401){
+								humane("Username and/or Password incorrect");
+							} else if(response.status === 501){
+								humane("API rate limit exceeded; Try again later");
+							} else if(response.status === 503){
+								humane("Read It Later's sync server is down for scheduled maintenance.");
+							}
+						});
+					} else {
+						humane("You must first log in to Read it Later!");
+					}
+					break;
 				case "googlereader":
 					reader.setItemTag(this.item.origin.streamId, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
 						this.item.shared = !this.item.shared;

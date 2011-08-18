@@ -7,7 +7,6 @@ undef: true,
 white: false,
 onevar: false 
  */
-var jQuery;
 
 /**
  * A library to do url shortening 
@@ -212,7 +211,7 @@ SpazShortURL.prototype.shorten = function(longurl, opts) {
 	
 	function getShortURL(longurl, shortener, apidata, opts, self) {
 	    
-		jQuery.ajax({
+		$.ajax({
 			'traditional':true, // so we don't use square brackets on arrays in data. Bit.ly doesn't like it
 			'dataType':'text',
 			complete:function(xhr, rstr) {

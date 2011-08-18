@@ -14,13 +14,19 @@
 			"itemViewFontSize": "14px",
 			"viewActiveCardInItemView": true,
 			"cardWidth": "322px",
+			"autoMarkAsRead": true, 
+			"articleView": "cards", // or "list"
 			"hideRead": false,	//whether to show icons that have no unread icons
 			"showStarred": true,
 			"showShared": true,
 			"browserPreview": false, //show items in webview
 			"notify": true,
 			"notifyFeeds": {start: true},
-			"notifyInterval": 60
+			"notifyInterval": 60,
+			"instapaperUsername": "",
+			"instapaperAuth": "",
+			"readitlaterUsername": "",
+			"readitlaterPassword": ""
 		}, JSON.parse(localStorage["preferences"]));
 	};
 

@@ -39,7 +39,7 @@ enyo.kind({
 	  		]},
 	  		{kind: enyo.VFlexBox, name: "step9", showing: false, width: "200px", components: [
   				{kind: enyo.Spacer},
-  				{kind: enyo.HFlexBox, style: "position: relative; top: 310px;right: 153px;", components: [
+  				{kind: enyo.HFlexBox, style: "position: relative; top: 310px; right: 153px;", components: [
 	  				{kind: enyo.Spacer},
 					{kind: "ClassyButton", title: "Twitter", color: "green", onclick: "twitter"},
 					{kind: "ClassyButton", title: "Email", color: "green", onclick: "email"},
@@ -245,11 +245,12 @@ enyo.kind({
 		this.$.feedIconList.$.grid.addClass("enyo-grid");
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 		this.$.feedIconList.$.scroller.setVertical(true);
+		this.$.feedIconList.$.scroller.setAutoVertical(true);
 		this.$.feedView.$.itemView.hide();
 		
 		setTimeout(enyo.bind(this, function(){
 			this.$.feedView.hide();
-			this.$.feedView.$.snapScroller.resized();
+			this.$.feedView.$.cardContainer.resized();
 			//hide the feedView once it off the screen
 		}), 1000);	
 
@@ -261,8 +262,9 @@ enyo.kind({
 
 		this.$.feedIconList.$.grid.removeClass("enyo-grid");
 		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
-		this.$.feedIconList.$.scroller.setVertical(false);
 		this.$.feedIconList.applyStyle("height", "120px");
+		this.$.feedIconList.$.scroller.setVertical(false);
+		this.$.feedIconList.$.scroller.setAutoVertical(false);
 		this.$.feedIconList.loadFeeds();
 		
 	},
@@ -297,7 +299,7 @@ enyo.kind({
 		}	
 	},
 	reclaimSpace: function(){
-		this.$.feedView.$.snapScroller.snapTo(this.$.feedView.$.snapScroller.getIndex());
+		this.$.feedView.$.cardContainer.snapTo(this.$.feedView.$.cardContainer.getIndex());
 	
 	},
 	connectionResponseHandler: function(inSender, inResponse){

@@ -69,7 +69,21 @@ enyo.kind({
 						"19px",
 						"20px"
 					]}
-				]}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Automatically Mark as Read"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "autoMarkAsRead", onChange: "setPreference"}
+
+				]},
+				/*{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Type"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "ListSelector", value: "", preferenceProperty: "articleView", rerenderView: true, onChange: "setPreference", items: [
+						{caption: "Cards", value: "cards"},
+						{caption: "List", value: "list"}
+					]}
+				]}*/
 			]},
 			{kind: enyo.RowGroup, caption: "Article Full View", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -90,15 +104,42 @@ enyo.kind({
 					]}
 				]}
 			]},
-			{kind: enyo.RowGroup, caption: "Account", components: [
-				{kind: "Item", layoutKind: "VFlexLayout", components: [
-					{kind: enyo.HFlexBox, components: [
-						{flex: 1, name: "email"},
-
-					]},
-					{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "logout"}
-				]},
+			{name: "instapaperLoginGroup", kind: enyo.RowGroup, caption: "Instapaper", components: [
+				{name: "instapaperLogin", kind: enyo.Input, hint: "Username/email address", autoCapitalize: "lowercase", alwaysLooksFocused: false},
+				{name: "instapaperPassword", kind: enyo.PasswordInput, hint: "Password", alwaysLooksFocused: false},
+				{name: "instapaperLoginButton", kind: enyo.ActivityButton, content: "Log in", onclick: "instapaperLogin"},
 			]},
+			{name: "instapaperLoggedInGroup", kind: enyo.RowGroup, caption: "Instapaper", showing: false, components: [
+				{kind: enyo.HFlexBox, components: [
+					{flex: 1, name: "instapaperUsername"},
+				]},
+				{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "instapaperLogout"}
+			]},
+
+			{name: "readitlaterLoginGroup", kind: enyo.RowGroup, caption: "Read it Later", components: [
+				{name: "readitlaterLogin", kind: enyo.Input, hint: "Username", autoCapitalize: "lowercase", alwaysLooksFocused: false},
+				{name: "readitlaterPassword", kind: enyo.PasswordInput, hint: "Password", alwaysLooksFocused: false},
+				{name: "readitlaterLoginButton", kind: enyo.ActivityButton, content: "Log in", onclick: "readitlaterLogin"},
+			]},
+			{name: "readitlaterLoggedInGroup", kind: enyo.RowGroup, caption: "Read it Later", showing: false, components: [
+				{kind: enyo.HFlexBox, components: [
+					{flex: 1, name: "readitlaterUsername"},
+				]},
+				{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "readitlaterLogout"}
+			]},
+			
+
+			{kind: enyo.RowGroup, caption: "Google Account", components: [
+				{kind: enyo.HFlexBox, components: [
+					{flex: 1, name: "email"},
+
+				]},
+				{kind: enyo.Button, flex: 1, className: "enyo-button-negative", caption: "Log out", onclick: "logout"}
+
+			]},
+
+			
+		
 
 		]}		
 	],
@@ -109,7 +150,7 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
-		this.$.email.setContent("Logged in as " + reader.getUser().userEmail);
+		this.$.email.setContent(reader.getUser().userEmail);
 		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 
@@ -122,6 +163,19 @@ enyo.kind({
 				}
 			}
 		});
+
+		if(AppPrefs.get("instapaperUsername") !== ""){
+			this.$.instapaperLoginGroup.hide();
+			this.$.instapaperLoggedInGroup.show();
+			this.$.instapaperUsername.setContent(AppPrefs.get("instapaperUsername"));
+		}
+
+		if(AppPrefs.get("readitlaterUsername") !== ""){
+			this.$.readitlaterLoginGroup.hide();
+			this.$.readitlaterLoggedInGroup.show();
+			this.$.readitlaterUsername.setContent(AppPrefs.get("readitlaterUsername"));
+				
+		}
 
 	},
 
@@ -141,6 +195,73 @@ enyo.kind({
 	logout: function(){
 		AppUtils.logout();
 		this.close();
+	},
+
+	instapaperLogin: function(){
+
+		this.$.instapaperLoginButton.setActive(true);
+
+		var username = this.$.instapaperLogin.getValue(), password = this.$.instapaperPassword.getValue();
+		instapaper.authenticate(username, password, enyo.bind(this, function(response){
+			this.$.instapaperLoginButton.setActive(false);
+			
+			if(response.status === 200){
+				humane("Logged in!");
+				this.$.instapaperLoginGroup.hide();
+				this.$.instapaperLoggedInGroup.show();
+				this.$.instapaperUsername.setContent(username);
+				AppPrefs.set("instapaperUsername", username);
+				AppPrefs.set("instapaperAuth", instapaper.makeAuth(username, password));
+
+			} else if(response.status === 403){
+				humane("Wrong username/password");
+			} else if(response.status === 500){
+				humane("Service encountered an error. Please try again later");
+			}
+		}));
+	},
+	instapaperLogout: function(){
+		AppPrefs.set("instapaperAuth", "");	
+		AppPrefs.set("instapaperUsername", "");
+		this.$.instapaperLoggedInGroup.hide();
+		this.$.instapaperLoginGroup.show();
+					
+	},
+
+	readitlaterLogin: function(){
+
+		this.$.readitlaterLoginButton.setActive(true);
+
+		var username = this.$.readitlaterLogin.getValue(), password = this.$.readitlaterPassword.getValue();
+		readitlater.authenticate(username, password, enyo.bind(this, function(response){
+
+			this.$.readitlaterLoginButton.setActive(false);
+			if(response.status === 200){
+				humane("Logged in!");
+				this.$.readitlaterLoginGroup.hide();
+				this.$.readitlaterLoggedInGroup.show();
+				this.$.readitlaterUsername.setContent(username);
+				AppPrefs.set("readitlaterUsername", username);
+				AppPrefs.set("readitlaterPassword", password);
+
+			} else if(response.status === 400){
+				humane("Invalid Request");
+			} else if(response.status === 401){
+				humane("Username and/or Password incorrect");
+			} else if(response.status === 501){
+				humane("API rate limit exceeded; Try again later");
+			} else if(response.status === 503){
+				humane("Read It Later's sync server is down for scheduled maintenance.");
+			}
+		}));
+	},
+	readitlaterLogout: function(){
+		AppPrefs.set("readitlaterUsername", "");
+		AppPrefs.set("readitlaterPassword", "");	
+		this.$.readitlaterLoggedInGroup.hide();
+		this.$.readitlaterLoginGroup.show();
+					
 	}
+
 
 });

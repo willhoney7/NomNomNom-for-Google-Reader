@@ -2,6 +2,7 @@ enyo.depends(
 	//load vendors
 	"../vendors/underscore-min.js",
 	"../vendors/underscore.string.min.js",
+	"../vendors/utf-8.js",
 	"../vendors/zepto.min.js",
 	"../vendors/jsHtmlToText.js",
 	"../vendors/spazcore-shorturls.js",
@@ -13,10 +14,13 @@ enyo.depends(
 	//load the google reader library
 	"../library/google-reader.js",
 
+
 	//load helpers
+	"source/javascript/helpers/instapaper.js",
+	"source/javascript/helpers/readitlater.js",
+
 	"source/javascript/helpers/AppUtils.js",
 	"source/javascript/helpers/AppPrefs.js",
-
 	
 	//ekls
 	"source/javascript/GoogleReaderPopup.js",
@@ -43,6 +47,7 @@ enyo.depends(
 	//feedViewing
 	"source/javascript/feedViewing/FeedView.js",
 		"source/javascript/feedViewing/ItemCard.js",
+		"source/javascript/feedViewing/ArticleItem.js",
 		"source/javascript/feedViewing/ItemView.js",
 	
 	//css

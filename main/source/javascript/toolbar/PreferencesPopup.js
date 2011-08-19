@@ -76,14 +76,14 @@ enyo.kind({
 					{kind: "CheckBox", preferenceProperty: "autoMarkAsRead", onChange: "setPreference"}
 
 				]},
-				/*{kind: "Item", layoutKind: "HFlexLayout", components: [
-					{content: $L("Type"), kind: enyo.Control},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Form"), kind: enyo.Control},
 					{kind: enyo.Spacer},
 					{kind: "ListSelector", value: "", preferenceProperty: "articleView", rerenderView: true, onChange: "setPreference", items: [
 						{caption: "Cards", value: "cards"},
 						{caption: "List", value: "list"}
 					]}
-				]}*/
+				]}
 			]},
 			{kind: enyo.RowGroup, caption: "Article Full View", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [

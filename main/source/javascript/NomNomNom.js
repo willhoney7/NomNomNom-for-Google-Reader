@@ -246,6 +246,9 @@ enyo.kind({
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 		this.$.feedIconList.$.scroller.setVertical(true);
 		this.$.feedIconList.$.scroller.setAutoVertical(true);
+		this.$.feedIconList.$.scroller.setScrollTop(0);
+		this.$.feedIconList.$.scroller.setScrollLeft(0);
+			
 		this.$.feedView.$.itemView.hide();
 		
 		setTimeout(enyo.bind(this, function(){

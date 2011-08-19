@@ -317,6 +317,17 @@
 	overflow: hidden;*/
 }
 
+.itemCard .scrollfade {
+	height: 43px;
+	position: absolute;
+	bottom: 0px;
+	width: 322px;
+	z-index: 1000px;
+	pointer-events: none;
+	background: url(../images/itemCard_scrollfade.png) top left no-repeat;
+	
+}
+
 .itemCard .bottomToolbar {
 	height: 90px;
 	position: absolute;
@@ -400,6 +411,27 @@
 
 .itemView img {
 	padding: 5px;
+}
+
+.enyo-imageViewPopup {
+	min-width: 300px;
+	z-index: 120;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+}
+
+.imageTitleText {
+	font-size: 16px; 
+	color: rgba(0, 0, 0, 0); 
+	text-align: center; 
+	background-color: rgba(0, 0, 0, .8); 
+	-webkit-border-radius: 15px; 
+	margin: auto; 
+	width: 600px; 
+	padding: 10px;
+	-webkit-transition: color 200ms ease-in-out;
+
 }
 
 

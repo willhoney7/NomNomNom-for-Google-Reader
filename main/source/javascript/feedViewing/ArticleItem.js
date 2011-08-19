@@ -18,7 +18,9 @@ enyo.kind({
 	},
 	itemChanged: function(){
 		this.$.itemTitle.setContent(this.item.title);
-		this.item.read = false;
+		if(this.item.read === undefined){
+			this.item.read = false;		
+		}
 		this.item.star = false;
 		this.item.shared = false;
 		var readRegExp = new RegExp(reader.TAGS["read"].replace("user/-", "") + "$", "ig");
@@ -46,5 +48,9 @@ enyo.kind({
 				reader.decrementUnreadCount(this.item.origin.streamId, AppUtils.refreshUnreadCounts);
 			}));
 		}
+	},
+	setRead: function(inReadState){
+		this.item.read = inReadState;
+		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
 	}
 });

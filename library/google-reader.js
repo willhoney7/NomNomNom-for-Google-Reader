@@ -33,7 +33,7 @@ reader = {
 		"read": "user/-/state/com.google/read",
 		"fresh": "user/-/state/com.google/fresh",
 		"share": "user/-/state/com.google/broadcast",
-		"keep-unread": "user/-/state/com.google/tracking-kept-unread",
+		"kept-unread": "user/-/state/com.google/kept-unread",
 		"reading-list": "user/-/state/com.google/reading-list",	
 	},
 
@@ -710,7 +710,7 @@ reader = {
 	setItemTag: function(feed, item, tag, add, successCallback){
 		//feed id
 		//item id
-		//tag in simple form: "like", "read", "share", "label", "star", "keep-unread"
+		//tag in simple form: "like", "read", "share", "label", "star", "kept-unread"
 		//add === true, or add === false
 
 		var params = {

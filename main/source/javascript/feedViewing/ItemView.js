@@ -12,13 +12,14 @@ enyo.kind({
 			{kind: enyo.Spacer},
 			{name: "date", className: "date"}
 		]},
-		{kind: enyo.Scroller, flex: 1, showing: true, components: [
+		{kind: enyo.Scroller, flex: 1, autoVertical: true, showing: true, components: [
 			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: rgba(0, 0, 0, .6); -webkit-border-radius: 10px; margin: 10px; padding: 3px", showing: false, components: [
 				{kind: "ToolButton", name: "playButton", icon: "source/images/menu-icon-play.png", onclick: "playAudio"},
 				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
 				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
 			]},
-			{kind: enyo.HtmlContent, flex: 1, name: "content", onLinkClick: "linkClick", className: "content"}
+			{kind: enyo.HtmlContent, flex: 1, name: "content", onclick: "contentClick", onLinkClick: "linkClick", className: "content"},
+			{name: "stamp", kind: enyo.Image, src: "source/images/stamp.png", width: "165px", height: "165px", showing: false, style: "position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; margin: auto;"}
 		]},
 		//{name: "webView", kind: enyo.BasicWebView, flex: 1, showing: false},
 		{kind: enyo.Toolbar, components: [
@@ -27,15 +28,36 @@ enyo.kind({
 			{kind: enyo.ToolButton, name: "share", onclick: "share", icon: "source/images/menu-icon-share.png"},
 			{kind: enyo.ToolButton, name: "star", onclick: "toggleStarred", icon: "source/images/menu-icon-starred-outline.png"},
 			{kind: enyo.ToolButton, name: "browser", icon: "source/images/menu-icon-browser.png", onclick: "openInBrowser"},
+			//{kind: enyo.ToolButton, name: "more", icon: "source/images/menu-icon-more.png", onclick: "more"},
 			{kind: enyo.Spacer}
 		]},
 
 		{name: "sharePopup", kind: enyo.PopupSelect, onSelect: "sharePopupSelected"},
-		{name: "launchApp", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "launch"}
+		//{name: "morePopup", kind: enyo.PopupSelect, onSelect: "morePopupSelected"},
+		{name: "launchApp", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "launch"},
+		{kind: "ImageViewPopup"}
 
 	],
 	create: function(){
 		this.inherited(arguments);
+
+		$("img").live("click", enyo.bind(this, function(event){
+			if(event.srcElement.className === "feedImage"){
+				if(!this.$.scroller.isScrolling()){
+					this.$.imageViewPopup.openAtCenter();
+					this.$.imageViewPopup.setImage(event.srcElement);
+				} else {
+					setTimeout(enyo.bind(this, function(){
+						if(!this.$.scroller.isScrolling()){
+							this.$.imageViewPopup.openAtCenter();
+							this.$.imageViewPopup.setImage(event.srcElement);	
+						}
+					}), 100);		
+				}
+				event.preventDefault();
+			}			
+		}));
+
 	},
 	itemChanged: function(){
 
@@ -44,6 +66,8 @@ enyo.kind({
 			this.$.title.setContent("");
 			this.$.date.setContent("");
 			this.$.content.setContent("");
+			this.$.star.setIcon("source/images/menu-icon-starred-outline.png");
+
 		} else {
 			this.disabled = false;
 		}
@@ -51,11 +75,11 @@ enyo.kind({
 		this.$.share.setDisabled(this.disabled);
 		this.$.star.setDisabled(this.disabled);
 		this.$.browser.setDisabled(this.disabled);
+		this.$.stamp.setShowing(this.disabled);
 
 		if(this.disabled){
 			return;
 		}
-
 
 		//caption: this.items[i].label || this.items[i].title, icon: });	
 		this.$.title.setContent(this.item.title || "");
@@ -63,12 +87,15 @@ enyo.kind({
 
 		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
 			itemContent = itemContent.replace(/<iframe.*?\/iframe>/ig, ""); //remove iframes. We have to do this because of a webOS bug. iframes launch a browser card...
-		
+			$("<div>" + itemContent + "</div>").find("img").addClass("feedImage");
 		this.$.content.setContent((this.item.author ? "By " + this.item.author + "<br/>": "") + itemContent);
+		
+		$('.content').find("img").addClass("feedImage");
 
 		this.item.read = true;
 		this.item.star = false;
 		this.item.shared = false;
+		//this.item.keptUnread = false
 		for(var i = 0; i < this.item.categories.length; i++){
 			if(_(this.item.categories[i]).includes(reader.TAGS["fresh"].replace("user/-", ""))){
 				this.item.read = false;				
@@ -79,6 +106,9 @@ enyo.kind({
 			if(_(this.item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
 				this.item.shared = true;				
 			}
+			/*if(_(this.item.categories[i]).includes(reader.TAGS["kept-unread"].replace("user/-", ""))){
+				this.item.keptUnread = true;				
+			}*/
 		};
 		this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
 
@@ -122,7 +152,12 @@ enyo.kind({
 		}
 	},
 
+	contentClick: function(inSender, inEvent){
+		
+	},
+
 	linkClick: function(inSender, inUrl){
+		console.log(arguments);
     	window.location(inUrl);
 	},
 	
@@ -268,6 +303,31 @@ enyo.kind({
 	},
 	changeStar: function(inValue){
 		this.$.star.setIcon((inValue ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));		
+	},
+
+	more: function(inSender, inEvent){
+		var moreItems = [];
+		if(this.item.keptUnread === false || this.item.read === true){
+			moreItems.push({caption: $L("Keep Unread"), value: "keepunread"});
+		}
+		if(this.item.read === false){
+			moreItems.push({caption: $L("Mark Read"), value: "markRead"});			
+		}
+			
+		this.$.morePopup.setItems(moreItems);
+		this.$.morePopup.openAtEvent(inEvent);
+	},
+	morePopupSelected: function(inSender, inSelected){
+		if(inSelected.value === "keepunread"){
+			reader.setItemTag(this.item.origin.streamId, this.item.id, "kept-unread", true, enyo.bind(this, function(){
+				this.item.keptUnread = true;
+				this.item.read = !this.item.keptUnread;
+			}));
+		} else if(inSelected.value === "markRead"){
+			if(this.itemCard && this.itemCard.markRead){
+				this.itemCard.markRead();
+			}
+		}
 	}
 
 });

@@ -21,6 +21,7 @@ enyo.kind({
 		
 		{kind: enyo.ToolButton, name: "feedTitle", caption: "Feeds", toggling: true, onclick: "titleSelect", showing: false},
 		{kind: enyo.Control, name: "title", className: "toolbarText", content: "NomNomNom for Google Reader"},
+		{kind: enyo.ToolButton, name: "markRead", icon: "source/images/menu-icon-mark-read.png", showing: false, onclick: "markFeedRead"},
 
 		{kind: enyo.Spacer},
 		{kind: enyo.ToolButton, name: "new", icon: "source/images/menu-icon-new.png", onclick: "addFeed"},
@@ -44,10 +45,12 @@ enyo.kind({
 			this.$.title.show();
 			this.$.feedTitle.hide();
 			this.$.home.hide();
+			this.$.markRead.hide();
 
 		} else {
 			this.$.title.hide();
 
+			this.$.markRead.show();
 			this.$.feedTitle.show();
 			this.$.feedTitle.setCaption(this.title || "Untitled");
 			this.$.feedTitle.setDepressed(false);
@@ -74,6 +77,9 @@ enyo.kind({
 	},
 	aboutPopup: function(){
 		this.$.aboutPopup.showAtCenter();
+	},
+	markFeedRead: function(){
+		AppUtils.markFeedRead();	
 	},
 
 	loadFeeds: function(){

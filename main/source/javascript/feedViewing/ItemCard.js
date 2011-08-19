@@ -102,6 +102,10 @@ enyo.kind({
 			}));
 		}
 	},
+	setRead: function(inReadState){
+		this.item.read = inReadState;
+		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
+	},
 
 	toggleStarred: function(inSender, inEvent){
 

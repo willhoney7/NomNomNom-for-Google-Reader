@@ -48,6 +48,7 @@ enyo.depends(
 	"source/javascript/feedViewing/FeedView.js",
 		"source/javascript/feedViewing/ItemCard.js",
 		"source/javascript/feedViewing/ArticleItem.js",
+		"source/javascript/feedViewing/ImageViewPopup.js",
 		"source/javascript/feedViewing/ItemView.js",
 	
 	//css

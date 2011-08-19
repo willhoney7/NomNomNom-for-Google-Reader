@@ -13,23 +13,20 @@ enyo.kind({
 	components: [
 		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
 			{name: "cardContainer", kind: enyo.SnapScroller, autoVertical: false, vertical: false, horizontal: true, autoHorizontal: true, className: "enyo-hflexbox", style: "padding-left: 10px", flex: 1, onSnap: "cardSnap", onSnapFinish: "cardSnapFinish", components: []},
-			/*{name: "listContainer", kind: enyo.VFlexBox, flex: 1, className: "listContainer itemCard", width: "322px", components: [
+			{name: "listContainer", kind: enyo.VFlexBox, flex: 1, className: "listContainer itemCard", width: "322px", components: [
 				{className: "top"},
 				{kind: enyo.VFlexBox, className: "mainContent", flex: 1, style: "overflow: hidden", allowHtml: true, components: [
 					{kind: enyo.VirtualList, width: "322px", flex: 1, onSetupRow: "setupRow", className: "virtualList", components: [
-						{kind: "ArticleItem", onclick: "articleItemClick"}
+						{kind: "ArticleItem", tapHighlight: true, onclick: "articleItemClick"}
 					]},
-					{kind: enyo.Control, height: "50px"},
-					{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
+					{kind: enyo.Control, name: "bottomToolbar", className: "scrollfade"},
+					/*{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
 						{kind: enyo.HFlexBox, className: "content", components: [
-							{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", allowHtml: true},
-							{kind: enyo.Spacer},
-							{kind: enyo.Control, name: "date", className: "date"},
-							{name: "star", kind: enyo.Image, onclick: "toggleStarred", src: "source/images/star_no.png"}
+							{flex: 1, kind: enyo.Control, name: "feedTitle", onclick: "markAllRead", className: "feedTitle truncating-text", style: "text-align: center; padding-left: 5px", content: "Mark all read"},
 						]}
-					]}
+					]}*/
 				]},
-			]}	*/
+			]}
 			
 			
 		]},
@@ -44,6 +41,8 @@ enyo.kind({
 			});
 			this.$.itemView.renderPrefs();
 		});
+
+		AppUtils.markFeedRead = enyo.bind(this, this.markFeedRead);
 	},
 	loadFeed: function(inFeed){
 		this.$.itemView.hide();
@@ -81,7 +80,7 @@ enyo.kind({
 
 	},
 	feedChanged: function(){
-		//do do do do
+		//doo doo doo doo
 	},
 	loadedItems: function(items){
 
@@ -91,7 +90,7 @@ enyo.kind({
 		if(AppPrefs.get("articleView") === "cards"){
 			this.$.itemView.hide();
 			this.$.itemView.setDismissible(true);
-			//this.$.listContainer.hide();
+			this.$.listContainer.hide();
 			this.$.cardContainer.show();
 			this.$.cardContainer.destroyControls();
 			this.$.scrollerSlidingView.applyStyle("max-width", null);
@@ -107,10 +106,10 @@ enyo.kind({
 			this.$.scrollerSlidingView.applyStyle("max-width", "345px");
 
 			this.$.cardContainer.hide();
-			//this.$.listContainer.show();
+			this.$.listContainer.show();
 
 			this.doFeedLoaded(true);
-			this.$.virtualList.refresh();
+			this.$.virtualList.punt();
 
 			this.$.itemView.show();
 			this.$.itemView.setItem({});
@@ -200,8 +199,27 @@ enyo.kind({
 
 	setupRow: function(inSender, inIndex){
 		if(this.items[inIndex]){
+			console.log("read", this.items[inIndex].read)
 			this.$.articleItem.setItem(this.items[inIndex]);
 			return true;
 		}	
 	},
+
+	markFeedRead: function(){
+		reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
+			_(this.items).each(function(item){
+				item.read = true;
+				item.categories.push(reader.TAGS["read"]);
+			});
+			
+			if(AppPrefs.get("articleView") === "list"){
+				this.$.virtualList.refresh();
+			} else {
+				$(".unread").css("opacity", 0);
+			}
+		
+			AppUtils.refreshIcons();
+
+		}));
+	}
 });

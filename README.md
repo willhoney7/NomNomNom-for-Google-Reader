@@ -1,4 +1,3 @@
-
 ## NomNomNom for Google Reader  ##
 
 NomNomNom is a popular webOS Google Reader client. It is built using Enyo.

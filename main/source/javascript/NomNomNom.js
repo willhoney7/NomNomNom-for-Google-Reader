@@ -254,6 +254,7 @@ enyo.kind({
 		setTimeout(enyo.bind(this, function(){
 			this.$.feedView.hide();
 			this.$.feedView.$.cardContainer.resized();
+			this.$.feedView.$.cardContainer.destroyControls();
 			//hide the feedView once it off the screen
 		}), 1000);	
 

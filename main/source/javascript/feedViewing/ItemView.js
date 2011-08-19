@@ -13,7 +13,7 @@ enyo.kind({
 			{name: "date", className: "date"}
 		]},
 		{kind: enyo.Scroller, flex: 1, autoVertical: true, showing: true, components: [
-			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: rgba(0, 0, 0, .6); -webkit-border-radius: 10px; margin: 10px; padding: 3px", showing: false, components: [
+			{name: "soundContainer", kind: enyo.HFlexBox, flex: 1, style: "background-color: rgba(10, 10, 10, .3); -webkit-border-radius: 10px; margin: 10px; padding: 3px; color: white; font-weight:bold;", showing: false, components: [
 				{kind: "ToolButton", name: "playButton", icon: "source/images/menu-icon-play.png", onclick: "playAudio"},
 				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
 				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
@@ -67,6 +67,7 @@ enyo.kind({
 			this.$.date.setContent("");
 			this.$.content.setContent("");
 			this.$.star.setIcon("source/images/menu-icon-starred-outline.png");
+			this.$.soundContainer.hide();
 
 		} else {
 			this.disabled = false;

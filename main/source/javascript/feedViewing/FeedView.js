@@ -199,7 +199,6 @@ enyo.kind({
 
 	setupRow: function(inSender, inIndex){
 		if(this.items[inIndex]){
-			console.log("read", this.items[inIndex].read)
 			this.$.articleItem.setItem(this.items[inIndex]);
 			return true;
 		}	

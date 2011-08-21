@@ -636,10 +636,10 @@
 		}, successCallback);
 	};
 
-	var urlRegex = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?\^=%&amp;:\/~\+#]*[\w\-\@?\^=%&amp;\/~\+#])?/;
+	var readerUrlRegex = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?\^=%&amp;:\/~\+#]*[\w\-\@?\^=%&amp;\/~\+#])?/;
 	reader.processFeedInput = function (input, inputType, successCallback, failCallback) {
 		var url = "https://ajax.googleapis.com/ajax/services/feed/";
-		if ((reader.urlRegex.test(input) || inputType === "url") && inputType !== "keyword") {
+		if ((readerUrlRegex.test(input) || inputType === "url") && inputType !== "keyword") {
 			url += "load";
 		} else {
 			url += "find";

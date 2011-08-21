@@ -96,7 +96,7 @@ enyo.kind({
 			case "markAllRead":
 				reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
 					this.$.popupSelect.close();
-					AppUtils.refreshIcons();
+					publish("icons", ["refresh"]);
 
 				}));
 				break;
@@ -108,7 +108,7 @@ enyo.kind({
 						AppPrefs.set("notifyFeeds", feedsToNotifyFor);
 						
 						inSender.close();
-						AppUtils.viewIcons();
+						publish("nomnomnom", ["viewIcons"]);
 					}));
 					
 				})});
@@ -147,7 +147,7 @@ enyo.kind({
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove label?", doIt: enyo.bind(this, function(inSender){
 					reader.editFeedLabel(this.feed.id, this.feed.inside, false, function(){
 						inSender.close();
-						AppUtils.refreshIcons();
+						publish("icons", ["refresh"]);
 					});
 					
 				})});
@@ -155,7 +155,7 @@ enyo.kind({
 			case "removeLabelAll": 
 				this.$.confirmPopup.showAtEvent(this.event, {title: "Remove label from all feeds?", doIt: function(inSender){
 					inSender.close();
-					AppUtils.refreshIcons();
+					publish("icons", ["refresh"]);
 
 				}});
 				break;
@@ -183,12 +183,16 @@ enyo.kind({
 					confirmTitle: "Yes",
 					cancelTitle: "No",
 					doIt: enyo.bind(this, function(inSender){
-						reader.editFeedLabel(this.feed.id, this.feed.inside, false, AppUtils.refreshIcons);
+						reader.editFeedLabel(this.feed.id, this.feed.inside, false, function(){
+							publish("icons", ["refresh"]);
+						});
 						inSender.close();
 					})
 				});
 			} 
-			reader.editFeedLabel(this.feed.id, inSelection.labelId, true, AppUtils.refreshIcons);
+			reader.editFeedLabel(this.feed.id, inSelection.labelId, true, function(){
+				publish("icons", ["refresh"]);
+			});
 		}
 	},
 
@@ -202,7 +206,7 @@ enyo.kind({
 	},
 	popupClosed: function(){
 		if(this.refreshIconsFlag === true){
-			AppUtils.refreshIcons();		
+			publish("icons", ["refresh"]);
 		}
 	}
 });

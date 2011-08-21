@@ -15,11 +15,15 @@
 	} catch(e){
 		AppUtils.formatDate = function(timestamp){
 			var d = new Date(timestamp * 1000);
-			return d.toString();
+			var date = d.getUTCDate(), hrs = d.getUTCHours(), mins = d.getUTCMinutes();
+
+			return date + " " + hrs + ":" + mins;
 		}
 		AppUtils.formatLongDate = function(timestamp){
 			var d = new Date(timestamp * 1000);
-			return d.toString()
+			var mo = d.getUTCMonth() + 1, date = d.getUTCDate(), hrs = d.getUTCHours(), mins = d.getUTCMinutes();
+
+			return mo + "/" + date + " " + hrs + ":" + mins;
 		}
 	}
 

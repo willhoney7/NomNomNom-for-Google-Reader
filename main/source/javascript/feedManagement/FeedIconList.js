@@ -6,7 +6,7 @@ enyo.kind({
 		onViewFeed: ""
 	},
 	components: [
-		{kind: enyo.Scroller, autoVertical: true, vertical: true, onScrollStart: "scrollStart", flex: 1, components: [
+		{kind: enyo.Scroller, autoVertical: true, vertical: true, onScrollStart: "scrollStart", className: "scrollerBackground", flex: 1, components: [
 			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
 		{kind: enyo.Control, className: "fade"},
@@ -16,34 +16,43 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);	
-	
-		//Global Functions
-		AppUtils.refreshIcons = enyo.bind(this, this.loadFeeds);
-		AppUtils.refreshUnreadCounts = enyo.bind(this, this.refreshUnreadCounts);
 
+		//no need to unsubscribe later, it will be gc'd on app close.
+		subscribe("icons", _.bind(function(action){
+			if(action === "refresh"){
+		        this.loadFeeds();			
+			} else if(action === "reloadUnreadCounts"){
+				this.refreshUnreadCounts();
+			}
+	    }, this));
+
+	},
+
+	destroy: function(){
+		this.inherited(arguments);	
 	},
 
 	loadFeeds: function(inSender){
 
 		if(reader.is_initialized){
-			enyo.call(AppUtils, "setSpinner", [true]);
+			publish("toolbar", ["setSpinner", true]);
 			reader.loadFeeds(enyo.bind(this, this.load));	
 		} else {
 			if(reader.hasInternet){
-				AppUtils.initializeGoogleReader();	
+				publish("nomnomnom", ["initializeGoogleReader"]);
 			}
 		}
 		
 	},
 
 	reportError: function(error){
-		enyo.call(AppUtils, "setSpinner", [false]);
+		publish("toolbar", ["setSpinner", false]);
 
 		console.error(error);
 	},
 
 	load: function(){
-		enyo.call(AppUtils, "setSpinner", [false]);
+		publish("toolbar", ["setSpinner", false]);
 
 		this.$.grid.destroyControls();
 		
@@ -85,7 +94,7 @@ enyo.kind({
 	},
 
 	refreshUnreadCounts: function(){
-		if(AppUtils.iconListShowing){	
+		if(this.owner.iconListShowing){	
 			_.each(this.$.grid.getControls(), function(feed){
 				feed.updateUnreadCount();
 			});

@@ -83,7 +83,8 @@ enyo.kind({
 					reader.subscribeFeed(response.feedUrl, enyo.bind(this, function(arg){
 						//@TODO: when already added, it just returns a "OK"
 						this.close();
-						AppUtils.refreshIcons();
+						publish("icons", ["refresh"]);
+
 					}), response.title);
 				}
 			}), enyo.bind(this, this.reportError));
@@ -108,7 +109,7 @@ enyo.kind({
 	itemClick: function(inSender, inEvent){
 		reader.subscribeFeed(this.items[inEvent.rowIndex].url, enyo.bind(this, function(arg){
 			this.close();
-			AppUtils.refreshIcons();
+			publish("icons", ["refresh"]);
 		}), htmlToText(this.items[inEvent.rowIndex].title));
 	},
 

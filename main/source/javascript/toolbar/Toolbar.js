@@ -10,10 +10,12 @@ enyo.kind({
 	},
 	create: function(){
 	 	this.inherited(arguments);
-
-	 	AppUtils.setSpinner = enyo.bind(this, function(value){
-	 		this.$.refresh.addRemoveClass("spinning", value);
-	 	});
+	 	
+	 	subscribe("toolbar", _(function(action, arg1){
+	 		if(action === "setSpinner"){
+		 		this.$.refresh.addRemoveClass("spinning", arg1); 			
+	 		}
+	 	}).bind(this));
 	 	
 	},
 	components: [		
@@ -59,7 +61,7 @@ enyo.kind({
 		}
 	},
 	viewIcons: function(){
-		AppUtils.viewIcons();	
+		publish("nomnomnom", ["viewIcons"]);
 	},
 	titleSelect: function(inSender){
 		if(inSender.depressed){
@@ -79,10 +81,10 @@ enyo.kind({
 		this.$.aboutPopup.showAtCenter();
 	},
 	markFeedRead: function(){
-		AppUtils.markFeedRead();	
+		publish("feedView", ["markRead"]);
 	},
 
 	loadFeeds: function(){
-		AppUtils.refreshIcons();
+		publish("icons", ["refresh"]);
 	}
 });

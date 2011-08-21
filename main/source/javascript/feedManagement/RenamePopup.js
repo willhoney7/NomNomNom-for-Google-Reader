@@ -20,8 +20,8 @@ enyo.kind({
 		
 	],
 	closeAndRefresh: function(){
+		publish("icons", ["refresh"]);
 		this.close();
-		AppUtils.refreshIcons();
 	},
 	close: function(){
 		this.inherited(arguments);
@@ -56,7 +56,7 @@ enyo.kind({
 			this.close();
 		} else {
 			if(this.opt === "new label"){
-				reader.editFeedLabel(this.feed.id, "user/-/label/" + this.$.name.getValue(), true, enyo.bind(this, this.close));				
+				reader.editFeedLabel(this.feed.id, "user/-/label/" + this.$.name.getValue(), true, enyo.bind(this, this.closeAndRefresh));				
 			} else {
 				if(this.feed.isFeed){
 					reader.editFeedTitle(this.feed.id, this.$.name.getValue(), enyo.bind(this, this.closeAndRefresh));			

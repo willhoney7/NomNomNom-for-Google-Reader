@@ -12,6 +12,7 @@
 			"tapGets": "unread", //"unread" or "all",
 			"itemCardFontSize": "14px",
 			"itemViewFontSize": "14px",
+			"articleSort": "newest",
 			"viewActiveCardInItemView": true,
 			"cardWidth": "322px",
 			"autoMarkAsRead": true, 

@@ -28,7 +28,7 @@ enyo.kind({
 	close: function(){
 		this.inherited(arguments);
 		enyo.keyboard.setManualMode(false); // closes the keyboard
-		AppUtils.refreshIcons();
+		publish("icons", ["refresh"]);
 	},
 	showAtCenter: function(feed){
 		if(this.lazy) {

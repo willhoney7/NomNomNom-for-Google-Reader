@@ -35,7 +35,7 @@ enyo.kind({
 	},
 	startTour: function(){
 		this.close();
-		AppUtils.startTour();
+		publish("nomnomnom", ["startTour"]);
 	},
 	linkClick: function(inSender, inUrl){
     	window.location(inUrl);

@@ -54,6 +54,14 @@ enyo.kind({
 			]},
 			{kind: enyo.RowGroup, caption: "Article Previews", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Order by"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "ListSelector", value: "", preferenceProperty: "articleSort", onChange: "setPreference", items: [
+						{caption: "Newest", value: "newest"},
+						{caption: "Oldest", value: "oldest"}
+					]}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: $L("Font-Size"), kind: enyo.Control},
 					{kind: enyo.Spacer},
 					{kind: "ListSelector", value: "", preferenceProperty: "itemCardFontSize", rerenderView: true, onChange: "setPreference", items: [
@@ -150,6 +158,8 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
+		enyo.keyboard.setManualMode(false);
+
 		this.$.email.setContent(reader.getUser().userEmail);
 		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
@@ -184,16 +194,16 @@ enyo.kind({
 		AppPrefs.set(inSender.preferenceProperty, value);
 
 		if(inSender.rerenderManagement){
-			AppUtils.refreshIcons();
+			publish("icons", ["refresh"]);
 		} else if(inSender.rerenderView){
-			AppUtils.refreshItems();
+			publish("feedView", ["rerenderItems"]);
 		} else if(inSender.restartRefresh){
 			enyo.application.setupRefresh();
 		}
 	},
 
 	logout: function(){
-		AppUtils.logout();
+		publish("nomnomnom", ["logout"]);
 		this.close();
 	},
 

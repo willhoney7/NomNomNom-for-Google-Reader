@@ -62,17 +62,26 @@ enyo.kind({
 		reader.hasInternet = true;	//hasInternet until proven disconnected.
 
 		//set the height to grid style
-		AppUtils.iconListShowing = true;
+		this.iconListShowing = true; //piggy-back on the global reader object
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
 
-		AppUtils.viewIcons = enyo.bind(this, this.viewIcons);
-		AppUtils.logout = enyo.bind(this, this.logout);
-		AppUtils.initializeGoogleReader = enyo.bind(this, this.initializeGoogleReader);
-
-		AppUtils.startTour = enyo.bind(this, function(){
-			this.goNextStep({step: 3});
-		});
-
+		subscribe("nomnomnom", _(function(action){
+			switch(action){
+				case "viewIcons":
+					this.viewIcons();
+					break;
+				case "logout":
+					this.logout();
+					break;
+				case "initializeGoogleReader":
+					this.initializeGoogleReader();
+					break;
+				case "startTour":
+					this.goNextStep({step: 3});
+					break;
+			}
+		}).bind(this));
+		
 		reader.load(); //load the saved data
 		this.initializeGoogleReader();
 
@@ -81,7 +90,7 @@ enyo.kind({
 	},
 	activate: function(){
 		enyo.application.clearDashboard();
-		AppUtils.refreshIcons();
+		publish("icons", ["refresh"]);
 	},
 
 	initializeGoogleReader: function(){
@@ -141,6 +150,7 @@ enyo.kind({
 			}
 		} else if (!inStep){ //zero or undefined
 			enyo.setAllowedOrientation("free");
+			enyo.keyboard.setManualMode(false);
 			enyo.keyboard.setResizesWindow(false);
 
 			this.$.appComponents.show();
@@ -219,11 +229,13 @@ enyo.kind({
 	},
 
 	getToken: function(){
-		reader.getToken(AppUtils.refreshIcons, function(error){ console.error(error)});	
+		reader.getToken(function(){
+			publish("icons", ["refresh"]);
+		}, function(error){ console.error(error)});	
 	},
 
 	resizeHandler: function(){
-		if(AppUtils.iconListShowing && _(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
+		if(this.iconListShowing && _(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
 			//@TODO: this'll animate resize. Looks funny
 			this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");		
 		}
@@ -239,7 +251,7 @@ enyo.kind({
 
 	},
 	viewIcons: function(inSender){
-		AppUtils.iconListShowing = true;
+		this.iconListShowing = true;
 
 		this.$.feedIconList.$.grid.removeClass("enyo-hflexbox");
 		this.$.feedIconList.$.grid.addClass("enyo-grid");
@@ -262,7 +274,7 @@ enyo.kind({
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this
 	},
 	viewSmallIcons: function(inSender){
-		AppUtils.iconListShowing = true;
+		this.iconListShowing = true;
 
 		this.$.feedIconList.$.grid.removeClass("enyo-grid");
 		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
@@ -275,7 +287,7 @@ enyo.kind({
 	
 	hideIcons: function(inSender){
 		this.$.feedIconList.applyStyle("height", "0px");
-		AppUtils.iconListShowing = false;
+		this.iconListShowing = false;
 	},
 	viewFeed: function(inSender, inFeed, inFeedIcon){
 		if(inFeedIcon){

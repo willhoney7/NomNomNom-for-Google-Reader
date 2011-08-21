@@ -108,7 +108,6 @@
 
 .feedIconList {
 	-webkit-transition: height 500ms ease-in-out;
-	background: url(../images/iconList_background.png) top left repeat silver;
 }
 
 .feedIconList.noWifi {
@@ -121,6 +120,7 @@
 
 .iconContainer {
 	padding: 10px;
+	background: url(../images/iconList_background.png) top left repeat;
 }
 
 .feedIconList .fade {

@@ -54,7 +54,7 @@ function htmlToText(html) {
 		// Replace multiple spaces with a single space.
  		.replace(/ {2,}/g," ")
 		// Decode HTML entities.
- 		.replace(/&([^;]+);/g, decodeHtmlEntity);
+ 		//.replace(/&([^;]+);/g, decodeHtmlEntity);
 }
 
 function decodeHtmlEntity(m, n) {

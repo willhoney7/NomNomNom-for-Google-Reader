@@ -17,6 +17,7 @@ enyo.kind({
 				{className: "top"},
 				{kind: enyo.VFlexBox, className: "mainContent", flex: 1, style: "overflow: hidden", allowHtml: true, components: [
 					{kind: enyo.VirtualList, width: "322px", flex: 1, onSetupRow: "setupRow", className: "virtualList", components: [
+						{kind: enyo.Divider},
 						{kind: "ArticleItem", tapHighlight: true, onclick: "articleItemClick"}
 					]},
 					{kind: enyo.Control, name: "bottomToolbar", className: "scrollfade"},
@@ -35,14 +36,18 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-		AppUtils.refreshItems = enyo.bind(this, function(){
-			_.each(this.$.cardContainer.getControls(), function(control){
-				control.renderPrefs();
-			});
-			this.$.itemView.renderPrefs();
-		});
 
-		AppUtils.markFeedRead = enyo.bind(this, this.markFeedRead);
+		subscribe("feedView", _(function(action){
+			if(action === "markRead"){
+				this.markFeedRead();
+			} else if(action === "rerenderItems"){
+				_.each(this.$.cardContainer.getControls(), function(control){
+					control.renderPrefs();
+				});
+				this.$.itemView.renderPrefs();
+
+			}
+		}).bind(this));
 	},
 	loadFeed: function(inFeed){
 		this.$.itemView.hide();
@@ -85,6 +90,10 @@ enyo.kind({
 	loadedItems: function(items){
 
 		this.items = items;
+		if(AppPrefs.get("articleSort") === "oldest"){
+			this.items = _(items).reverse();
+		}
+
 		this.nextIndex = 0;
 
 		if(AppPrefs.get("articleView") === "cards"){
@@ -151,12 +160,14 @@ enyo.kind({
 			}), 400);
 		}
 
+		if(this.nextIndex && (this.nextIndex - this.activeIndex) <= 5){
+			setTimeout(enyo.bind(this, this.renderSome), 20);
+		}
+
 	},
 
 	cardSnapFinish: function(inSender){
-		if(this.nextIndex && (this.nextIndex - this.activeIndex) <= 5){
-			setTimeout(enyo.bind(this, this.renderSome), 0);
-		}
+		
 	},
 
 	markViewableCardsRead: function(){
@@ -200,7 +211,22 @@ enyo.kind({
 	setupRow: function(inSender, inIndex){
 		if(this.items[inIndex]){
 			this.$.articleItem.setItem(this.items[inIndex]);
+
+			this.setupDivider(this.$.articleItem, inIndex);
+
 			return true;
+		}	
+	},
+	setupDivider: function(item, index){
+		if(this.items[inIndex + 1]){
+			if(this.items[index + 1].name !== this.items[inIndex]){
+				item.applyStyle("border-bottom", "none" );
+			} else {
+				item.applyStyle("border-bottom", "1px solid silver");
+			}
+				
+		} else {
+			this.$.item.applyStyle("border-bottom", "none" );			
 		}	
 	},
 
@@ -217,7 +243,7 @@ enyo.kind({
 				$(".unread").css("opacity", 0);
 			}
 		
-			AppUtils.refreshIcons();
+			publish("icons", ["refresh"]);
 
 		}));
 	}

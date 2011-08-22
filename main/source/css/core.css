@@ -149,7 +149,6 @@
 
 .feedIcon {
 	float: inherit;
-	position: relative;
 }
 .enyo-grid .feedIcon {
 	float: left;
@@ -235,11 +234,16 @@
 .feedIcon .open .unreadCount{
 	bottom: 0px;
 }
-.feedIcon .spinner {
+.feedIcon .imageContainer .spinner {
 	position: absolute;
-	bottom: 85px;
-	left: 70px;
+	bottom: 42px;
+	left: 45px;
 }
+
+.feedIcon .imageContainer.folder .spinner {
+	left: 50px;
+}
+
 
 .feedView {
 	background: black;

@@ -16,8 +16,8 @@ enyo.kind({
 				{kind: enyo.Image, className: "image"},
 				{kind: enyo.Spacer},
 				{kind: enyo.Control, name: "count", className: "unreadCount"},
+				{kind: enyo.Spinner, showing: false, className: "spinner"},
 			]},
-			{kind: enyo.Spinner, showing: false, className: "spinner"},
 			{name: "title", kind: enyo.Control, className: "title truncating-text", allowHtml: true}	
 		]},
 	],

@@ -6,8 +6,10 @@ enyo.kind({
 		onViewFeed: ""
 	},
 	components: [
-		{kind: enyo.Scroller, autoVertical: true, vertical: true, onScrollStart: "scrollStart", className: "scrollerBackground", flex: 1, components: [
-			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
+		{kind: enyo.Scroller, accelerated: false, autoVertical: true, vertical: true, onScrollStart: "scrollStart", className: "scrollerBackground", flex: 1, components: [
+			{kind: enyo.VFlexBox, className: "container", flex: 1, components: [
+				{name: "grid", className: "iconContainer enyo-grid", flex: 1}
+			]}
 		]},
 		{kind: enyo.Control, className: "fade"},
 
@@ -82,7 +84,7 @@ enyo.kind({
 		
 		var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
 		if(feedsToNotifyFor.start){
-			console.log("Setting up feed notifications.");
+			//console.log("Setting up feed notifications.");
 			_(reader.getFeeds()).each(function(feed){
 				if(!feed.isSpecial){
 					feedsToNotifyFor[feed.id] = {count: feed.count, title: feed.title};				

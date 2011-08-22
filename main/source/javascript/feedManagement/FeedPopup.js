@@ -174,7 +174,6 @@ enyo.kind({
 
 	labelSelect: function(inSender, inSelection){
 		if(inSelection.labelId === "new"){
-			console.log("show new popup");
 			this.$.renamePopup.showAtCenter(this.feed, "new label");
 		} else {
 			if(this.feed.inside){

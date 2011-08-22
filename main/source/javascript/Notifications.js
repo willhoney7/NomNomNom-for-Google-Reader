@@ -78,7 +78,7 @@ enyo.kind({
 		if(reader.load()){
 			var self = this;
 			var feedsToNotifyFor = AppPrefs.get("notifyFeeds");
-			console.log("feedsToNotifyFor " + JSON.stringify(feedsToNotifyFor));
+			//console.log("feedsToNotifyFor " + JSON.stringify(feedsToNotifyFor));
 
 			if(!enyo.windows.getActiveWindow() || (enyo.windows.getActiveWindow() && enyo.windows.getActiveWindow().name !== "main")){
 				reader.getUnreadCounts(function(unreadCountsObj){
@@ -116,7 +116,7 @@ enyo.kind({
 						
 					});	
 					
-					console.log("unreadCounts " + JSON.stringify(unreadCountsObj));
+					//console.log("unreadCounts " + JSON.stringify(unreadCountsObj));
 				}, true);
 			} else if(enyo.windows.getActiveWindow() && enyo.windows.getActiveWindow().name === "main"){
 				//self.$.dashboard.setLayers([]);

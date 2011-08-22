@@ -19,8 +19,8 @@ enyo.kind({
   			{kind: enyo.VFlexBox, name: "step2", showing: false, width: "322px", components: [
   				{kind: enyo.Spacer},
   				{kind: enyo.RowGroup, components: [
-					{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true},
-					{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "passwordKeydown", alwaysLooksFocused: true},
+					{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+					{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "passwordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
 				]},
 				{kind: "ClassyButton", name: "loginButton", title: "Log in", color: "orange", step: 2, onclick: "goNextStep"},
 				{name: "errorResponse", className: "errorText"},
@@ -163,6 +163,9 @@ enyo.kind({
 			inEvent.preventDefault();
 
 		}
+	},
+	showKeyboard: function(){
+		enyo.keyboard.forceShow(4);	
 	},
 	goNextStep: function(inSender, inEvent){
 		if(inSender.step === 1){

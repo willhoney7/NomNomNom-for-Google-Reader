@@ -158,7 +158,6 @@ enyo.kind({
 	},
 
 	linkClick: function(inSender, inUrl){
-		console.log(arguments);
     	window.location(inUrl);
 	},
 	

@@ -55,6 +55,12 @@ enyo.kind({
 			this.validateComponents();
 		}
 
+		if(reader.is_logged_in === false){
+			this.close();
+			humane("You need to log in first");
+			return;
+		}
+
 		this.$.input.setValue("");
 		this.$.listSelector.setValue("either");
 		

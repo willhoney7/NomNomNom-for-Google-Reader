@@ -211,7 +211,7 @@ SpazShortURL.prototype.shorten = function(longurl, opts) {
 	
 	function getShortURL(longurl, shortener, apidata, opts, self) {
 	    
-		$.ajax({
+		Zepto.ajax({
 			'traditional':true, // so we don't use square brackets on arrays in data. Bit.ly doesn't like it
 			'dataType':'text',
 			complete:function(xhr, rstr) {

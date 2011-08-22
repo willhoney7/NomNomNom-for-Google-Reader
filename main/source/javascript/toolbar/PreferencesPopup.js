@@ -158,6 +158,12 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
+
+		if(reader.is_logged_in === false){
+			this.close();
+			humane("You need to log in first");
+			return;
+		}
 		enyo.keyboard.setManualMode(false);
 
 		this.$.email.setContent(reader.getUser().userEmail);

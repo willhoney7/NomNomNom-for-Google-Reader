@@ -17,7 +17,7 @@ enyo.kind({
 				{className: "top"},
 				{kind: enyo.VFlexBox, className: "mainContent", flex: 1, style: "overflow: hidden", allowHtml: true, components: [
 					{kind: enyo.VirtualList, width: "322px", flex: 1, onSetupRow: "setupRow", className: "virtualList", components: [
-						{kind: enyo.Divider},
+						//{kind: enyo.Divider},
 						{kind: "ArticleItem", tapHighlight: true, onclick: "articleItemClick"}
 					]},
 					{kind: enyo.Control, name: "bottomToolbar", className: "scrollfade"},
@@ -212,21 +212,21 @@ enyo.kind({
 		if(this.items[inIndex]){
 			this.$.articleItem.setItem(this.items[inIndex]);
 
-			this.setupDivider(this.$.articleItem, inIndex);
+			//this.setupDivider(this.$.articleItem, inIndex);
 
 			return true;
 		}	
 	},
 	setupDivider: function(item, index){
-		if(this.items[inIndex + 1]){
-			if(this.items[index + 1].name !== this.items[inIndex]){
+		if(this.items[index + 1]){
+			if(this.items[index + 1].name !== this.items[index]){
 				item.applyStyle("border-bottom", "none" );
 			} else {
 				item.applyStyle("border-bottom", "1px solid silver");
 			}
 				
 		} else {
-			this.$.item.applyStyle("border-bottom", "none" );			
+			item.applyStyle("border-bottom", "none" );			
 		}	
 	},
 

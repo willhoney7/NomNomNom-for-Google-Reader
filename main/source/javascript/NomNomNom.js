@@ -4,10 +4,12 @@ enyo.kind({
 	height: "100%",
 	className: "googleReader",
 	components: [
-		{name: "appComponents", kind: enyo.VFlexBox, flex: 1, components: [
-			{name: "feedIconList", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
-			{name: "toolbar", kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
-			{name: "feedView", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded", onDismiss: "reclaimSpace"},	
+		{name: "appComponents", style: "-webkit-transform: translate3d(0, 0, 0)", kind: enyo.VFlexBox, flex: 1, components: [
+			{name: "feedIconList", 	style: "-webkit-transform: translate3d(0, 0, 0)", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
+			{name: "second", style: "-webkit-transform: translate3d(0, 0, 0)", kind: enyo.VFlexBox, flex: 1, components: [
+				{name: "toolbar",  kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
+				{name: "feedView", style: "-webkit-transform: translate3d(0, 0, 0)", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded", onDismiss: "reclaimSpace"},	
+			]}
 		]},
   		{name: "login", className: "login", showing: false, flex: 1, kind: enyo.HFlexBox, onclick: "loginClick", components: [
   			{kind: enyo.Spacer},
@@ -64,6 +66,7 @@ enyo.kind({
 		//set the height to grid style
 		this.iconListShowing = true; //piggy-back on the global reader object
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
+		this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");
 
 		subscribe("nomnomnom", _(function(action){
 			switch(action){
@@ -238,9 +241,13 @@ enyo.kind({
 	},
 
 	resizeHandler: function(){
-		if(this.iconListShowing && _(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
-			//@TODO: this'll animate resize. Looks funny
-			this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");		
+		if(this.iconListShowing){
+			if(_(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
+				this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
+				this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");					
+			} else {
+				this.$.feedView.applyStyle("min-height", window.innerHeight - 55 - 120 + "px");					
+			}
 		}
 	},
 
@@ -248,17 +255,40 @@ enyo.kind({
 		 if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {
 	         if (inEvent.yVel < 0) {
 	         	//view the "all" feed
-	         	this.viewFeed(this, reader.getFeeds()[0]);
+	         	this.viewFeed(this, reader.getFeeds()[0], this.$.feedIconList.$.grid.getControls()[0]);
 	         }
 	      }
 
 	},
+	translatePage: function(inPos, callback){
+		this.$.second.hasNode();
+		var elem = this.$.second.node;
+
+		var transform = 'translate3d(0, ' + inPos + ', 0)';
+
+		var trans = Morf.transition(elem, {
+	        '-webkit-transform': transform,
+	    }, {
+	        duration: "350ms",
+	        timingFunction: "ease-in-out",
+	        callback: function (elem) {
+				if (callback) {
+					callback();
+				}
+			}
+	    });
+	},
+
 	viewIcons: function(inSender){
 		this.iconListShowing = true;
 
 		this.$.feedIconList.$.grid.removeClass("enyo-hflexbox");
 		this.$.feedIconList.$.grid.addClass("enyo-grid");
-		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
+		this.translatePage("0px", enyo.bind(this, function(){
+			this.$.feedIconList.loadFeeds();		
+		}));
+		//this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
+		
 		this.$.feedIconList.$.scroller.setVertical(true);
 		this.$.feedIconList.$.scroller.setAutoVertical(true);
 		this.$.feedIconList.$.scroller.setScrollTop(0);
@@ -267,13 +297,10 @@ enyo.kind({
 		this.$.feedView.$.itemView.hide();
 		
 		setTimeout(enyo.bind(this, function(){
-			this.$.feedView.hide();
 			this.$.feedView.$.cardContainer.resized();
 			this.$.feedView.$.cardContainer.destroyControls();
-			//hide the feedView once it off the screen
-		}), 1000);	
-
-		this.$.feedIconList.loadFeeds();
+		}), 1000);
+			
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this
 	},
 	viewSmallIcons: function(inSender){
@@ -281,38 +308,53 @@ enyo.kind({
 
 		this.$.feedIconList.$.grid.removeClass("enyo-grid");
 		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
-		this.$.feedIconList.applyStyle("height", "120px");
+
+		this.translatePage(0 - window.innerHeight + 55 + 120 + "px", enyo.bind(this, function(){
+			this.$.feedView.applyStyle("min-height", window.innerHeight - 55 - 120 + "px");
+			this.$.feedIconList.loadFeeds();		
+		}), "300ms");
+
 		this.$.feedIconList.$.scroller.setVertical(false);
 		this.$.feedIconList.$.scroller.setAutoVertical(false);
-		this.$.feedIconList.loadFeeds();
-		
 	},
 	
 	hideIcons: function(inSender){
-		this.$.feedIconList.applyStyle("height", "0px");
 		this.iconListShowing = false;
+		this.translatePage(0 - window.innerHeight + 55 + "px");
+		this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");
+
+		//this.$.feedIconList.applyStyle("height", "0px");
+		//this.iconListShowing = false;
 	},
 	viewFeed: function(inSender, inFeed, inFeedIcon){
 		if(inFeedIcon){
 			this.inFeedIcon = inFeedIcon;
 			this.inFeedIcon.startSpinning();	
+		} else {
+			this.inFeedIcon = undefined;
 		}
 		
 	    this.$.feedView.loadFeed(inFeed);	
 	},
 	feedLoaded: function(inSender, hasItems){
-		this.inFeedIcon.stopSpinning();
+		if(this.inFeedIcon){
+			this.inFeedIcon.stopSpinning();		
+		}
 		
 		if(hasItems){
-			this.$.feedView.setShowing(true);	
-			this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");	
+			_.defer(enyo.bind(this, function(){
+				//this.$.feedView.setShowing(true);	
+				//this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");	
 
-			this.hideIcons();
-			setTimeout(enyo.bind(this, function(){
-				this.$.feedView.applyStyle("min-height", null);	
-			}), 500);
-			
-		    this.$.toolbar.setTitle(inSender.getFeed().title);	
+				this.hideIcons();
+					
+				setTimeout(enyo.bind(this, function(){
+					//this.$.feedView.applyStyle("min-height", null);	
+				}), 500);
+				
+			    this.$.toolbar.setTitle(inSender.getFeed().title);	
+
+			}));
 		} else {
 
 		}	

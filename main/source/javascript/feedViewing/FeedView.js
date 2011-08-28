@@ -27,6 +27,9 @@ enyo.kind({
 						]}
 					]}*/
 				]},
+			]},
+			{name: "loading", className: "loading", showing: false, components: [
+				{content: "Loading...", className: "text"}
 			]}
 			
 			
@@ -72,16 +75,19 @@ enyo.kind({
 			}
 		}
 		
-		reader.getItems(inFeed.id, enyo.bind(this, function(items){
-			if(items.length === 0){
-				humane("No Items");
-				this.doFeedLoaded(false);
-			} else {
-				this.setFeed(inFeed);
-				this.loadedItems(items); 	
-			}
-			
-		}), opts);
+		_.defer(enyo.bind(this, function(){
+			reader.getItems(inFeed.id, enyo.bind(this, function(items){
+				if(items.length === 0){
+					humane("No Items");
+					this.doFeedLoaded(false);
+				} else {
+					this.setFeed(inFeed);
+					this.loadedItems(items); 	
+				}
+				
+			}), opts);
+		}));
+		
 
 	},
 	feedChanged: function(){
@@ -99,26 +105,44 @@ enyo.kind({
 		if(AppPrefs.get("articleView") === "cards"){
 			this.$.itemView.hide();
 			this.$.itemView.setDismissible(true);
-			this.$.listContainer.hide();
-			this.$.cardContainer.show();
+
+			if(this.$.cardContainer.getShowing() === false){
+				this.$.cardContainer.show();			
+			}
+			if(this.$.listContainer.getShowing() === true){
+				this.$.listContainer.hide();			
+			}
 			this.$.cardContainer.destroyControls();
 			this.$.scrollerSlidingView.applyStyle("max-width", null);
 
-
 			this.doFeedLoaded(true);
-			this.renderSome();
-			this.$.cardContainer.setIndex(0);
 
-			this.markViewableCardsRead();
+			_.defer(enyo.bind(this, function(){
+				this.renderSome();
+				this.$.cardContainer.setIndex(0);
+				
+				_.defer(enyo.bind(this, function(){
+					this.$.cardContainer.setIndex(0);
+					_.defer(enyo.bind(this, function(){
+						this.markViewableCardsRead();
+					}));
+				}));
+
+			}));
+
 		} else if(AppPrefs.get("articleView") === "list"){
 			this.$.itemView.setDismissible(false);
 			this.$.scrollerSlidingView.applyStyle("max-width", "345px");
 
-			this.$.cardContainer.hide();
-			this.$.listContainer.show();
+			if(this.$.cardContainer.getShowing() === true){
+				this.$.cardContainer.hide();			
+			}
+			if(this.$.listContainer.getShowing() === false){
+				this.$.listContainer.show();			
+			}
 
 			this.doFeedLoaded(true);
-			this.$.virtualList.punt();
+			_.defer(enyo.bind(this, this.$.virtualList.punt));
 
 			this.$.itemView.show();
 			this.$.itemView.setItem({});
@@ -130,27 +154,48 @@ enyo.kind({
 		if(this.nextIndex === this.items.length){
 			return;
 		}
-		if ((this.items.length - this.nextIndex) > 15){
-		 	cardLength = (this.nextIndex + 15);
+		this.$.loading.show();
+		this.$.loading.applyStyle("width", window.innerWidth + "px");
+
+		if ((this.items.length - this.nextIndex) > 20){
+		 	cardLength = (this.nextIndex + 20);
 		}	else {
 			cardLength = this.items.length;
 		};
 		//console.log("rendering", this.nextIndex, "through", cardLength-1);
-
+		var startingIndex = this.nextIndex;
 		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
 			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
 		}
 
-		this.$.cardContainer.createComponents(components, {owner: this});
-		
-		setTimeout(enyo.bind(this, function(){ 
-			this.$.cardContainer.render();
-		}), 10);
+		_.defer(enyo.bind(this, function(){
+			this.$.cardContainer.createComponents(components, {owner: this});
+			_.defer(enyo.bind(this, function(){
+				/*_(this.$.cardContainer.getControls()).each(function(control){
+					if(control.index < cardLength && control.index >= startingIndex){
+						console.log("rendering", control.item.title);
+						_.defer(_.bind(control.render, control));
+					}
+				});*/
+				this.$.cardContainer.render();
+				_.defer(enyo.bind(this, function(){
+					/*if(this.nextIndex > 40){
+						_(this.$.cardContainer.getControls()).each(function(control, index, array){
+							if(index < 20){
+								control.destroy();
+							}
+						});
+					}*/
+					this.$.loading.hide();				
+				}));
+				
+			}));
+		}));
 
 	},
 
 	cardSnap: function(inSender, inIndex){
-		setTimeout(enyo.bind(this, this.markViewableCardsRead), 0);
+		setTimeout(enyo.bind(this, this.markViewableCardsRead), 100);
 
 		this.activeIndex = inIndex;
 
@@ -161,7 +206,7 @@ enyo.kind({
 		}
 
 		if(this.nextIndex && (this.nextIndex - this.activeIndex) <= 5){
-			setTimeout(enyo.bind(this, this.renderSome), 20);
+			_.defer(enyo.bind(this, this.renderSome));
 		}
 
 	},

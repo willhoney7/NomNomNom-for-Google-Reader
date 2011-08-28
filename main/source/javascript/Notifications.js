@@ -40,7 +40,7 @@ enyo.kind({
 		}
 		d = new Date();
 		console.log("refresh interval " + AppPrefs.get("notifyInterval"));
-		d.setTime(d.getTime() + AppPrefs.get("notifyInterval") * 60 * 1000); //ever two minutes
+		d.setTime(d.getTime() + AppPrefs.get("notifyInterval") * 60 * 1000); //every two minutes
 		mo = d.getUTCMonth() + 1;
 		date = d.getUTCDate();
 		yr = d.getUTCFullYear();

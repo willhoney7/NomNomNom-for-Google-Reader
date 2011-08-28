@@ -5,6 +5,7 @@ enyo.depends(
 	"../vendors/utf-8.js",
 	"../vendors/zepto.min.js",
 	"../vendors/minpubsub.js",
+	"../vendors/morf.js",
 	"../vendors/jsHtmlToText.js",
 	"../vendors/spazcore-shorturls.js",
 	"../vendors/humane.js",

@@ -10,7 +10,6 @@ enyo.kind({
 			{name: "grid", className: "iconContainer enyo-grid", flex: 1}
 		]},
 		{kind: enyo.Control, className: "fade"},
-
 		{kind: "FeedPopup"},
 		{name: "FeedSelectionPopup", kind: enyo.PopupList, onSelect: "feedSelected"}
 	],
@@ -18,13 +17,13 @@ enyo.kind({
 		this.inherited(arguments);	
 
 		//no need to unsubscribe later, it will be gc'd on app close.
-		subscribe("icons", _.bind(function(action){
+		subscribe("icons", enyo.bind(this, function(action){
 			if(action === "refresh"){
-		        this.loadFeeds();			
+		        _.defer(enyo.bind(this, this.loadFeeds));		
 			} else if(action === "reloadUnreadCounts"){
-				this.refreshUnreadCounts();
+				_.defer(enyo.bind(this, this.refreshUnreadCounts));
 			}
-	    }, this));
+	    }));
 
 	},
 
@@ -53,9 +52,9 @@ enyo.kind({
 
 	load: function(){
 		publish("toolbar", ["setSpinner", false]);
-
-		this.$.grid.destroyControls();
 		
+		this.$.grid.destroyControls();
+
 		var components = [], feeds = reader.getFeeds(), hasFeeds = false;
 		for(var i = 0; i < feeds.length; i++){
 			if(!feeds[i].isSpecial)	{
@@ -67,13 +66,18 @@ enyo.kind({
 						components.push({kind: "FeedIcon", feed: feeds[i], onViewFeed: "viewFeed", onViewFeedPopup: "viewFeedPopup", onFolderOpen: "folderOpened"});
 					}
 				}
-			}		
+			}
 		}
 
 		if(hasFeeds > 0){
-			this.$.grid.createComponents(components, {owner: this});
-			this.$.grid.render();	
-			this.removeClass("noFeeds");
+			//_.defer(enyo.bind(this, function(){
+				this.removeClass("noFeeds");
+				this.$.grid.createComponents(components, {owner: this});	
+				//_.defer(enyo.bind(this, function(){
+					this.$.grid.render();
+				
+				//}));
+			//}));
 		} else {
 			this.addClass("noFeeds");
 		}
@@ -96,7 +100,7 @@ enyo.kind({
 	refreshUnreadCounts: function(){
 		if(this.owner.iconListShowing){	
 			_.each(this.$.grid.getControls(), function(feed){
-				feed.updateUnreadCount();
+				_.defer(feed.updateUnreadCount);
 			});
 		}
 			

@@ -95,13 +95,16 @@ enyo.kind({
 	},
 	markRead: function(){
 		if(this.item.read === false){
-			reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
-				this.item.read = true;
-				this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
-				reader.decrementUnreadCount(this.item.origin.streamId, function(){
-					publish("icons", ["reloadUnreadCounts"]);
-				});
+			_.defer(enyo.bind(this, function(){
+				reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
+					this.item.read = true;
+					this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
+					reader.decrementUnreadCount(this.item.origin.streamId, function(){
+						publish("icons", ["reloadUnreadCounts"]);
+					});
+				}));	
 			}));
+			
 		}
 	},
 	setRead: function(inReadState){

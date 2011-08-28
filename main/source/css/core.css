@@ -107,7 +107,7 @@
 }
 
 .feedIconList {
-	-webkit-transition: height 500ms ease-in-out;
+	/*-webkit-transition: height 500ms ease-in-out;*/
 	background: url(../images/iconList_background.png) top left repeat black;
 }
 
@@ -127,9 +127,11 @@
 	height: 360px;
 	position: absolute;
 	bottom: 0px;
+	z-index: -1;
 	background: url(../images/iconList_gridfade.png) bottom left repeat-x;
 	pointer-events: none;
 }
+
 .feedIconList.noWifi .fade, 
 .feedIconList.noFeeds .fade {
 	background-image: url(../does/not/exist.png) bottom left repeat-x;
@@ -246,6 +248,7 @@
 
 
 .feedView {
+	position: relative;
 	background: black;
 }
 
@@ -258,6 +261,32 @@
 }
 .feedView .listContainer.itemCard .enyo-item {
 	padding: 10px 15px 10px 5px
+}
+
+.feedView .loading {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	top: 0px;
+	margin: auto;
+	z-index: 300;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	text-align: center;
+}
+
+.feedView .loading .text {
+	font-size: 30px;
+	margin: auto;
+	position: absolute;
+	top: 100%;
+	height: 100%;
+	bottom: 18%;
+	left: 0px;
+	right: 0px;
 }
 
 .articleItem {
@@ -280,6 +309,8 @@
 .itemCard {
 	margin: 25px 20px 0px 0px;
 	overflow: hidden;
+	-webkit-transition: height 500ms ease-in-out;
+
 	/*-webkit-border-radius: 10px;*/
 }
 .itemCard .top {

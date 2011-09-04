@@ -28,7 +28,7 @@ enyo.kind({
 			"wakeup": true,
 			"key": "nomnomnomRefresh",
 			"uri": "palm://com.palm.applicationManager/open",
-			"params": '{"id":"com.tibfib.app.nomnomnom","params":{"action": "refresh"}}'
+			"params": '{"id":"' + enyo.fetchAppId() + '","params":{"action": "refresh"}}'
 		};
 
 		var d, date, mo, yr, hrs, mins, secs, myDateString;
@@ -40,7 +40,7 @@ enyo.kind({
 		}
 		d = new Date();
 		console.log("refresh interval " + AppPrefs.get("notifyInterval"));
-		d.setTime(d.getTime() + AppPrefs.get("notifyInterval") * 60 * 1000); //every two minutes
+		d.setTime(d.getTime() + AppPrefs.get("notifyInterval") * 60 * 1000);
 		mo = d.getUTCMonth() + 1;
 		date = d.getUTCDate();
 		yr = d.getUTCFullYear();

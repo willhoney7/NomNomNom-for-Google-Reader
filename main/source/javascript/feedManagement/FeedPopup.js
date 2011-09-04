@@ -8,6 +8,14 @@ enyo.kind({
 		{name: "labelsPopup", kind: enyo.PopupSelect, onSelect: "labelSelect"}
 
 	],
+	create: function(){
+		this.inherited(arguments);
+		subscribe("popups", enyo.bind(this, function(action, event, doIt){
+			if(action === "confirm"){
+				this.$.confirmPopup.showAtEvent(event, {doIt: doIt});
+			} 
+	    }));	
+	},
 	showAtEvent: function(event, feed){
 		if(this.$.popupSelect.lazy) {
 			this.$.popupSelect.validateComponents();

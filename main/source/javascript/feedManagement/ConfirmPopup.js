@@ -21,6 +21,7 @@ enyo.kind({
 	},
 	run: function(){
 		this.arg.doIt(this);
+		this.close();
 	}
 	
 });

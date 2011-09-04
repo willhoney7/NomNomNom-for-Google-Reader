@@ -5,8 +5,9 @@ enyo.kind({
 	allowHtml: true,
 	width: AppPrefs.get("cardWidth"),
 	published: {
-		item: {},
+		item_: {},
 		index: 0,
+		snapIndex: 0,
 		read: false
 	},
 	components: [
@@ -18,12 +19,12 @@ enyo.kind({
 			{kind: enyo.Scroller, flex: 1, autoVertical: true, components: [
 				{kind: enyo.Control, flex: 1, className: "content", components: [
 					{kind: enyo.Image, className: "firstImage", showing: true},
-					{kind: enyo.HtmlContent, name: "summary", className: "summary"}
+					{kind: enyo.HtmlContent, name: "summary", className: "summary", style: "padding-bottom: 20px"}
 				]},
 			]},
 			{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
 				{kind: enyo.HFlexBox, className: "content", components: [
-					{kind: enyo.Image, name: "unread", className: "unread", src: "source/images/unread.png", style: "opacity: 0"},
+					{kind: enyo.Image, name: "unread", className: "unread", src: "source/images/unread.png", style: "opacity: 1"},
 					{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", allowHtml: true},
 					{kind: enyo.Spacer},
 					{kind: enyo.Control, name: "date", className: "date"},
@@ -36,54 +37,36 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);	
-		this.itemChanged();
+		this.indexChanged();
 	},
-	itemChanged: function(){
-		//caption: this.items[i].label || this.items[i].title, icon: });	
-		var itemContent = (this.item.summary) ? this.item.summary.content || "": (this.item.content) ? this.item.content.content || "": "";
-		var firstImageURL = $("<div>" + itemContent + "</div>").find("img").first().attr("src");
-		var img = new Image(), self = this;
-		img.onload = function() {
-			if(this.width < 50 || this.height < 50){
-				self.$.image.setShowing(false);
-			}
-		};
-		img.src = firstImageURL;
+	indexChanged: function(){
+		this.item = this.owner.items[this.index];
+
+		this.$.image.hide();
+		this.$.scroller.setScrollTop(0);
+
+		if(this.item.firstImageURL){
+			this.$.image.setSrc(this.item.firstImageURL);
+			this.$.image.setShowing(true);
+			var img = new Image(), self = this;
+			img.onload = function() {
+				if(this.width < 50 || this.height < 50){
+					self.$.image.setShowing(false);
+				}
+			};
+			img.src = this.item.firstImageURL;
+		}
 
 		this.$.title.setContent(this.item.title);
-		if(firstImageURL){
-			this.$.image.setSrc(firstImageURL);
-			this.$.image.setShowing(true);
-		}
-		this.$.date.setContent(AppUtils.formatDate(this.item.updated));
-		
-		this.$.summary.setContent(htmlToText(itemContent) + "<br/><br/><br/><br/>");
-				
-		this.item.read = false;
-		this.item.star = false;
-		this.item.shared = false;
-		var readRegExp = new RegExp(reader.TAGS["read"].replace("user/-", "") + "$", "ig");
-		for(var i = 0; i < this.item.categories.length; i++){
-			if(readRegExp.test(this.item.categories[i])){
-				this.item.read = true;				
-			}
-			if(_(this.item.categories[i]).includes(reader.TAGS["star"].replace("user/-", ""))){
-				this.item.star = true;				
-			}
-			if(_(this.item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
-				this.item.shared = true;				
-			}
-		};
+		this.$.feedTitle.setContent(this.item.feed.title);
+		this.$.date.setContent(this.item.formattedDate);	
+		this.$.summary.setContent(this.item.condensedContent);
 
-		if(this.item.star){
-			this.$.star.setSrc("source/images/star_yes.png");
-		}
-
+		this.$.star.setSrc(this.item.star ? "source/images/star_yes.png" : "source/images/star_no.png");
+		this.$.unread.setShowing(!this.item.read);
 		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
-		this.$.feedTitle.setContent(this.item.origin.title);
 
 		this.renderPrefs();
-		
 	},
 	rendered: function(){
 		this.inherited(arguments);
@@ -93,23 +76,34 @@ enyo.kind({
 	renderPrefs: function(){
 		this.$.summary.applyStyle("font-size", AppPrefs.get("itemCardFontSize"));	
 	},
-	markRead: function(){
+	resized: function(){
+		console.log("resized");	
+	},
+	markRead: function(inSender, inEvent){
 		if(this.item.read === false){
 			_.defer(enyo.bind(this, function(){
-				reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
+				reader.setItemTag(this.item.feed.id, this.item.id, "read", true, enyo.bind(this, function(response){
 					this.item.read = true;
-					this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
-					reader.decrementUnreadCount(this.item.origin.streamId, function(){
+					//this.item.categories.push(reader.TAGS["read"]);
+					this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));
+					_.delay(enyo.bind(this, function(){
+						this.$.unread.setShowing(!this.item.read);
+					}), 300);
+					reader.decrementUnreadCount(this.item.feed.id, function(){
 						publish("icons", ["reloadUnreadCounts"]);
 					});
 				}));	
-			}));
-			
+			}));	
+		}
+
+		if(inEvent){
+			inEvent.stopPropagation();
 		}
 	},
 	setRead: function(inReadState){
 		this.item.read = inReadState;
-		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
+		this.$.unread.setShowing(!this.item.read);
+		this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));
 	},
 
 	toggleStarred: function(inSender, inEvent){
@@ -117,14 +111,14 @@ enyo.kind({
 		//change the image so the user knows it worked
 		this.$.star.setSrc((!this.item.star ? "source/images/star_yes.png" : "source/images/star_no.png"));
 		
-		reader.setItemTag(this.item.origin.streamId, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
+		reader.setItemTag(this.item.feed.id, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
 			this.item.star = !this.item.star;
 			//make sure the the correct image is shown
 			this.$.star.setSrc((this.item.star ? "source/images/star_yes.png" : "source/images/star_no.png"));
 		
 			//this is bad form
-			if(this.owner.$.itemView.getItem().id === this.item.id){
-				this.owner.$.itemView.changeStar(this.item.star);
+			if(this.owner.owner.$.itemView.getItem().id === this.item.id){
+				this.owner.owner.$.itemView.changeStar(this.item.star);
 			}
 		}));
 

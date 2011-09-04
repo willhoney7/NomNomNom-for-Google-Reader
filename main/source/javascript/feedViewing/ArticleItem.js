@@ -18,34 +18,15 @@ enyo.kind({
 	},
 	itemChanged: function(){
 		this.$.itemTitle.setContent(this.item.title);
-		if(this.item.read === undefined){
-			this.item.read = false;		
-		}
-		this.item.star = false;
-		this.item.shared = false;
-		var readRegExp = new RegExp(reader.TAGS["read"].replace("user/-", "") + "$", "ig");
-		for(var i = 0; i < this.item.categories.length; i++){
-			if(readRegExp.test(this.item.categories[i])){
-				this.item.read = true;				
-			}
-			if(_(this.item.categories[i]).includes(reader.TAGS["star"].replace("user/-", ""))){
-				this.item.star = true;				
-			}
-			if(_(this.item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
-				this.item.shared = true;				
-			}
-		};
-
-		this.$.feedTitle.setContent(this.item.origin.title);
-
+		this.$.feedTitle.setContent(this.item.feed.title);
 		this.$.unread.applyStyle("opacity", this.item.read ? 0 : 1);
 	},
 	markRead: function(){
 		if(this.item.read === false){
-			reader.setItemTag(this.item.origin.streamId, this.item.id, "read", true, enyo.bind(this, function(response){
+			reader.setItemTag(this.item.feed.id, this.item.id, "read", true, enyo.bind(this, function(response){
 				this.item.read = true;
 				this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1))
-				reader.decrementUnreadCount(this.item.origin.streamId, function(){
+				reader.decrementUnreadCount(this.item.feed.id, function(){
 					publish("icons", ["reloadUnreadCounts"]);
 				});	
 			}));

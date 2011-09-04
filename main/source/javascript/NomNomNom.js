@@ -6,7 +6,7 @@ enyo.kind({
 	components: [
 		{name: "appComponents", style: "-webkit-transform: translate3d(0, 0, 0)", kind: enyo.VFlexBox, flex: 1, components: [
 			{name: "feedIconList", 	style: "-webkit-transform: translate3d(0, 0, 0)", kind: "NomNomNom.FeedIconList", onViewFeed: "viewFeed", onflick: "flick", onRefresh: "getSubscriptions"},
-			{name: "second", style: "-webkit-transform: translate3d(0, 0, 0)", kind: enyo.VFlexBox, flex: 1, components: [
+			{name: "second", style: "-webkit-transform: translate3d(0, 0, 0)", kind: enyo.VFlexBox, components: [
 				{name: "toolbar",  kind: "NomNomNom.Toolbar", onViewSmallIcons: "viewSmallIcons", onHideIcons: "hideIcons"},
 				{name: "feedView", style: "-webkit-transform: translate3d(0, 0, 0)", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded", onDismiss: "reclaimSpace"},	
 			]}
@@ -66,7 +66,7 @@ enyo.kind({
 		//set the height to grid style
 		this.iconListShowing = true; //piggy-back on the global reader object
 		this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
-		this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");
+		this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");
 
 		subscribe("nomnomnom", _(function(action){
 			switch(action){
@@ -92,7 +92,9 @@ enyo.kind({
 		
 	},
 	activate: function(){
-		enyo.application.clearDashboard();
+		if(window.PalmSystem){
+			enyo.application.clearDashboard();		
+		}
 		publish("icons", ["refresh"]);
 	},
 
@@ -244,10 +246,12 @@ enyo.kind({
 		if(this.iconListShowing){
 			if(_(this.$.feedIconList.$.grid.getClassName()).includes("enyo-grid")){
 				this.$.feedIconList.applyStyle("height", window.innerHeight - 55 + "px");
-				this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");					
+				this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");					
 			} else {
-				this.$.feedView.applyStyle("min-height", window.innerHeight - 55 - 120 + "px");					
+				this.$.feedView.applyStyle("height", window.innerHeight - 55 - 120 + "px");					
 			}
+		} else {
+			this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");					
 		}
 	},
 
@@ -298,7 +302,7 @@ enyo.kind({
 		
 		setTimeout(enyo.bind(this, function(){
 			this.$.feedView.$.cardContainer.resized();
-			this.$.feedView.$.cardContainer.destroyControls();
+			//this.$.feedView.$.cardContainer.destroyControls();
 		}), 1000);
 			
 		this.$.toolbar.setTitle("NomNomNom for Google Reader"); //@TODO: there will be a bug here if anyone names a feed this
@@ -310,7 +314,7 @@ enyo.kind({
 		this.$.feedIconList.$.grid.addClass("enyo-hflexbox");
 
 		this.translatePage(0 - window.innerHeight + 55 + 120 + "px", enyo.bind(this, function(){
-			this.$.feedView.applyStyle("min-height", window.innerHeight - 55 - 120 + "px");
+			this.$.feedView.applyStyle("height", window.innerHeight - 55 - 120 + "px");
 			this.$.feedIconList.loadFeeds();		
 		}), "300ms");
 
@@ -321,7 +325,7 @@ enyo.kind({
 	hideIcons: function(inSender){
 		this.iconListShowing = false;
 		this.translatePage(0 - window.innerHeight + 55 + "px");
-		this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");
+		this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");
 
 		//this.$.feedIconList.applyStyle("height", "0px");
 		//this.iconListShowing = false;
@@ -344,12 +348,12 @@ enyo.kind({
 		if(hasItems){
 			_.defer(enyo.bind(this, function(){
 				//this.$.feedView.setShowing(true);	
-				//this.$.feedView.applyStyle("min-height", window.innerHeight - 55 + "px");	
+				//this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");	
 
 				this.hideIcons();
 					
 				setTimeout(enyo.bind(this, function(){
-					//this.$.feedView.applyStyle("min-height", null);	
+					//this.$.feedView.applyStyle("height", null);	
 				}), 500);
 				
 			    this.$.toolbar.setTitle(inSender.getFeed().title);	
@@ -360,8 +364,8 @@ enyo.kind({
 		}	
 	},
 	reclaimSpace: function(){
-		this.$.feedView.$.cardContainer.snapTo(this.$.feedView.$.cardContainer.getIndex());
-	
+		this.$.feedView.$.itemView.$.imageViewPopup.close();
+		//this.$.feedView.$.cardContainer.$.snapScroller.snapTo(this.$.feedView.$.cardContainer.$.snapScroller.getIndex());
 	},
 	connectionResponseHandler: function(inSender, inResponse){
 		 if (inResponse.isInternetConnectionAvailable === true || !window.PalmSystem) {

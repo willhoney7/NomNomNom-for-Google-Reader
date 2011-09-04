@@ -100,7 +100,7 @@ enyo.kind({
 	refreshUnreadCounts: function(){
 		if(this.owner.iconListShowing){	
 			_.each(this.$.grid.getControls(), function(feed){
-				_.defer(feed.updateUnreadCount);
+				_.defer(enyo.bind(feed, feed.updateUnreadCount));
 			});
 		}
 			

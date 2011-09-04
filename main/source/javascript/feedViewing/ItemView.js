@@ -18,7 +18,7 @@ enyo.kind({
 				{kind: enyo.Control, content: "Play Audio", style: "position: relative; top: 10px;"},
 				{name: "launchMediaStreamer", kind: "PalmService", service: "palm://com.palm.applicationManager", method: "open"}
 			]},
-			{kind: enyo.HtmlContent, flex: 1, name: "content", onclick: "contentClick", onLinkClick: "linkClick", className: "content"},
+			{kind: enyo.HtmlContent, flex: 1, name: "content", onclick: "contentClick", onLinkClick: "linkClick", className: "articleContent"},
 			{name: "stamp", kind: enyo.Image, src: "source/images/stamp.png", width: "165px", height: "165px", showing: false, style: "position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; margin: auto;"}
 		]},
 		//{name: "webView", kind: enyo.BasicWebView, flex: 1, showing: false},
@@ -43,16 +43,19 @@ enyo.kind({
 
 		$("img").live("click", enyo.bind(this, function(event){
 			if(event.srcElement.className === "feedImage"){
-				if(!this.$.scroller.isScrolling()){
-					this.$.imageViewPopup.openAtCenter();
-					this.$.imageViewPopup.setImage(event.srcElement);
-				} else {
-					setTimeout(enyo.bind(this, function(){
-						if(!this.$.scroller.isScrolling()){
-							this.$.imageViewPopup.openAtCenter();
-							this.$.imageViewPopup.setImage(event.srcElement);	
-						}
-					}), 100);		
+				if(this.showing === true){			
+					
+					if(!this.$.scroller.isScrolling()){
+						this.$.imageViewPopup.openAtCenter();
+						this.$.imageViewPopup.setImage(event.srcElement);
+					} else {
+						setTimeout(enyo.bind(this, function(){
+							if(!this.$.scroller.isScrolling()){
+								this.$.imageViewPopup.openAtCenter();
+								this.$.imageViewPopup.setImage(event.srcElement);	
+							}
+						}), 100);		
+					}
 				}
 				event.preventDefault();
 			}			
@@ -84,16 +87,17 @@ enyo.kind({
 
 		//caption: this.items[i].label || this.items[i].title, icon: });	
 		this.$.title.setContent(this.item.title || "");
-		this.$.date.setContent(AppUtils.formatLongDate(this.item.updated) || "");
+		this.$.date.setContent(this.item.longFormattedDate || "");
 
-		var itemContent = (this.item.content) ? this.item.content.content || "": (this.item.summary) ? this.item.summary.content || "": "";		
+		var itemContent = (this.item.content);
 			itemContent = itemContent.replace(/<iframe.*?\/iframe>/ig, ""); //remove iframes. We have to do this because of a webOS bug. iframes launch a browser card...
-			$("<div>" + itemContent + "</div>").find("img").addClass("feedImage");
+			
+			//$("<div>" + itemContent + "</div>").find("img").addClass("feedImage");
 		this.$.content.setContent((this.item.author ? "By " + this.item.author + "<br/>": "") + itemContent);
 		
-		$('.content').find("img").addClass("feedImage");
+		$('.articleContent').find("img").addClass("feedImage");
 
-		this.item.read = true;
+		/*this.item.read = true;
 		this.item.star = false;
 		this.item.shared = false;
 		//this.item.keptUnread = false
@@ -107,10 +111,10 @@ enyo.kind({
 			if(_(this.item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
 				this.item.shared = true;				
 			}
-			/*if(_(this.item.categories[i]).includes(reader.TAGS["kept-unread"].replace("user/-", ""))){
-				this.item.keptUnread = true;				
-			}*/
-		};
+			//if(_(this.item.categories[i]).includes(reader.TAGS["kept-unread"].replace("user/-", ""))){
+			//	this.item.keptUnread = true;				
+			//}
+		};*/
 		this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
 
 		//this.$.webView.setShowing(false);
@@ -162,16 +166,16 @@ enyo.kind({
 	},
 	
 	openInBrowser: function(){
-		if(this.item.alternate && this.item.alternate[0] && this.item.alternate[0].href){
-			window.location = this.item.alternate[0].href;
+		if(this.item.alternate && this.item.alternate[0] && this.item.url){
+			window.location = this.item.url;
 			/*if(this.$.webView.showing === false){
-				this.$.webView.setUrl(this.item.alternate[0].href);
+				this.$.webView.setUrl(this.item.url);
 				this.$.webView.setShowing(true);
 				this.$.scroller.setShowing(false);
 			} else {
 				this.$.webView.setShowing(false);
 				this.$.scroller.setShowing(true);
-				//window.open(this.item.alternate[0].href);
+				//window.open(this.item.url);
 			}*/
 		}
 	},
@@ -194,7 +198,7 @@ enyo.kind({
 	sharePopupSelected: function(inSender, inSelected){
 		if(inSelected.value === "sms" || inSelected.value === "email" || inSelected.value === "spaz"){
 			var shortUrl = new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP);
-			shortUrl.shorten(this.item.alternate[0].href, {
+			shortUrl.shorten(this.item.url, {
 				onSuccess: enyo.bind(this, function(obj){
 					
 					//get the max character length we can have.
@@ -250,7 +254,7 @@ enyo.kind({
 			switch(inSelected.value){
 				case "instapaper":
 					if(AppPrefs.get("instapaperUsername") !== ""){
-						instapaper.add({url: this.item.alternate[0].href, title: this.item.title}, AppPrefs.get("instapaperAuth"), function(response){
+						instapaper.add({url: this.item.url, title: this.item.title}, AppPrefs.get("instapaperAuth"), function(response){
 							if(response.status === 201){
 								humane("Added to Instapaper!");
 							} else if(response.status === 400){
@@ -267,7 +271,7 @@ enyo.kind({
 					break; 
 				case "readitlater":
 					if(AppPrefs.get("readitlaterUsername") !== ""){
-						readitlater.add({url: this.item.alternate[0].href, title: this.item.title}, AppPrefs.get("readitlaterUsername"), AppPrefs.get("readitlaterPassword"), function(response){
+						readitlater.add({url: this.item.url, title: this.item.title}, AppPrefs.get("readitlaterUsername"), AppPrefs.get("readitlaterPassword"), function(response){
 							if(response.status === 200){
 								humane("Added to Read it Later!");
 							} else if(response.status === 400){
@@ -285,7 +289,7 @@ enyo.kind({
 					}
 					break;
 				case "googlereader":
-					reader.setItemTag(this.item.origin.streamId, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
+					reader.setItemTag(this.item.origin.feed.id, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
 						this.item.shared = !this.item.shared;
 					}));
 					break;
@@ -293,7 +297,7 @@ enyo.kind({
 		}	
 	},
 	toggleStarred: function(){
-		reader.setItemTag(this.item.origin.streamId, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
+		reader.setItemTag(this.item.feed.id, this.item.id, "star", !this.item.star, enyo.bind(this, function(){
 			this.item.star = !this.item.star;
 			this.$.star.setIcon((this.item.star ? "source/images/menu-icon-starred.png" : "source/images/menu-icon-starred-outline.png"));
 			if(this.itemCard){
@@ -319,7 +323,7 @@ enyo.kind({
 	},
 	morePopupSelected: function(inSender, inSelected){
 		if(inSelected.value === "keepunread"){
-			reader.setItemTag(this.item.origin.streamId, this.item.id, "kept-unread", true, enyo.bind(this, function(){
+			reader.setItemTag(this.item.feed.id, this.item.id, "kept-unread", true, enyo.bind(this, function(){
 				this.item.keptUnread = true;
 				this.item.read = !this.item.keptUnread;
 			}));

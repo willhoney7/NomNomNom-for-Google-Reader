@@ -80,8 +80,8 @@ enyo.kind({
 	aboutPopup: function(){
 		this.$.aboutPopup.showAtCenter();
 	},
-	markFeedRead: function(){
-		publish("feedView", ["markRead"]);
+	markFeedRead: function(inSender, inEvent){
+		publish("feedView", ["markRead", inEvent]);
 	},
 
 	loadFeeds: function(){

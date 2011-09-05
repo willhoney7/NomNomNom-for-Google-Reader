@@ -45,13 +45,17 @@ enyo.kind({
 					control.renderPrefs();
 				});
 				this.$.itemView.renderPrefs();
-
+			} else if(action === "refresh"){
+				this.loadFeed(this.feed, true);
 			}
 		}).bind(this));
 	},
-	loadFeed: function(inFeed){
-		this.$.itemView.hide();
-		
+	loadFeed: function(inFeed, noHide){
+		this.feed = inFeed;
+
+		if(!noHide){
+			this.$.itemView.hide();		
+		}
 		//this.setFeed(inFeed);
 		
 		//this.$.header.setContent(this.getFeed().label || this.getFeed().title);
@@ -84,7 +88,6 @@ enyo.kind({
 				
 			}), opts);
 		}));
-		
 
 	},
 	feedChanged: function(){
@@ -148,114 +151,6 @@ enyo.kind({
 		}
 		
 	},
-	/*renderSome: function(){
-		var components = [], cardLength;
-		if(this.nextIndex === this.items.length){
-			return;
-		}
-		this.renderedIndexes = [0, 1, 2, 3, 4, 5];
-		this.$.loading.show();
-		this.$.loading.applyStyle("width", window.innerWidth + "px");
-
-		if ((this.items.length - this.nextIndex) > 7){
-		 	cardLength = (this.nextIndex + 7);
-		}	else {
-			cardLength = this.items.length;
-		};
-		//console.log("rendering", this.nextIndex, "through", cardLength-1);
-		var startingIndex = this.nextIndex;
-		for(this.nextIndex; this.nextIndex < cardLength; this.nextIndex++){
-			components.push({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});	
-		}
-
-		_.defer(enyo.bind(this, function(){
-			this.$.cardContainer.createComponents(components, {owner: this});
-			_.defer(enyo.bind(this, function(){
-				//_(this.$.cardContainer.getControls()).each(function(control){
-				//	if(control.index < cardLength && control.index >= startingIndex){
-				//		console.log("rendering", control.item.title);
-				//		_.defer(_.bind(control.render, control));
-				// }
-				//});
-				this.$.cardContainer.render();
-				_.defer(enyo.bind(this, function(){
-					//if(this.nextIndex > 40){
-					//	_(this.$.cardContainer.getControls()).each(function(control, index, array){
-					//		if(index < 20){
-					//			control.destroy();
-					//		}
-					//	});
-					//}
-					this.$.loading.hide();				
-				}));
-				
-			}));
-		}));
-
-	},
-	renderOne: function(){
-		console.log("rendering", this.nextIndex);
-		if(this.nextIndex === this.items.length){
-			return;
-		}
-		var createdComponent = this.$.cardContainer.createComponent({kind: "ItemCard", item: this.items[this.nextIndex], index: this.nextIndex, onclick: "itemClick"});
-			createdComponent.render();
-
-		this.renderedIndexes.push(this.nextIndex);
-		this.renderedIndexes.sort(function(a, b){ return a - b; });
-		this.renderedIndexes.shift();
-
-		_(this.$.cardContainer.getControls()).min(function(control){
-			if(!control.destroyed){
-				return (control.index);	
-			}
-		}).destroy();
-
-		this.nextIndex++;
-	},
-
-	cardSnap: function(inSender, inIndex){
-		setTimeout(enyo.bind(this, this.markViewableCardsRead), 100);
-
-		this.activeIndex = inIndex;
-		console.log("this.activeIndex", inIndex);
-
-		if(this.$.itemView.showing === true){ //&& AppPrefs.get("viewActiveCardInItemView") === true){
-			setTimeout(enyo.bind(this, function(){
-				this.itemClick(this.$.cardContainer.getControls()[inIndex], null, true);
-			}), 400);
-		}
-
-		console.log("this.nextIndex", this.nextIndex);
-		console.log("first renderedIndex", this.renderedIndexes[0]);
-
-		if(this.nextIndex && (this.nextIndex - (this.activeIndex + this.renderedIndexes[0])) <= 5){
-			_.defer(enyo.bind(this, this.renderOne));
-		}
-
-	},
-
-	cardSnapFinish: function(inSender){
-		
-	},
-
-	markViewableCardsRead: function(){
-		if(AppPrefs.get("autoMarkAsRead") === false){
-			return;
-		}
-		var cardWidth = parseInt(AppPrefs.get("cardWidth").replace("px", ""), 10) + 20;
-		var numVisible = Math.round(this.$.cardContainer.node.offsetWidth/cardWidth);
-		var offsetIndex = Math.floor(this.$.cardContainer.getScrollLeft()/cardWidth);
-		var controls = this.$.cardContainer.getControls();
-		for(var i = offsetIndex; i <= (offsetIndex + numVisible); i++){
-			if(controls[i]){
-				controls[i].markRead();
-				if(i === this.items.length-2){
-					controls[i+1].markRead();
-				}
-			} 
-		}
-	},*/
 
 	articleItemClick: function(inSender, inEvent){
 		this.viewArticle(inSender, inSender.getItem(), inSender);

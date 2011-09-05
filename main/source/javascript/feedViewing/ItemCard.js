@@ -22,7 +22,7 @@ enyo.kind({
 					{kind: enyo.HtmlContent, name: "summary", className: "summary", style: "padding-bottom: 20px"}
 				]},
 			]},
-			{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [
+			{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "toggleRead", allowHtml: true, components: [
 				{kind: enyo.HFlexBox, className: "content", components: [
 					{kind: enyo.Image, name: "unread", className: "unread", src: "source/images/unread.png", style: "opacity: 1"},
 					{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", allowHtml: true},
@@ -96,6 +96,29 @@ enyo.kind({
 			}));	
 		}
 
+		if(inEvent){
+			inEvent.stopPropagation();
+		}
+	},
+	toggleRead: function(inSender, inEvent){
+		_.defer(enyo.bind(this, function(){
+			reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
+				this.item.read = !this.item.read;
+				this.$.unread.setShowing(true);
+				//if(this.item.read){
+				//} else {
+					_.delay(enyo.bind(this, function(){
+						this.$.unread.setShowing(!this.item.read);
+					}), 500);
+				//}
+				this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));
+				
+				/*reader.decrementUnreadCount(this.item.feed.id, function(){
+					publish("icons", ["reloadUnreadCounts"]);
+				});*/
+			}));	
+		}));		
+		
 		if(inEvent){
 			inEvent.stopPropagation();
 		}

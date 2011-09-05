@@ -291,6 +291,7 @@
 
 .articleItem {
 	font-size: 16px;
+	position: relative;
 }
 .articleItem .itemTitle {
 	font-weight: 600;
@@ -302,9 +303,22 @@
 	background: url(../images/unread.png) top left repeat-y orange;
 	-webkit-transition: opacity 300ms ease-in-out;
 	width: 4px;
+	position: relative;
 	margin-right: 5px;
 }
 
+.starBar {
+	background: url(../images/star_yes.png) center no-repeat;
+	-webkit-transition: opacity 300ms ease-in-out;
+	width: 23px;
+	height: 22px;
+	position: absolute;
+	margin: auto;
+	right: 15px;
+	top: 0px;
+	bottom: 4px;
+	margin-left: 0px;
+}
 
 .itemCard {
 	margin: 25px 20px 0px 0px;

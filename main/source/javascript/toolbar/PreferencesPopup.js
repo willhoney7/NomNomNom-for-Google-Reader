@@ -54,11 +54,11 @@ enyo.kind({
 			]},
 			{kind: enyo.RowGroup, caption: "Article Previews", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
-					{content: $L("Order by"), kind: enyo.Control},
+					{content: $L("Form"), kind: enyo.Control},
 					{kind: enyo.Spacer},
-					{kind: "ListSelector", value: "", preferenceProperty: "articleSort", onChange: "setPreference", items: [
-						{caption: "Newest", value: "newest"},
-						{caption: "Oldest", value: "oldest"}
+					{kind: "ListSelector", value: "", preferenceProperty: "articleView", rerenderView: true, onChange: "setPreference", items: [
+						{caption: "Cards", value: "cards"},
+						{caption: "List", value: "list"}
 					]}
 				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -79,20 +79,23 @@ enyo.kind({
 					]}
 				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
-					{content: $L("Automatically Mark as Read"), kind: enyo.Control},
+					{content: $L("Order by"), kind: enyo.Control},
 					{kind: enyo.Spacer},
-					{kind: "CheckBox", preferenceProperty: "autoMarkAsRead", onChange: "setPreference"}
-
-				]},
-				{kind: "Item", layoutKind: "HFlexLayout", components: [
-					{content: $L("Form"), kind: enyo.Control},
-					{kind: enyo.Spacer},
-					{kind: "ListSelector", value: "", preferenceProperty: "articleView", rerenderView: true, onChange: "setPreference", items: [
-						{caption: "Cards", value: "cards"},
-						{caption: "List", value: "list"}
+					{kind: "ListSelector", value: "", preferenceProperty: "articleSort", onChange: "setPreference", items: [
+						{caption: "Newest", value: "newest"},
+						{caption: "Oldest", value: "oldest"}
 					]}
 				]}
+
 			]},
+			{kind: enyo.RowGroup, caption: "Card Previews", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Mark Read while Scrolling"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "autoMarkAsRead", onChange: "setPreference"}
+				]}
+			]},
+
 			{kind: enyo.RowGroup, caption: "Article Full View", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: $L("Font-Size"), kind: enyo.Control},
@@ -110,6 +113,11 @@ enyo.kind({
 						"19px",
 						"20px"
 					]}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: $L("Mark Read when Viewed"), kind: enyo.Control},
+					{kind: enyo.Spacer},
+					{kind: "CheckBox", preferenceProperty: "markAsReadFullView", onChange: "setPreference"}
 				]}
 			]},
 			{name: "instapaperLoginGroup", kind: enyo.RowGroup, caption: "Instapaper", components: [

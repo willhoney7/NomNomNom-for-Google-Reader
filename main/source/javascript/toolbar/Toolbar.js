@@ -10,7 +10,8 @@ enyo.kind({
 	},
 	create: function(){
 	 	this.inherited(arguments);
-	 	
+	 	this.isViewingFeed = false;
+
 	 	subscribe("toolbar", _(function(action, arg1){
 	 		if(action === "setSpinner"){
 		 		this.$.refresh.addRemoveClass("spinning", arg1); 			
@@ -27,7 +28,7 @@ enyo.kind({
 
 		{kind: enyo.Spacer},
 		{kind: enyo.ToolButton, name: "new", icon: "source/images/menu-icon-new.png", onclick: "addFeed"},
-		{kind: enyo.ToolButton, name: "refresh", icon: "source/images/menu-icon-refresh.png", onclick: "loadFeeds"},
+		{kind: enyo.ToolButton, name: "refresh", icon: "source/images/menu-icon-refresh.png", onclick: "refresh"},
 		{kind: enyo.ToolButton, name: "preferences", icon: "source/images/menu-icon-settings.png", onclick: "preferencesPopup"},
 
 		{kind: "PreferencesPopup"},
@@ -48,6 +49,7 @@ enyo.kind({
 			this.$.feedTitle.hide();
 			this.$.home.hide();
 			this.$.markRead.hide();
+			this.isViewingFeed = false;
 
 		} else {
 			this.$.title.hide();
@@ -56,6 +58,7 @@ enyo.kind({
 			this.$.feedTitle.show();
 			this.$.feedTitle.setCaption(this.title || "Untitled");
 			this.$.feedTitle.setDepressed(false);
+			this.isViewingFeed = true;
 			
 			this.$.home.show();	
 		}
@@ -84,7 +87,12 @@ enyo.kind({
 		publish("feedView", ["markRead", inEvent]);
 	},
 
-	loadFeeds: function(){
-		publish("icons", ["refresh"]);
+	refresh: function(){
+		if (this.isViewingFeed) {
+			publish("feedView", ["refresh"]);
+		}
+		if (this.owner.iconListShowing) {
+			publish("icons", ["refresh"]);		
+		}
 	}
 });

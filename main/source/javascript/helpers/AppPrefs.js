@@ -16,6 +16,7 @@
 			"viewActiveCardInItemView": true,
 			"cardWidth": "322px",
 			"autoMarkAsRead": true, 
+			"markAsReadFullView": true,
 			"articleView": "cards", // or "list"
 			"hideRead": false,	//whether to show icons that have no unread icons
 			"showStarred": true,

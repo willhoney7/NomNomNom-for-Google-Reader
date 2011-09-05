@@ -10,7 +10,7 @@ enyo.kind({
 	scrollStop: function() {
 		this.inherited(arguments);
 		this.doScrollStop();
-	},
+	}
 });
 
 enyo.kind({

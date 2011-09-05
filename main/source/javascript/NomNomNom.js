@@ -256,12 +256,12 @@ enyo.kind({
 	},
 
 	flick: function(inSender, inEvent){
-		 if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {
-	         if (inEvent.yVel < 0) {
-	         	//view the "all" feed
-	         	this.viewFeed(this, reader.getFeeds()[0], this.$.feedIconList.$.grid.getControls()[0]);
-	         }
-	      }
+		if (Math.abs(inEvent.yVel) > Math.abs(inEvent.xVel)) {
+			if (inEvent.yVel < 0) {
+				//view the "all" feed
+				this.viewFeed(this, reader.getFeeds()[0], this.$.feedIconList.$.grid.getControls()[0]);
+			}
+		}
 
 	},
 	translatePage: function(inPos, callback){

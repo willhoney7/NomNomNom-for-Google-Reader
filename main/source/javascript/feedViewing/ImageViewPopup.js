@@ -32,7 +32,9 @@ enyo.kind({
 		this.$.control.applyStyle("color", "rgba(255, 255, 255, 1)");
 	},
 	close: function(){
-		this.$.control.applyStyle("color", "rgba(0, 0, 0, 0)");		
+		if(this.$.control){
+			this.$.control.applyStyle("color", "rgba(0, 0, 0, 0)");			
+		}
 		this.inherited(arguments);
 	}
 })

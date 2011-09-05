@@ -169,6 +169,12 @@
 							}
 						}
 					}
+					if(request.status === 401 && request.statusText === "Unauthorized"){
+						//Humane is a notification lib. 
+						if(humane){
+							humane(request.statusText + ". " + "Try logging in again.");
+						}
+					}
 
 					console.error(request);
 				}
@@ -194,7 +200,6 @@
 			reader.is_logged_in = true;
 		} 
 		return (reader.is_logged_in);
-
 	};
 
 	reader.login = function (email, password, successCallback, failCallback) {

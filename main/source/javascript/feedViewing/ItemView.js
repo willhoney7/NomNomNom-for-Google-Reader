@@ -143,7 +143,7 @@ enyo.kind({
 		//this.$.pane.selectViewByName("view");
 	},
 	itemCardChanged: function(){
-		if(this.itemCard && this.itemCard.markRead){
+		if(this.itemCard && this.itemCard.markRead && AppPrefs.get("markAsReadFullView")){
 			this.itemCard.markRead();
 		}	
 	},
@@ -166,7 +166,7 @@ enyo.kind({
 	},
 	
 	openInBrowser: function(){
-		if(this.item.alternate && this.item.alternate[0] && this.item.url){
+		if(this.item.alternate && this.item.url){
 			window.location = this.item.url;
 			/*if(this.$.webView.showing === false){
 				this.$.webView.setUrl(this.item.url);

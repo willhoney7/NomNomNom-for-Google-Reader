@@ -5,7 +5,6 @@ enyo.kind({
 	modal: true,
 	autoClose: false,
 	dismissWithClick: false,
-
 	width: "400px",
 	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
 	components: [

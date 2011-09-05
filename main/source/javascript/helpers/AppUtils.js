@@ -52,6 +52,7 @@
 			longFormattedDate: AppUtils.formatLongDate(item.updated),
 			content: (item.summary) ? item.summary.content || "": (item.content) ? item.content.content || "": "",
 			enclosure: item.enclosure,
+			fresh: false,
 			read: false,
 			star: false,
 			shared: false//,
@@ -70,6 +71,9 @@
 			}
 			if(_(item.categories[i]).includes(reader.TAGS["share"].replace("user/-", ""))){
 				condensedItem.shared = true;				
+			}
+			if(_(item.categories[i]).includes(reader.TAGS["fresh"].replace("user/-", ""))){
+				condensedItem.fresh = true;				
 			}
 		};
 		

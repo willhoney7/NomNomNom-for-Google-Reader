@@ -7,7 +7,7 @@ enyo.kind({
 	components: [
 		{name: "articleBox", kind: enyo.HFlexBox, className: "articleItem", components: [
 			{name: "unread", className: "unreadBar", style: "opacity: 0"},
-			{name: "swipeStuff", kind: enyo.VFlexBox, flex: 1, style: "background-color: #F2EDE9", components: [
+			{name: "swipeStuff", kind: enyo.VFlexBox, flex: 1, style: "background-color: #F2EDE9;", components: [
 				{name: "itemTitle", className: "itemTitle", allowHtml: true},
 				{kind: enyo.HFlexBox, components: [
 					{name: "feedTitle", className: "feedTitle truncating-text", flex: 1, allowHtml: true},
@@ -39,13 +39,24 @@ enyo.kind({
 		}
 	},
 	toggleRead: function(){
-		reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
-			this.item.read = !this.item.read;
-			this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));
-			/*reader.decrementUnreadCount(this.item.feed.id, function(){
-				publish("icons", ["reloadUnreadCounts"]);
-			});	*/
+
+		console.log("ITEM IS FRESH? " + this.item.fresh);
+		if(!this.item.fresh && this.item.read){
+			humane("Unable to mark unread");
+			return;
+		}
+		
+		_.defer(enyo.bind(this, function(){
+			reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
+				this.item.read = !this.item.read;
+				this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));
+				
+				/*reader.decrementUnreadCount(this.item.feed.id, function(){
+					publish("icons", ["reloadUnreadCounts"]);
+				});*/
+			}));	
 		}));
+
 	},
 	toggleStar: function(){
 		reader.setItemTag(this.item.feed.id, this.item.id, "star", !this.item.star, enyo.bind(this, function(response){

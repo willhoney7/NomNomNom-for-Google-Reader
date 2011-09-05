@@ -101,6 +101,17 @@ enyo.kind({
 		}
 	},
 	toggleRead: function(inSender, inEvent){
+		if(inEvent){
+			inEvent.stopPropagation();
+			inEvent.preventDefault();
+		}
+
+		console.log("ITEM IS FRESH? " + this.item.fresh);
+		if(!this.item.fresh && this.item.read){
+			humane("Unable to mark unread");
+			return;
+		}
+		
 		_.defer(enyo.bind(this, function(){
 			reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
 				this.item.read = !this.item.read;
@@ -119,9 +130,7 @@ enyo.kind({
 			}));	
 		}));		
 		
-		if(inEvent){
-			inEvent.stopPropagation();
-		}
+		
 	},
 	setRead: function(inReadState){
 		this.item.read = inReadState;

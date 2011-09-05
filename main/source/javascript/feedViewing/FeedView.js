@@ -18,7 +18,7 @@ enyo.kind({
 				{kind: enyo.VFlexBox, className: "mainContent", flex: 1, style: "overflow: hidden", allowHtml: true, components: [
 					{kind: enyo.VirtualList, width: "322px", flex: 1, onSetupRow: "setupRow", className: "virtualList", components: [
 						//{kind: enyo.Divider},
-						{kind: "ArticleItem", tapHighlight: true, onclick: "articleItemClick"}
+						{kind: "ArticleItem", tapHighlight: false, onclick: "articleItemClick"}
 					]},
 					{kind: enyo.Control, name: "bottomToolbar", className: "scrollfade"},
 					/*{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "markRead", allowHtml: true, components: [

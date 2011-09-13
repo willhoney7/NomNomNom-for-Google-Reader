@@ -186,22 +186,25 @@ enyo.kind({
 	},
 
 	markFeedRead: function(inSender, inEvent){
-		publish("popups", ["confirm", inEvent, enyo.bind(this, function(){
-			reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
-				_(this.items).each(function(item){
-					item.read = true;
-				});
+		publish("popups", ["confirm", inEvent, {
+			title: "Mark all read?",
+			doIt: enyo.bind(this, function(){
+				reader.markAllAsRead(this.feed.id, enyo.bind(this, function(){
+					_(this.items).each(function(item){
+						item.read = true;
+					});
+					
+					if(AppPrefs.get("articleView") === "list"){
+						this.$.virtualList.refresh();
+					} else {
+						$(".unread").css("opacity", 0);
+					}
 				
-				if(AppPrefs.get("articleView") === "list"){
-					this.$.virtualList.refresh();
-				} else {
-					$(".unread").css("opacity", 0);
-				}
-			
-				publish("icons", ["refresh"]);
+					publish("icons", ["refresh"]);
 
-			}));	
-		})]);
+				}));	
+			})
+		}]);
 		
 	}
 });

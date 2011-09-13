@@ -55,8 +55,8 @@
 			fresh: false,
 			read: false,
 			star: false,
-			shared: false//,
-			//orig: _.clone(item)
+			shared: false,
+			_orig: _.clone(item)
 		};
 
 		condensedItem.firstImageURL = $("<div>" + condensedItem.content + "</div>").find("img").first().attr("src");

@@ -174,7 +174,7 @@ enyo.kind({
 		}
 		enyo.keyboard.setManualMode(false);
 
-		this.$.email.setContent(reader.getUser().userEmail);
+		this.$.email.setContent(reader.user.get().userEmail);
 		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 

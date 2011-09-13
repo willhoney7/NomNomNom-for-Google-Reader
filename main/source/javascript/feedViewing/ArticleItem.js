@@ -40,11 +40,16 @@ enyo.kind({
 	},
 	toggleRead: function(){
 
-		console.log("ITEM IS FRESH? " + this.item.fresh);
+		//console.log("ITEM IS FRESH? " + this.item.fresh);
 		if(!this.item.fresh && this.item.read){
 			humane("Unable to mark unread");
 			return;
 		}
+
+		var newState = !this.item.read;
+		_.delay(enyo.bind(this, function(){
+			this.$.unread.applyStyle("opacity", (newState ? 1 : 0));
+		}), 200);
 		
 		_.defer(enyo.bind(this, function(){
 			reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
@@ -59,6 +64,12 @@ enyo.kind({
 
 	},
 	toggleStar: function(){
+
+		var newState = !this.item.star;
+		_.delay(enyo.bind(this, function(){
+			this.$.star.applyStyle("opacity", (newState ? 1 : 0));
+		}), 200);
+
 		reader.setItemTag(this.item.feed.id, this.item.id, "star", !this.item.star, enyo.bind(this, function(response){
 			this.item.star = !this.item.star;
 			this.$.star.applyStyle("opacity", (this.item.star ? 1 : 0));

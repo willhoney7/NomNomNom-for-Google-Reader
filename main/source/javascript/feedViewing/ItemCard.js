@@ -42,6 +42,10 @@ enyo.kind({
 	indexChanged: function(){
 		this.item = this.owner.items[this.index];
 
+		if(!this.item){
+			return;
+		}
+
 		this.$.image.hide();
 		this.$.scroller.setScrollTop(0);
 
@@ -106,7 +110,7 @@ enyo.kind({
 			inEvent.preventDefault();
 		}
 
-		console.log("ITEM IS FRESH? " + this.item.fresh);
+		//console.log("ITEM IS FRESH? " + this.item.fresh);
 		if(!this.item.fresh && this.item.read){
 			humane("Unable to mark unread");
 			return;

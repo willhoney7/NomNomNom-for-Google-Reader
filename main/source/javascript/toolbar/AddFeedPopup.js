@@ -23,7 +23,7 @@ enyo.kind({
 		        {caption: "URL", value: "url"},
 		        {caption: "Keyword", value: "keyword"},
 		    ]},
-		    {name: "input", kind: enyo.Input, hint: "", autoCapitalize: "lowercase", alwaysLooksFocused: true},
+		    {name: "input", kind: enyo.Input, hint: "", onfocus: "textFocus", onkeydown: "keydown", autoCapitalize: "lowercase", alwaysLooksFocused: true},
 		]},
 		{kind: enyo.ActivityButton, content: "Go", onclick: "go"},
 		{kind: enyo.Group, caption: "Results", showing: false, components: [
@@ -84,6 +84,9 @@ enyo.kind({
 						//console.log(this.items);
 						this.$.group.show();
 						this.$.virtualRepeater.render();
+
+						enyo.keyboard.forceHide();
+
 					}
 				} else {
 					reader.subscribeFeed(response.feedUrl, enyo.bind(this, function(arg){
@@ -99,8 +102,6 @@ enyo.kind({
 			this.$.activityButton.setActive(true);		
 		}
 
-		
-		
 	},
 
 	setupRow: function(inSender, inIndex){
@@ -122,6 +123,18 @@ enyo.kind({
 	reportError: function(error){
 		this.$.activityButton.setActive(false);
 		this.$.errorResponse.setContent("Error: " + error);
+	},
+
+	textFocus: function(){
+		enyo.keyboard.forceShow(7);
+	},
+
+	keydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			this.go();
+			inEvent.preventDefault();
+
+		}
 	},
 	
 	/*searchBoxKeydown: function(inSender, inEvent) {

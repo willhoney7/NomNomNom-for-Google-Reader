@@ -131,8 +131,8 @@ enyo.kind({
 				this.$.step9.hide();
 			} else if(this.loginStep === 2){
 				enyo.keyboard.setResizesWindow(true);
-				enyo.keyboard.forceShow(4);
-				this.$.emailAddress.forceFocus();
+				//enyo.keyboard.forceShow(4);
+				//this.$.emailAddress.forceFocus();
 				this.$.step1.hide();
 				this.$.step2.show();
 				this.$.step3.hide();
@@ -239,7 +239,14 @@ enyo.kind({
 	getToken: function(){
 		reader.getToken(function(){
 			publish("icons", ["refresh"]);
-		}, function(error){ console.error(error)});	
+		}, function(error){ console.error(error)
+			reader.getToken(function(){
+				publish("icons", ["refresh"]);
+			}, function(error){
+				humane("Failed to authorize. <br/>Try logging in again.");
+				this.setupLogin(2);
+			});
+		});	
 	},
 
 	resizeHandler: function(){

@@ -5,6 +5,7 @@ enyo.depends(
 	"vendors/minpubsub.js",
 	
 	//load the google reader library
+	"library/localStorageWrapper.js",
 	"library/google-reader.js",
 
 	//load helpers

@@ -28,7 +28,8 @@
 			"instapaperUsername": "",
 			"instapaperAuth": "",
 			"readitlaterUsername": "",
-			"readitlaterPassword": ""
+			"readitlaterPassword": "",
+			"seenExpandedInfo": false
 		}, JSON.parse(localStorage["preferences"]));
 	};
 

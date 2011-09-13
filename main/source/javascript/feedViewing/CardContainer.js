@@ -56,9 +56,9 @@ enyo.kind({
 		} else {
 			//console.error("need to create initial controls");
 
-			var components = [], cardLength = (this.items.length > 8) ? 8 : this.items.length;
+			var components = [], cardLength = 8;//(this.items.length > 8) ? 8 : this.items.length;
 			for(var i = 0; i < cardLength; i++){
-				components.push({kind: "ItemCard", item: this.items[i], index: i, snapIndex: i, onclick: "itemClick"});	
+				components.push({kind: "ItemCard", item: this.items[i], index: i, snapIndex: i, showing: (this.items[i] ? true : false), onclick: "itemClick"});	
 			}
 			_.defer(enyo.bind(this, function(){
 				this.$.snapScroller.createComponents(components, {owner: this});
@@ -71,6 +71,7 @@ enyo.kind({
 	},
 	cardSnap: function(inSender, inIndex){
 		//console.error("card snapped");
+		this.itemClicked = false;
 		this.activeIndex = inIndex;
 		//this.changeIndex();
 	},
@@ -84,11 +85,24 @@ enyo.kind({
 	},
 	itemIndex: 0,
 	indexChanged: function(){
-		if((this.oldIndex === this.index && this.index > 1) || this.items.length < 9){
+		if(this.oldIndex === this.index && this.index > 1){
+			_.defer(enyo.bind(this, this.markViewableCardsRead));
 			return;
 		}
+
+		if (this.items.length < 9) {
+			if(!this.itemClicked){
+				if(this.owner.$.itemView.showing === true){
+					_.defer(enyo.bind(this, function(){
+						this.itemClick(this.$.snapScroller.getControls()[this.index], null, true);
+						this.itemClicked = false;		
+					}));
+				}
+			}
+			return;
+		}
+
 		this.oldIndex = this.index;
-		//console.error("this.index " + this.index);
 
 		var renderTrigger = 3;
 
@@ -103,6 +117,7 @@ enyo.kind({
 						control.show();
 						//control.setItem(this.items[index]);
 						//control.setSnapIndex(index);
+						//console.log("set item " + this.items[itemIndex].title);
 						control.setIndex(itemIndex);
 					} else {
 						control.hide();
@@ -147,11 +162,13 @@ enyo.kind({
 			this.viewedIndex = this.index;
 			this.index = 1;
 		}
-
-		if(this.owner.$.itemView.showing === true){
-			_.defer(enyo.bind(this, function(){
-				this.itemClick(this.$.snapScroller.getControls()[this.viewedIndex], null, true);
-			}));
+		if(!this.itemClicked){
+			if(this.owner.$.itemView.showing === true){
+				_.defer(enyo.bind(this, function(){
+					this.itemClick(this.$.snapScroller.getControls()[this.viewedIndex], null, true);
+					this.itemClicked = false;		
+				}));
+			}
 		}
 		_.defer(enyo.bind(this, this.markViewableCardsRead));
 	
@@ -175,11 +192,21 @@ enyo.kind({
 
 	},
 
-	itemClick: function(inSender, inEvent, noSnap){		
+	itemClick: function(inSender, inEvent, noSnap){
+			
 		//console.log("insender.index " + inSender.index);
+		
+		//console.log("insender.snapindex " + inSender.snapIndex);
+
+		if(inSender.index === undefined || inSender.snapIndex === undefined) {
+			return;
+		}
+
 		this.doArticleView(this.items[inSender.index], inSender);
 
-		if(!noSnap){		
+		if(!noSnap){	
+			this.itemClicked = true;
+	
 			//console.error("snapIndex " + inSender.snapIndex);
 			this.$.snapScroller.setIndex(inSender.snapIndex);
 			this.setIndex(inSender.snapIndex);

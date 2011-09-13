@@ -13,7 +13,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/menu-icon-close.png", style: "position: absolute; bottom: -10px; right: -10px", onclick: "close"}
 		]},	
-		{name: "name", kind: enyo.Input, hint: "Feed Name", style: "margin-top: 5px;", selectAllOnFocus: true, alwaysLooksFocused: true},
+		{name: "name", kind: enyo.Input, hint: "Feed Name", style: "margin-top: 5px;", onkeydown: "keydown", selectAllOnFocus: true, alwaysLooksFocused: true},
 		{name: "button", kind: enyo.ActivityButton, caption: "Rename", onclick: "finish"},
 		{name: "errorResponse", className: "errorText"}
 		
@@ -25,6 +25,13 @@ enyo.kind({
 	close: function(){
 		this.inherited(arguments);
 		enyo.keyboard.setManualMode(false); // closes the keyboard		
+	},
+	keydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			this.finish();
+			inEvent.preventDefault();
+
+		}
 	},
 	showAtCenter: function(feed, opt){
 		if(this.lazy) {

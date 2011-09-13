@@ -4,7 +4,7 @@
 
 	This library requires the underscore library found at http://documentcloud.github.com/underscore/ 
 	This library requires the underscore string library found at http://edtsech.github.com/underscore.string/
-	This library requires the support of localStorage. Updates could be easily made to change that.
+	This library requires the support of localStorage however pdates could be easily made to change that.
 */
 
 /* jslint adsafe: false, devel: true, regexp: true, browser: true, vars: true, nomen: true, maxerr: 50, indent: 4 */
@@ -64,27 +64,11 @@
 		return _(reader.getFeeds()).select(function (feed) { return feed.isLabel; });
 	};
 
-	//managing the logged in user
-	reader.setUser =  function (user) {
-		localStorage.User = JSON.stringify(user);
-	};
-	reader.getUser = function () {
-		return JSON.parse(localStorage.User);
-	};
-
-	//managing the app authentication
-	var readerAuth = "",
-		readerToken = "";
-	reader.getAuth = function () {
-		if (readerAuth !== "undefined") {
-			return readerAuth;		
-		}
-	};
-	reader.setAuth = function (auth) {
-		readerAuth = auth;	
-	};
+	reader.user = new localStorageWrapper("User", "obj");
+	reader.auth = new localStorageWrapper("Auth", "string");
 
 	//the core ajax function
+	var readerToken = "";
 	var requests = [],
 		makeRequest = function (obj, noAuth) {
 			//make sure we have a method
@@ -135,9 +119,9 @@
 			//set request header
 			request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-			if (reader.getAuth() && !noAuth) {
+			if (reader.auth.get() && !noAuth) {
 				//this one is important. This is how google does authorization.
-				request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.getAuth());
+				request.setRequestHeader("Authorization", "GoogleLogin auth=" + reader.auth.get());
 			}
 
 			var requestIndex = requests.length;
@@ -194,11 +178,13 @@
 		reader.is_logged_in = false;
 		reader.is_initialized = true;
 		
+		if(reader.auth.get()){
+			reader.is_logged_in = true;			
+		}
 		//check storage for the tokens we need.
-		if (localStorage.Auth && localStorage.Auth !== "undefined") {
+		/*if (localStorage.Auth && localStorage.Auth !== "undefined") {
 			reader.setAuth(localStorage.Auth);
-			reader.is_logged_in = true;
-		} 
+		} */
 		return (reader.is_logged_in);
 	};
 
@@ -230,9 +216,14 @@
 
 	reader.logout = function () {
 		reader.is_logged_in = false;
-		localStorage.Auth = undefined;
-		reader.setUser({});
-		reader.setAuth("");
+		
+		//delete localStorage.Auth;
+		reader.auth.del();
+		reader.user.del();
+
+		//delete localStorage.User;
+		//reader.setUser({});
+
 		reader.setFeeds([]);
 	};
 
@@ -242,7 +233,8 @@
 			url: BASE_URL + USERINFO_SUFFIX,
 			parameters: {},
 			onSuccess: function (transport) {
-				reader.setUser(JSON.parse(transport.responseText));
+				reader.user.set(JSON.parse(transport.responseText));
+				//reader.setUser(JSON.parse(transport.responseText));
 
 				successCallback();
 			},

@@ -10,9 +10,9 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-		subscribe("popups", enyo.bind(this, function(action, event, doIt){
+		subscribe("popups", enyo.bind(this, function(action, event, opts){
 			if(action === "confirm"){
-				this.$.confirmPopup.showAtEvent(event, {doIt: doIt});
+				this.$.confirmPopup.showAtEvent(event, opts);
 			} 
 	    }));	
 	},

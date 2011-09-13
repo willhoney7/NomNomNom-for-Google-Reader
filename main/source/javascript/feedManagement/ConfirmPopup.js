@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.Popup,
 	components: [
 		{kind: enyo.HFlexBox, components: [
-			{name: "title", flex: 1, content: ""},
+			{name: "title", flex: 1, content: "", style: "padding-bottom: 5px"},
 		]},
 		{kind: enyo.HFlexBox, components: [
 			{kind: enyo.Button, className: "enyo-button-affirmative", flex: 1, caption: "Yes", onclick: "run"},

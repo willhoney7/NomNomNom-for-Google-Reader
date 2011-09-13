@@ -14,6 +14,7 @@ enyo.depends(
 	"../vendors/ekl/Popup/",
 
 	//load the google reader library
+	"../library/localStorageWrapper.js",
 	"../library/google-reader.js",
 
 

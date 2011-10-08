@@ -45,13 +45,13 @@ enyo.kind({
 			humane("Unable to mark unread");
 			return;
 		}
-
 		var newState = !this.item.read;
 		_.delay(enyo.bind(this, function(){
-			this.$.unread.applyStyle("opacity", (newState ? 1 : 0));
+			this.$.unread.applyStyle("opacity", (newState ? 0 : 1));
 		}), 200);
 		
 		_.defer(enyo.bind(this, function(){
+	
 			reader.setItemTag(this.item.feed.id, this.item.id, "read", !this.item.read, enyo.bind(this, function(response){
 				this.item.read = !this.item.read;
 				this.$.unread.applyStyle("opacity", (this.item.read ? 0 : 1));

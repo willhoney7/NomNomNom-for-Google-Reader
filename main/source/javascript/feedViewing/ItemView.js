@@ -139,10 +139,6 @@ enyo.kind({
 
 		this.renderPrefs(); 
 
-		//this.$.unread.setShowing(!this.item.read);
-		//this.$.feedTitle.setContent(this.item.origin.title);
-
-		//this.$.pane.selectViewByName("view");
 	},
 	itemCardChanged: function(){
 		if(this.itemCard && this.itemCard.markRead && AppPrefs.get("markAsReadFullView")){
@@ -291,7 +287,7 @@ enyo.kind({
 					}
 					break;
 				case "googlereader":
-					reader.setItemTag(this.item.origin.feed.id, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
+					reader.setItemTag(this.item.feed.id, this.item.id, "share", !this.item.shared, enyo.bind(this, function(){
 						this.item.shared = !this.item.shared;
 					}));
 					break;

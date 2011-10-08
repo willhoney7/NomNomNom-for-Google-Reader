@@ -34,7 +34,7 @@ enyo.kind({
 
 		this.changeIndex = _.throttle(enyo.bind(this, function(){
 			//console.error("throttled triggered");
-			this.setIndex(this.activeIndex);					
+			this.changeViewIndex(this.activeIndex);					
 		}), 50);
 	},
 	itemsChanged: function(){
@@ -71,7 +71,7 @@ enyo.kind({
 	},
 	cardSnap: function(inSender, inIndex){
 		//console.error("card snapped");
-		this.itemClicked = false;
+		//this.itemClicked = false;
 		this.activeIndex = inIndex;
 		//this.changeIndex();
 	},
@@ -84,21 +84,30 @@ enyo.kind({
 		this.changeIndex();
 	},
 	itemIndex: 0,
-	indexChanged: function(){
-		if(this.oldIndex === this.index && this.index > 1){
+	changeViewIndex: function(index, arg){
+		if (!arg) arg = {};
+		console.log("index" + index);
+		console.log("this.oldIndex" + this.oldIndex);
+		
+		if(this.oldIndex === index && index > 1){
 			_.defer(enyo.bind(this, this.markViewableCardsRead));
+			this.oldIndex = index;
 			return;
 		}
+		this.index = index;
 
 		if (this.items.length < 9) {
-			if(!this.itemClicked){
+			//if(!this.itemClicked){
 				if(this.owner.$.itemView.showing === true){
 					_.defer(enyo.bind(this, function(){
-						this.itemClick(this.$.snapScroller.getControls()[this.index], null, true);
-						this.itemClicked = false;		
+
+						this.doArticleView(this.items[this.$.snapScroller.getControls()[this.index].getIndex()], this.$.snapScroller.getControls()[this.index]);
+
+						//this.doArticleView(this.items[this.index], this.$.snapScroller.getControls()[this.index]);
+						//this.itemClicked = false;		
 					}));
 				}
-			}
+			//}
 			return;
 		}
 
@@ -162,13 +171,20 @@ enyo.kind({
 			this.viewedIndex = this.index;
 			this.index = 1;
 		}
-		if(!this.itemClicked){
+		console.log(arg);
+		if(!arg.noView){
 			if(this.owner.$.itemView.showing === true){
 				_.defer(enyo.bind(this, function(){
-					this.itemClick(this.$.snapScroller.getControls()[this.viewedIndex], null, true);
-					this.itemClicked = false;		
+
+					console.error(this.$.snapScroller.getControls()[this.viewedIndex].getIndex());
+					console.error(this.$.snapScroller.getControls()[this.viewedIndex]);
+
+					this.doArticleView(this.items[this.$.snapScroller.getControls()[this.viewedIndex].getIndex()], this.$.snapScroller.getControls()[this.viewedIndex]);
+
+					//this.itemClick(this.$.snapScroller.getControls()[this.viewedIndex], null, true);
 				}));
 			}
+			//this.itemClicked = false;		
 		}
 		_.defer(enyo.bind(this, this.markViewableCardsRead));
 	
@@ -205,11 +221,14 @@ enyo.kind({
 		this.doArticleView(this.items[inSender.index], inSender);
 
 		if(!noSnap){	
-			this.itemClicked = true;
+			//this.itemClicked = true;
 	
 			//console.error("snapIndex " + inSender.snapIndex);
 			this.$.snapScroller.setIndex(inSender.snapIndex);
-			this.setIndex(inSender.snapIndex);
+
+			this.activeIndex = inSender.snapIndex;
+			this.changeIndex();
+			//this.changeViewIndex(inSender.snapIndex, {noView: true});
 		}
 		
 		if(inEvent){

@@ -456,6 +456,7 @@
 	padding: 10px;
 	background-color: #F2EDE9;
 	font-size: 14px;
+	/*-webkit-user-select: text;*/
 }
 
 .itemView img {

@@ -371,6 +371,8 @@ enyo.kind({
 		}	
 	},
 	reclaimSpace: function(){
+		publish("article/view", [false]);
+
 		this.$.feedView.$.itemView.$.imageViewPopup.close();
 		//this.$.feedView.$.cardContainer.$.snapScroller.snapTo(this.$.feedView.$.cardContainer.$.snapScroller.getIndex());
 	},

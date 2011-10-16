@@ -1,7 +1,6 @@
 enyo.kind({
 	name: "ekl.Layout.SlidingView",
 	kind: enyo.SlidingView,
-	
 	published: {
 	    nodragleft: false,
 	},
@@ -12,5 +11,10 @@ enyo.kind({
         } else {
             return this.inherited(arguments);
         }
+	},
+	hide: function(){
+		console.error("AHIDING");
+		this.inherited(arguments);
+		console.error("HIDING");
 	}
 });

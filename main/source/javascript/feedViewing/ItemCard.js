@@ -5,7 +5,7 @@ enyo.kind({
 	allowHtml: true,
 	width: AppPrefs.get("cardWidth"),
 	published: {
-		item_: {},
+		item: {},
 		index: 0,
 		snapIndex: 0,
 		read: false
@@ -37,10 +37,10 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);	
-		this.indexChanged();
+		//this.indexChanged();
 	},
-	indexChanged: function(){
-		this.item = this.owner.items[this.index];
+	itemChanged: function(){
+		//this.item = this.owner.items[this.index];
 
 		if(!this.item){
 			return;

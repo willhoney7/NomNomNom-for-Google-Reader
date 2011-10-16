@@ -11,7 +11,7 @@ enyo.kind({
 		feed: {}	
 	},
 	components: [
-		{name: "scrollerSlidingView", kind: enyo.SlidingView, flex: 1, components: [
+		{name: "scrollerSlidingView", flex: 1, components: [
 			{name: "cardContainer", kind: "NomNomNom.CardContainer", items: [], flex: 1, index: 0, onArticleView: "viewArticle"},
 			{name: "listContainer", kind: enyo.VFlexBox, flex: 1, className: "listContainer itemCard", width: "322px", components: [
 				{className: "top"},
@@ -156,7 +156,7 @@ enyo.kind({
 		this.viewArticle(inSender, inSender.getItem(), inSender);
 	},
 
-	viewArticle: function(inSender, article, itemCard){
+	viewArticle: function(inSender, article, itemCard, index){
 		this.$.scrollerSlidingView.applyStyle("max-width", "345px");
 		
 		this.$.itemView.setShowing(true);

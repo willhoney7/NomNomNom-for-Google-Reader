@@ -17,23 +17,25 @@ enyo.kind({
 		subscribe("article/view", _.bind(function(showing, index, page){
 			var oldViewingArticle = this.viewingArticle
 			this.viewingArticle = showing;
-			//var currentIndex = this.$.carousel.getIndex();
+
 			if(this.viewingArticle && !oldViewingArticle){
+
 				//console.error("Moving to single view", page * 3 + index + 1);
 				//this.$.carousel.setIndex(page * 3 + index);	
 				this.$.carousel.renderViews(page * 3 + index);
 				this.$.carousel.setIndex(1);
 
-				this.page = page;
+				this.page = page * 3 + index;
+
 			} else if(this.viewingArticle && oldViewingArticle){
+
 				this.page = page;
 
 			} else {
 				//console.error("Going back to multiple cards per page view");
-				
-				this.$.carousel.renderViews(Math.floor(this.page/3));
+				//console.error("page", this.page, "newPage", Math.floor((this.page)/3));
+				this.$.carousel.renderViews(Math.floor((this.page)/3) );
 				this.$.carousel.setIndex(1);
-				//this.$.carousel.setIndex(newPage);
 			}
 		}, this));
 	},
@@ -42,13 +44,13 @@ enyo.kind({
 	},
 	setupView: function(inSender, inView, inViewIndex) {
 		if(!this.viewingArticle){
-			if (inViewIndex < (this.items.length/3) && inViewIndex > 0) {
+			if (inViewIndex < (this.items.length/3) && inViewIndex >= 0) {
 		    	inView.setItems(this.items.slice(inViewIndex * 3, inViewIndex * 3 + 3));
 		    	inView.setPage(inViewIndex);
 		        return true;
 		    }	
 		} else {
-			if (inViewIndex < this.items.length && inViewIndex > 0) {
+			if (inViewIndex < this.items.length && inViewIndex >= 0) {
 				inView.setItems(this.items.slice(inViewIndex, inViewIndex+1));
 				inView.setPage(inViewIndex);
 				return true;
@@ -57,14 +59,16 @@ enyo.kind({
 	    
 	},
 	itemsChanged: function(){
-		this.$.carousel.renderViews(1);
-		this.$.carousel.setIndex(1);
+		this.$.carousel.renderViews(0);
+		this.$.carousel.setIndex(0);
 		this.viewingArticle = false;
-	},
-	snap: function(){
-		this.markViewableCardsRead();
 
-		console.log("SNAPPED", this.viewingArticle)
+		this.markViewableCardsRead();
+	},
+	snapFinish: function(){
+
+		_.defer(_.bind(this.markViewableCardsRead, this));
+
 		if(this.viewingArticle){
 			this.$.carousel.fetchCurrentView().viewArticle();
 		}

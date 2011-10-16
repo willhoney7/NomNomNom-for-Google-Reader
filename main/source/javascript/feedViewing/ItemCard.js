@@ -50,12 +50,14 @@ enyo.kind({
 		this.$.scroller.setScrollTop(0);
 
 		if(this.item.firstImageURL){
-			this.$.image.setSrc(this.item.firstImageURL);
-			this.$.image.setShowing(true);
 			var img = new Image(), self = this;
 			img.onload = function() {
 				if(this.width < 50 || this.height < 50){
 					self.$.image.setShowing(false);
+				} else {
+					self.$.image.setShowing(true);
+					self.$.image.setSrc(self.item.firstImageURL);
+
 				}
 			};
 			img.src = this.item.firstImageURL;

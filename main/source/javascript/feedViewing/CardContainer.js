@@ -10,6 +10,7 @@ enyo.kind({
 	},
 	components: [
 		{name: "carousel", kind: "VirtualCarousel", flex: 1, onSetupView: "setupView", viewControl: {kind: "NomNomNom.CardPage", onArticleView: "articleView"}, onSetupView: "setupView", onSnap: "snap", onSnapFinish: "snapFinish"}
+	
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -34,6 +35,9 @@ enyo.kind({
 			} else {
 				//console.error("Going back to multiple cards per page view");
 				//console.error("page", this.page, "newPage", Math.floor((this.page)/3));
+				//var cardsPerPage = (this.orientation === "portrait") ? 2 : 3;
+
+
 				this.$.carousel.renderViews(Math.floor((this.page)/3) );
 				this.$.carousel.setIndex(1);
 			}
@@ -43,9 +47,10 @@ enyo.kind({
 	    this.inherited(arguments);
 	},
 	setupView: function(inSender, inView, inViewIndex) {
+		var cardsPerPage = 3;//(this.orientation === "portrait") ? 2 : 3;
 		if(!this.viewingArticle){
-			if (inViewIndex < (this.items.length/3) && inViewIndex >= 0) {
-		    	inView.setItems(this.items.slice(inViewIndex * 3, inViewIndex * 3 + 3));
+			if (inViewIndex < (this.items.length/cardsPerPage) && inViewIndex >= 0) {
+		    	inView.setItems(this.items.slice(inViewIndex * cardsPerPage, inViewIndex * cardsPerPage + cardsPerPage));
 		    	inView.setPage(inViewIndex);
 		        return true;
 		    }	
@@ -87,6 +92,10 @@ enyo.kind({
 		}
 		this.$.carousel.fetchCurrentView().markRead();
 
-	}
+	},
+
+	resizeHandler: function(){
+		this.$.carousel.resized();
+	},
 
 });

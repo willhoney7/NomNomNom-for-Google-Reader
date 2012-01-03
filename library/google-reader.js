@@ -4,7 +4,7 @@
 
 	This library requires the underscore library found at http://documentcloud.github.com/underscore/ 
 	This library requires the underscore string library found at http://edtsech.github.com/underscore.string/
-	This library requires the support of localStorage however pdates could be easily made to change that.
+	This library requires the support of localStorage however updates could be easily made to change that.
 */
 
 /* jslint adsafe: false, devel: true, regexp: true, browser: true, vars: true, nomen: true, maxerr: 50, indent: 4 */
@@ -204,7 +204,7 @@
 				
 				reader.load();
 
-				getUserInfo(successCallback);
+				reader.getUserInfo(successCallback);
 	
 			},
 			onFailure: function (transport) {
@@ -227,7 +227,7 @@
 		reader.setFeeds([]);
 	};
 
-	var getUserInfo = function (successCallback, failCallback) {
+	reader.getUserInfo = function (successCallback, failCallback) {
 		makeRequest({
 			method: "GET",
 			url: BASE_URL + USERINFO_SUFFIX,

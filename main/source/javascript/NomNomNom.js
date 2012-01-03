@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "NomNomNom",
-	kind: enyo.VFlexBox,
+	kind: enyo.Pane,
 	height: "100%",
 	className: "googleReader",
 	components: [
@@ -11,46 +11,64 @@ enyo.kind({
 				{name: "feedView", style: "-webkit-transform: translate3d(0, 0, 0)", kind: "NomNomNom.FeedView", showing: true, onViewIcons: "viewIcons", onFeedLoaded: "feedLoaded", onDismiss: "reclaimSpace"},	
 			]}
 		]},
-  		{name: "login", className: "login", showing: false, flex: 1, kind: enyo.HFlexBox, onclick: "loginClick", components: [
-  			{kind: enyo.Spacer},
-  			{kind: enyo.VFlexBox, name: "step1", showing: false, width: "322px", components: [
-  				{kind: enyo.Spacer},
-				{kind: "ClassyButton", title: "Get Started", step: 1, color: "orange", style: "position: relative; top: 120px;", onclick: "goNextStep"},  				
-  				{kind: enyo.Spacer},
-  			]},
-  			{kind: enyo.VFlexBox, name: "step2", showing: false, width: "322px", components: [
-  				{kind: enyo.Spacer},
-  				{kind: enyo.RowGroup, components: [
-					{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
-					{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "passwordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
-				]},
-				{kind: "ClassyButton", name: "loginButton", title: "Log in", color: "orange", step: 2, onclick: "goNextStep"},
-				{name: "errorResponse", className: "errorText"},
-	  			{kind: enyo.Spacer},
-	  			
-	  		]},
-	  		{kind: enyo.VFlexBox, name: "step3", showing: false, width: "200px", components: [
-  				{kind: enyo.Spacer},
-  				{kind: enyo.HFlexBox, style: "position: relative; top: 60px; right: 153px;", components: [
+  		{name: "login", flex: 1, kind: enyo.VFlexBox, onclick: "loginClick", components: [
+  			{name: "loginPane", className: "login", layoutKind: "HFlexLayout", flex: 1, kind: enyo.Pane, components: [
+  				{kind: enyo.VFlexBox, flex: 1, name: "step1", className: "step step1", components: [
 	  				{kind: enyo.Spacer},
-					{kind: "ClassyButton", title: "Give me the tour!", color: "green", step: 3, onclick: "goNextStep"},
-					{kind: "ClassyButton", title: "Give me my feeds!", color: "orange", onclick: "initializeGoogleReader"},
+					{kind: "ClassyButton", title: "Get Started", step: 1, color: "orange", style: "margin: auto; position: relative; top: 120px;", onclick: "goNextStep"},  				
 	  				{kind: enyo.Spacer},
-				]},
-	  			{kind: enyo.Spacer},
-	  		]},
-	  		{kind: enyo.VFlexBox, name: "step9", showing: false, width: "200px", components: [
-  				{kind: enyo.Spacer},
-  				{kind: enyo.HFlexBox, style: "position: relative; top: 310px; right: 153px;", components: [
+	  			]},
+	  			{kind: enyo.VFlexBox, flex: 1, name: "step2", className: "step step2", components: [
+			  		{kind: enyo.Spacer},
+	  				{kind: enyo.HFlexBox, components: [
+	  					{kind: enyo.Spacer},
+	  					{kind: enyo.RowGroup, width: "322px", components: [
+							{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+							{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "passwordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+						]},
+			  			{kind: enyo.Spacer}
+		  			]},
+	  				{kind: "ClassyButton", name: "loginButton", title: "Log in", style: "margin: auto", color: "orange", step: 2, onclick: "goNextStep"},
+					{name: "errorResponse", className: "errorText"},
+					{kind: enyo.Spacer}
+		  		]},
+		  		{kind: enyo.VFlexBox, flex: 1, name: "step3", className: "step step3", components: [
 	  				{kind: enyo.Spacer},
-					{kind: "ClassyButton", title: "Twitter", color: "green", onclick: "twitter"},
-					{kind: "ClassyButton", title: "Email", color: "green", onclick: "email"},
+	  				{kind: enyo.HFlexBox, style: "position: relative; top: 60px; right: 5px;", components: [
+		  				{kind: enyo.Spacer},
+						{kind: "ClassyButton", title: "Give me the tour!", color: "green", step: 3, onclick: "goNextStep"},
+						{kind: "ClassyButton", title: "Give me my feeds!", color: "orange", onclick: "initializeGoogleReader"},
+		  				{kind: enyo.Spacer},
+					]},
+		  			{kind: enyo.Spacer},
+		  		]},
+		  		{kind: enyo.VFlexBox, flex: 1, name: "step4", className: "step step4"},
+		  		{kind: enyo.VFlexBox, flex: 1, name: "step9", className: "step step9", width: "200px", components: [
 	  				{kind: enyo.Spacer},
-				]},
-				{kind: "ClassyButton", title: "", color: "orange", large: true, style: "position: relative; top: 107px; left: 350px;", onclick: "initializeGoogleReader"},
-	  			{kind: enyo.Spacer},
-	  		]},
-	  		{kind: enyo.Spacer}
+	  				{kind: enyo.HFlexBox, style: "position: relative; top: 310px; right: 5px;", components: [
+		  				{kind: enyo.Spacer},
+						{kind: "ClassyButton", title: "Twitter", color: "green", onclick: "twitter"},
+						{kind: "ClassyButton", title: "Email", color: "green", onclick: "email"},
+		  				{kind: enyo.Spacer},
+					]},
+					{kind: "ClassyButton", title: "", color: "orange", large: true, style: "margin: auto; position: relative; top: 107px; left: 350px;", onclick: "initializeGoogleReader"},
+		  			{kind: enyo.Spacer},
+		  		]},	
+		  		{kind: enyo.VFlexBox, flex: 1, name: "reauthorize", className: "step reauthorize", components: [
+		  			{kind: enyo.Spacer},
+	  				{kind: enyo.HFlexBox, components: [
+	  					{kind: enyo.Spacer},
+	  					{kind: enyo.RowGroup, width: "322px", components: [
+							{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+							{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "reloginPasswordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+						]},
+			  			{kind: enyo.Spacer}
+		  			]},
+	  				{kind: "ClassyButton", name: "reloginButton", title: "Reauthorize", style: "margin: auto", color: "orange", onclick: "reLogin"},
+					{name: "reloginErrorResponse", className: "errorText"},
+					{kind: enyo.Spacer}
+		  		]}
+	  		]}
 	  	]},
 
 	  	{kind: "ApplicationEvents", onWindowRotated: "resizeHandler", onWindowActivated: "activate"},
@@ -116,57 +134,40 @@ enyo.kind({
 	setupLogin: function(inStep){
 		if(inStep > 0){		
 			enyo.keyboard.forceHide();	
-			this.$.appComponents.hide();
-			this.$.login.show();
-			this.$.login.setClassName("login enyo-hflexbox " + "step" + inStep);
+			this.selectView(this.$.login);
+
 			this.loginStep = inStep;
+			this.$.loginPane.selectViewByName("step" + this.loginStep);
 
 			if(this.loginStep === 1){
 				enyo.setAllowedOrientation("free");
 				enyo.keyboard.setResizesWindow(false);
 
-				this.$.step1.show();
-				this.$.step2.hide();
-				this.$.step3.hide();
-				this.$.step9.hide();
 			} else if(this.loginStep === 2){
 				enyo.keyboard.setResizesWindow(true);
 				//enyo.keyboard.forceShow(4);
 				//this.$.emailAddress.forceFocus();
-				this.$.step1.hide();
-				this.$.step2.show();
-				this.$.step3.hide();
-				this.$.step9.hide();
+
 			} else if(this.loginStep === 3){
 				enyo.keyboard.setResizesWindow(false);
-				this.$.step1.hide();
-				this.$.step2.hide();
-				this.$.step3.show();
-				this.$.step9.hide();
 			} else if(this.loginStep > 3 && this.loginStep < 9){
+				this.$.step4.setClassName("step step" + this.loginStep);
 				enyo.setAllowedOrientation("landscape");
-				this.$.step1.hide();
-				this.$.step2.hide();
-				this.$.step3.hide();
-				this.$.step9.hide();
 			} else if(this.loginStep === 9){
 				enyo.setAllowedOrientation("landscape");
-				this.$.step9.show();
 			}
 		} else if (!inStep){ //zero or undefined
 			enyo.setAllowedOrientation("free");
 			enyo.keyboard.setManualMode(false);
 			enyo.keyboard.setResizesWindow(false);
 
-			this.$.appComponents.show();
-			this.$.login.hide();
+			this.selectView(this.$.appComponents);
 		}
 	},
 	passwordKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
 			this.goNextStep({step: 2});
 			inEvent.preventDefault();
-
 		}
 	},
 	showKeyboard: function(){
@@ -197,6 +198,31 @@ enyo.kind({
 		//for clicking when we are on the tour.
 		if(this.loginStep > 3 && this.loginStep < 9){
 			this.goNextStep({step: this.loginStep});
+		}
+	},
+
+	relogin: function(){
+		var emailAddress = this.$.emailAddress.getValue(),
+			password = this.$.password.getValue();
+
+			this.$.errorResponse.setContent("");
+			this.$.loginButton.setActive(true); 
+			
+			reader.login(emailAddress, password, enyo.bind(this, function(){
+				this.$.reloginButton.setActive(false);
+				this.initializeGoogleReader();				
+
+			}), enyo.bind(this, function(){
+				this.$.reloginButton.setActive(false);
+				this.$.reloginErrorResponse.setContent("Error: " + error);
+
+			}));
+
+	},
+	reloginPasswordKeydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			this.goNextStep({step: 2});
+			inEvent.preventDefault();
 		}
 	},
 
@@ -237,16 +263,24 @@ enyo.kind({
 	},
 
 	getToken: function(){
+		var thus = this;
 		reader.getToken(function(){
 			publish("icons", ["refresh"]);
 		}, function(error){ console.error(error)
 			reader.getToken(function(){
 				publish("icons", ["refresh"]);
 			}, function(error){
-				humane("Failed to authorize. <br/>Try logging in again.");
-				this.setupLogin(2);
+					enyo.keyboard.forceHide();	
+					thus.selectView(thus.$.login);
+
+					thus.$.loginPane.selectViewByName("reauthorize");
 			});
 		});	
+
+		/*enyo.keyboard.forceHide();	
+		thus.selectView(thus.$.login);
+
+		thus.$.loginPane.selectViewByName("reauthorize");*/
 	},
 
 	resizeHandler: function(){
@@ -258,8 +292,11 @@ enyo.kind({
 				this.$.feedView.applyStyle("height", window.innerHeight - 55 - 120 + "px");					
 			}
 		} else {
-			this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");					
+			this.$.feedView.applyStyle("height", window.innerHeight - 55 + "px");			
 		}
+		
+		this.$.feedView.$.cardContainer.resizeHandler();	
+		this.$.feedView.$.itemView.resized();	
 	},
 
 	flick: function(inSender, inEvent){

@@ -3,7 +3,7 @@ enyo.kind({
 	className: "itemCard",
 	kind: enyo.VFlexBox, 
 	allowHtml: true,
-	width: AppPrefs.get("cardWidth"),
+	//width: AppPrefs.get("cardWidth"),
 	published: {
 		item: {},
 		index: 0,

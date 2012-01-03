@@ -13,8 +13,15 @@ enyo.kind({
 	components: [
 		{name: "card0",  kind: "ItemCard", onclick: "itemClick"},
 		{name: "card1",  kind: "ItemCard", onclick: "itemClick"},
-		{name: "card2",  kind: "ItemCard", onclick: "itemClick"}
+		{name: "card2",  kind: "ItemCard", onclick: "itemClick"},
+		{kind: "ApplicationEvents", onWindowRotated: "windowRotated"},
+
 	],
+	rendered: function(){
+		this.inherited(arguments);
+
+		this.windowRotated();
+	},
 	itemsChanged: function(){
 		for(var i = 0; i < 3; i++){
 			if(this.items[i]){
@@ -34,6 +41,14 @@ enyo.kind({
 			}
 		}
 	},
+
+	windowRotated: function(){
+		var orientation = AppUtils.getOrientation();
+		this.addClass(orientation);
+		this.removeClass(orientation === "portrait" ? "landscape" : "portrait");
+
+	},
+
 	itemClick: function(inSender, inEvent){
 		this.doArticleView(this.items[parseInt(inSender.name.replace("card", ""), 10)], inSender, parseInt(inSender.name.replace("card", ""), 10), this.page);
 

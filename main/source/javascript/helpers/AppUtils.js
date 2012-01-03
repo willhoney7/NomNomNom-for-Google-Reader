@@ -80,4 +80,8 @@
 		return condensedItem;
 	}
 
+	AppUtils.getOrientation = function(){
+		return (enyo.getWindowOrientation() === "left" || enyo.getWindowOrientation() === "right") ? "portrait" : "landscape";
+	}
+
 })();

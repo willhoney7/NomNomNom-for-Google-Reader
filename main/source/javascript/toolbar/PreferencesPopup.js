@@ -174,7 +174,19 @@ enyo.kind({
 		}
 		enyo.keyboard.setManualMode(false);
 
-		this.$.email.setContent(reader.user.get().userEmail);
+		if(reader.user.get()){
+			this.$.email.setContent(reader.user.get().userEmail);		
+		} else {
+			reader.getUserInfo(function(){
+				if(reader.user.get()){				
+					this.$.email.setContent(reader.user.get().userEmail);		
+				} else {
+					this.$.email.setContent("Error retrieving email.");
+				}
+				
+			});
+		}
+
 		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 

@@ -28,11 +28,11 @@ enyo.kind({
 					]}*/
 				]},
 			]},
-			
-			
 		]},
 			
-		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false}
+		{kind: "ItemView", flex: 1, dismissible: true, dismissDistance: 350, showing: false},
+		{kind: "ApplicationEvents", onWindowRotated: "windowRotated"},
+
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -134,7 +134,7 @@ enyo.kind({
 
 		} else if(AppPrefs.get("articleView") === "list"){
 			this.$.itemView.setDismissible(false);
-			this.$.scrollerSlidingView.applyStyle("max-width", "345px");
+			this.$.scrollerSlidingView.applyStyle("max-width", AppUtils.getOrientation() === "landscape" ? "345px" : "260px");
 
 			if(this.$.cardContainer.getShowing() === true){
 				this.$.cardContainer.hide();			
@@ -157,7 +157,7 @@ enyo.kind({
 	},
 
 	viewArticle: function(inSender, article, itemCard, index){
-		this.$.scrollerSlidingView.applyStyle("max-width", "345px");
+		this.$.scrollerSlidingView.applyStyle("max-width", AppUtils.getOrientation() === "landscape" ? "345px" : "260px");
 		
 		this.$.itemView.setShowing(true);
 		this.$.itemView.setItem(article);
@@ -183,6 +183,15 @@ enyo.kind({
 		} else {
 			item.applyStyle("border-bottom", "none" );			
 		}	
+	},
+	windowRotated: function(){
+		if(this.$.itemView.getShowing()){
+			this.$.scrollerSlidingView.applyStyle("max-width", AppUtils.getOrientation() === "landscape" ? "345px" : "260px");
+			this.$.itemView.resized();	
+			this.$.cardContainer.resized();
+			this.$.listContainer.resized();
+		}
+
 	},
 
 	markFeedRead: function(inSender, inEvent){

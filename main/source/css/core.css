@@ -41,7 +41,6 @@
 }
 
 .classyButton {
-	margin: auto;
 	color: white;
 	font-size: 20px;
 	text-shadow: black 0px 0px 5px;
@@ -77,32 +76,35 @@
 	right: 40px;
 }
 
-.login {
+.login .step {
 	width: 100%;
-	background: url(../images/intro_welcome.png) center no-repeat;
+	background: center no-repeat;
 }
-.login.step2 {
+.login .step1 {
+	background-image: url(../images/intro_welcome.png);
+}
+.login .step2 {
 	background-image: url(../images/intro_login.png);	
 }
-.login.step3 {
+.login .step3 {
 	background-image: url(../images/intro_tourquestion.png);		
 }
-.login.step4 {
+.login .step4 {
 	background-image: url(../images/tour/TourIntro.png);		
 }
-.login.step5 {
+.login .step5 {
 	background-image: url(../images/tour/Tour1.png);		
 }
-.login.step6 {
+.login .step6 {
 	background-image: url(../images/tour/Tour2.png);		
 }
-.login.step7 {
+.login .step7 {
 	background-image: url(../images/tour/Tour3.png);		
 }
-.login.step8 {
+.login .step8 {
 	background-image: url(../images/tour/Tour4.png);		
 }
-.login.step9 {
+.login .step9 {
 	background-image: url(../images/tour/Tour5.png);		
 }
 
@@ -323,17 +325,27 @@
 
 .itemCard {
 	margin: 25px 20px 0px 0px;
+	width: 322px;
 	overflow: hidden;
 	-webkit-transition: height 500ms ease-in-out;
 
 	/*-webkit-border-radius: 10px;*/
 }
+.portrait .itemCard {
+	margin: 15px 13px 0px 0px;
+	width: 240px;
+}
 .itemCard .top {
 	width: 322px;
 	height: 14px;
-	background: url(../images/itemCard_top.png) top left no-repeat;	
+	background: url(../images/itemCard_top.png) top left no-repeat;
 	position: absolute;
 	top: 11px;
+}
+
+.portrait .itemCard .top {
+	width: 240px;
+	background-size: 100%;	
 }
 
 .itemCard .mainContent {
@@ -377,6 +389,10 @@
 	
 }
 
+.portrait .itemCard .scrollfade {
+	width: 240px;
+}
+
 .itemCard .bottomToolbar {
 	height: 90px;
 	position: absolute;
@@ -385,6 +401,11 @@
 	z-index: 1000px;
 	background: url(../images/itemCard_toolbar.png) top left no-repeat;
 }
+
+.portrait .itemCard .bottomToolbar {
+	width: 240px;
+}
+
 .itemCard .bottomToolbar .content {
 	position: relative;
 	top: 50px;
@@ -416,6 +437,10 @@
 	max-width: 300px !important;
 	height: auto !important;
 	padding-bottom: 5px;
+}
+
+.portrait .itemCard img.firstImage {
+	max-width: 220px !important;
 }
 
 .itemCard .summmary a[href]{

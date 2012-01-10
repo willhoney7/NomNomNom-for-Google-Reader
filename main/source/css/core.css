@@ -108,6 +108,10 @@
 	background-image: url(../images/tour/Tour5.png);		
 }
 
+.login .reauthorize {
+	background-image: url(../images/reauthorize.png);
+}
+
 .feedIconList {
 	/*-webkit-transition: height 500ms ease-in-out;*/
 	background: url(../images/iconList_background.png) top left repeat black;
@@ -389,10 +393,6 @@
 	
 }
 
-.portrait .itemCard .scrollfade {
-	width: 240px;
-}
-
 .itemCard .bottomToolbar {
 	height: 90px;
 	position: absolute;
@@ -401,7 +401,7 @@
 	z-index: 1000px;
 	background: url(../images/itemCard_toolbar.png) top left no-repeat;
 }
-
+.portrait .itemCard .scrollfade,
 .portrait .itemCard .bottomToolbar {
 	width: 240px;
 }
@@ -415,7 +415,9 @@
 	font-size: 18px;
 	color: white;
 	padding: 0px 5px 0px 10px;
+	max-width: 70%;
 }
+
 .itemCard .bottomToolbar .date {
 	font-size: 18px;
 	color: white;

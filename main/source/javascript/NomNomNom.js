@@ -12,7 +12,7 @@ enyo.kind({
 			]}
 		]},
   		{name: "login", flex: 1, kind: enyo.VFlexBox, onclick: "loginClick", components: [
-  			{name: "loginPane", className: "login", layoutKind: "HFlexLayout", flex: 1, kind: enyo.Pane, components: [
+  			{name: "loginPane", className: "login", layoutKind: "HFlexLayout", flex: 1, kind: enyo.Pane, transitionKind: "enyo.transitions.Fade", components: [
   				{kind: enyo.VFlexBox, flex: 1, name: "step1", className: "step step1", components: [
 	  				{kind: enyo.Spacer},
 					{kind: "ClassyButton", title: "Get Started", step: 1, color: "orange", style: "margin: auto; position: relative; top: 120px;", onclick: "goNextStep"},  				
@@ -59,12 +59,12 @@ enyo.kind({
 	  				{kind: enyo.HFlexBox, components: [
 	  					{kind: enyo.Spacer},
 	  					{kind: enyo.RowGroup, width: "322px", components: [
-							{name: "emailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
-							{name: "password", kind: enyo.PasswordInput, hint: "Password", onkeydown: "reloginPasswordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+							{name: "reloginemailAddress", kind: enyo.Input, hint: "Gmail Address", autoCapitalize: "lowercase", alwaysLooksFocused: true, onfocus: "showKeyboard"},
+							{name: "reloginpassword", kind: enyo.PasswordInput, hint: "Password", onkeydown: "reloginPasswordKeydown", alwaysLooksFocused: true, onfocus: "showKeyboard"},
 						]},
 			  			{kind: enyo.Spacer}
 		  			]},
-	  				{kind: "ClassyButton", name: "reloginButton", title: "Reauthorize", style: "margin: auto", color: "orange", onclick: "reLogin"},
+	  				{kind: "ClassyButton", name: "reloginButton", title: "Reauthorize", style: "margin: auto", color: "orange", onclick: "relogin"},
 					{name: "reloginErrorResponse", className: "errorText"},
 					{kind: enyo.Spacer}
 		  		]}
@@ -202,17 +202,17 @@ enyo.kind({
 	},
 
 	relogin: function(){
-		var emailAddress = this.$.emailAddress.getValue(),
-			password = this.$.password.getValue();
+		var emailAddress = this.$.reloginemailAddress.getValue(),
+			password = this.$.reloginpassword.getValue();
 
-			this.$.errorResponse.setContent("");
-			this.$.loginButton.setActive(true); 
+			this.$.reloginErrorResponse.setContent("");
+			this.$.reloginButton.setActive(true); 
 			
 			reader.login(emailAddress, password, enyo.bind(this, function(){
 				this.$.reloginButton.setActive(false);
 				this.initializeGoogleReader();				
 
-			}), enyo.bind(this, function(){
+			}), enyo.bind(this, function(error){
 				this.$.reloginButton.setActive(false);
 				this.$.reloginErrorResponse.setContent("Error: " + error);
 
@@ -274,6 +274,8 @@ enyo.kind({
 					thus.selectView(thus.$.login);
 
 					thus.$.loginPane.selectViewByName("reauthorize");
+					enyo.keyboard.setResizesWindow(true);
+
 			});
 		});	
 

@@ -23,7 +23,7 @@ enyo.kind({
 				]},
 			]},
 			{kind: enyo.Control, name: "bottomToolbar", className: "bottomToolbar", onclick: "toggleRead", allowHtml: true, components: [
-				{kind: enyo.HFlexBox, className: "content", components: [
+				{kind: enyo.HFlexBox, className: "content bottomContent", components: [
 					{kind: enyo.Image, name: "unread", className: "unread", src: "source/images/unread.png", style: "opacity: 1"},
 					{kind: enyo.Control, name: "feedTitle", className: "feedTitle truncating-text", allowHtml: true},
 					{kind: enyo.Spacer},

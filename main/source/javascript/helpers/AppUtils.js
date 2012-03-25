@@ -38,12 +38,12 @@
 
 	var readRegExp = new RegExp(reader.TAGS["read"].replace("user/-", "") + "$", "ig");
 	AppUtils.formatArticle = function(item){
-
+		var url = (item.alternate && item.alternate[0]) ? item.alternate[0].href : item.origin.htmlUrl || item.origin.streamId;
 		var condensedItem = {
 			id: item.id,
 			title: item.title,
 			author: item.author,
-			url: item.alternate[0].href,
+			url: url,
 			feed: {
 				title: item.origin.title,
 				id: item.origin.streamId
